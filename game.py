@@ -1,4 +1,6 @@
+import sys
 import pygame
+from entities.ft_btn import FtBtn
 
 
 class Game:
@@ -6,25 +8,44 @@ class Game:
 	WIDTH = 1280
 	HEIGHT = 720
 
-	def __init__(self) -> None:
+	def __init__(self):
 		pygame.init()
-		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT), pygame.NOFRAME)
+		pygame.display.set_caption("Piksel Bros.")
+		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
+		self.clock = pygame.time.Clock()
+		# btn
+		self.btn = FtBtn()
 
-	def run(self) -> None:
-		clock = pygame.time.Clock()
+	def run(self):
+		while True:
+			self.loop()
 
-		run = True
-		while run:
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					run = False
+				if not self.event(event):
 					break
-				elif event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_ESCAPE:
-						run = False
-						break
 
-			clock.tick(Game.FPS)
+			# I don't know what is this for
+			pygame.display.update()
+			self.clock.tick(Game.FPS)
 
+	def stop(self):
 		pygame.quit()
-		quit()
+		sys.exit()
+
+	def event(self, event):
+		if event.type == pygame.QUIT:
+			self.stop()
+			return False
+
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_ESCAPE:
+				self.stop()
+				return False
+
+		return True
+
+	def loop(self):
+		self.window.fill((0, 0, 0))
+		# btn
+		self.btn.blit(self.window)
+		self.btn.move(10)
