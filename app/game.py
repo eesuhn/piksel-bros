@@ -14,7 +14,7 @@ class Game:
 		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
 		self.clock = pygame.time.Clock()
 		# btn
-		self.btn = FtBtn()
+		self.btn = FtBtn(0, 0)
 
 	def run(self):
 		while True:
@@ -47,5 +47,4 @@ class Game:
 	def loop(self):
 		self.window.fill((0, 0, 0))
 		# btn
-		self.btn.blit(self.window)
-		self.btn.move(10)
+		self.btn.move(self.window, 10)
