@@ -1,6 +1,6 @@
 import sys
 import pygame
-from entities.ft_btn import FtBtn
+from .entities.ft_btn import FtBtn
 
 
 class Game:
