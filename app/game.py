@@ -1,6 +1,7 @@
 import sys
 import pygame
-from .entities.ft_btn import FtBtn
+from .entities.player import Player
+from .utils import load_img
 
 
 class Game:
@@ -11,10 +12,12 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		pygame.display.set_caption("Piksel Bros.")
-		self.surface = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
+		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
 		self.clock = pygame.time.Clock()
-		# btn
-		self.btn = FtBtn(0, 0)
+		self.assets = {
+			'player': load_img('main_characters/player.png', 4)
+		}
+		self.player = Player(self)
 
 	def run(self):
 		while True:
@@ -24,7 +27,6 @@ class Game:
 				if not self.event(event):
 					break
 
-			# I don't know what is this for
 			pygame.display.update()
 			self.clock.tick(Game.FPS)
 
@@ -45,6 +47,6 @@ class Game:
 		return True
 
 	def loop(self):
-		self.surface.fill((0, 0, 0))
-		# btn
-		self.btn.move(self.surface, 10)
+		# TEMP : Background
+		self.window.fill((10, 186, 180))
+		self.player.move(self.window)
