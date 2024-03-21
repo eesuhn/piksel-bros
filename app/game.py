@@ -11,7 +11,7 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		pygame.display.set_caption("Piksel Bros.")
-		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
+		self.surface = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
 		self.clock = pygame.time.Clock()
 		# btn
 		self.btn = FtBtn(0, 0)
@@ -45,6 +45,6 @@ class Game:
 		return True
 
 	def loop(self):
-		self.window.fill((0, 0, 0))
+		self.surface.fill((0, 0, 0))
 		# btn
-		self.btn.move(self.window, 10)
+		self.btn.move(self.surface, 10)
