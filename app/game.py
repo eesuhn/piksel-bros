@@ -1,7 +1,8 @@
 import sys
 import pygame
 from .entities.player import Player
-from .utils import load_img
+from .utils import load_img, load_imgs
+from .map import Map
 
 
 class Game:
@@ -15,9 +16,11 @@ class Game:
 		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
 		self.clock = pygame.time.Clock()
 		self.assets = {
+			'dirt': load_imgs('terrain/dirt'),
 			'player': load_img('main_characters/player.png', 4)
 		}
 		self.player = Player(self)
+		self.map = Map(self)
 
 	def run(self):
 		while True:
@@ -49,4 +52,5 @@ class Game:
 	def loop(self):
 		# TEMP : Background
 		self.window.fill((10, 186, 180))
+		self.map.render(self.window)
 		self.player.move(self.window)
