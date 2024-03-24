@@ -47,6 +47,9 @@ class Game:
 				self.stop()
 				return False
 
+			if event.key == pygame.K_F11:
+				pygame.display.set_mode((Game.WIDTH, Game.HEIGHT), pygame.FULLSCREEN)
+
 		return True
 
 	def loop(self):
