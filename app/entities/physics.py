@@ -15,8 +15,8 @@ class Physics:
 		self.pos[1] += mov[1]
 		self.apply_gravity()
 
-	def render(self, surf):
-		surf.blit(self.game.assets['player'], self.pos)
+	# def render(self, surf):
+	# 	surf.blit(self.game.assets['player'], self.pos)
 
 	def apply_gravity(self):
 		self.y_vel = round(min(20, self.y_vel + math.sqrt(self.gravity_acc)), 1)

@@ -19,7 +19,7 @@ class Game:
 			'dirt': load_imgs('terrain/dirt'),
 			'player': load_img('main_characters/player.png', 4)
 		}
-		self.player = Player(self)
+		self.player = Player(self, (50, 50))
 		self.map = Map(self)
 
 	def run(self):
@@ -56,4 +56,4 @@ class Game:
 		# TEMP : Background
 		self.window.fill((10, 186, 180))
 		self.map.render(self.window)
-		self.player.move(self.window)
+		self.player.move()
