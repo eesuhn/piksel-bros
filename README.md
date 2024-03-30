@@ -7,4 +7,4 @@
 	source piksel-bros-env/bin/activate
 	pip install -r requirements.txt
 	```
-2. To start, run `python3 main.py`
+2. Run `python3 main.py` after `venv` activated
