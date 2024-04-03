@@ -1,0 +1,3 @@
+# Cache
+*.sw*
+__pycache__
