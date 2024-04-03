@@ -11,12 +11,22 @@ class Game:
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 
-		running = True
-		while running:
-			running = self.check_event()
+		while True:
+			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
 
+	def check_event(self) -> bool:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.end()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					self.end()
+
+		return True
+
+	def end(self) -> None:
 		pygame.quit()
 		sys.exit()
 
@@ -24,13 +34,3 @@ class Game:
 		...
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
-
-	def check_event(self) -> bool:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				return False
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					return False
-
-		return True
