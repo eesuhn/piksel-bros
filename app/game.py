@@ -4,7 +4,9 @@ from app import *
 class Game:
 	def __init__(self) -> None:
 		pygame.init()
-		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.NOFRAME)
+		pygame.display.set_caption("Piksel Bros.")
+		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
@@ -19,11 +21,14 @@ class Game:
 		sys.exit()
 
 	def loop(self) -> None:
-		self.screen.fill((10, 186, 180))
+		...
+		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
 
 	def check_event(self) -> bool:
 		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				return False
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					return False
