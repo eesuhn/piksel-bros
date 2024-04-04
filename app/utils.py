@@ -1,9 +1,9 @@
 from . import *
 
 
-def get_sprites(sub_dir: list, width, height, direction=False) -> dict:
-	sprites = {}
-	path = os.path.join(ASSETS_PATH, *sub_dir)
+def get_sprites_sheet(sub_dir: list, width, height, direction=False) -> dict:
+	sheet = {}
+	path = os.path.join("assets", *sub_dir)
 
 	for file in sorted(os.listdir(path)):
 		if file.endswith(".png"):
@@ -15,12 +15,12 @@ def get_sprites(sub_dir: list, width, height, direction=False) -> dict:
 				for i in range(sheets.get_width() // width)]
 
 			if direction:
-				sprites[f"{file_name}_left"] = flip_sprites(raw_sprites)
-				sprites[f"{file_name}_right"] = raw_sprites
+				sheet[f"{file_name}_left"] = flip_sprites(raw_sprites)
+				sheet[f"{file_name}_right"] = raw_sprites
 			else:
-				sprites[file_name] = raw_sprites
+				sheet[file_name] = raw_sprites
 
-	return sprites
+	return sheet
 
 
 def flip_sprites(sprites: list) -> list:

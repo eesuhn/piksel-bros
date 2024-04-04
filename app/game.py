@@ -34,5 +34,7 @@ class Game:
 
 	def loop(self) -> None:
 		...
+		self.display.fill((0, 0, 0))
+		self.player.loop(self.display)
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
