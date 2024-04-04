@@ -3,20 +3,16 @@ from ..utils import get_sprites_sheet
 
 
 class Player:
-	WIDTH = 32
-	HEIGHT = 32
-	PLAYER_VEL = 6
-
 	def __init__(self, pos_x, pos_y) -> None:
-		self.rect = pygame.Rect(pos_x, pos_y, self.WIDTH, self.HEIGHT)
+		self.rect = pygame.Rect(pos_x, pos_y, PLAYER_WIDTH, PLAYER_HEIGHT)
 		self.mask = None
 		self.x_vel = 0
 		self.y_vel = 0
 		self.fall_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
-			self.WIDTH,
-			self.HEIGHT,
+			PLAYER_WIDTH,
+			PLAYER_HEIGHT,
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
@@ -65,16 +61,16 @@ class Player:
 		self.rect.y += dy
 
 	def move_left(self) -> None:
-		self.x_vel = -Player.PLAYER_VEL
+		self.x_vel = -PLAYER_VEL
 		if self.direction != "left":
 			self.direction = "left"
 
 	def move_right(self) -> None:
-		self.x_vel = Player.PLAYER_VEL
+		self.x_vel = PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
 
 	def gravity(self) -> None:
-		self.y_vel += min(1, self.fall_count / FPS)
-		if self.fall_count < FPS:
+		self.y_vel += min(1, self.fall_count / (PLAYER_VEL * 10))
+		if self.fall_count < (PLAYER_VEL * 10):
 			self.fall_count += 1

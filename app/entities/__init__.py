@@ -1,1 +1,6 @@
 from .. import *
+
+
+PLAYER_WIDTH = 32
+PLAYER_HEIGHT = 32
+PLAYER_VEL = 6
