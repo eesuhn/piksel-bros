@@ -12,6 +12,7 @@ class Player:
 		self.mask = None
 		self.x_vel = 0
 		self.y_vel = 0
+		self.fall_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
 			self.WIDTH,
@@ -21,6 +22,7 @@ class Player:
 		self.animation_count = 0
 
 	def loop(self, display: pygame.Surface) -> None:
+		self.gravity()
 		self.move()
 		self.update_sprites()
 		self.draw(display)
@@ -71,3 +73,8 @@ class Player:
 		self.x_vel = Player.PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
+
+	def gravity(self) -> None:
+		self.y_vel += min(1, self.fall_count / FPS)
+		if self.fall_count < FPS:
+			self.fall_count += 1
