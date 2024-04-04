@@ -1,4 +1,5 @@
-from app import *
+from . import *
+from .entities.player import Player
 
 
 class Game:
@@ -10,6 +11,7 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
+		self.player = Player(100, 100)
 
 		while True:
 			self.check_event()
