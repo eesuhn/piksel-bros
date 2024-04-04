@@ -13,7 +13,6 @@ def get_sprites(sub_dir: list, width, height, direction=False) -> dict:
 			raw_sprites = [pygame.transform.scale2x(
 				sheets.subsurface(pygame.Rect(width * i, 0, width, height)))
 				for i in range(sheets.get_width() // width)]
-			print(raw_sprites)
 
 			if direction:
 				sprites[f"{file_name}_left"] = flip_sprites(raw_sprites)
@@ -24,5 +23,5 @@ def get_sprites(sub_dir: list, width, height, direction=False) -> dict:
 	return sprites
 
 
-def flip_sprites(sprites: dict) -> dict:
+def flip_sprites(sprites: list) -> list:
 	return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
