@@ -21,6 +21,7 @@ class Game:
 			Block(3, 8),
 			Block(4, 8),
 			Block(4, 7),
+			Block(3, 4),
 		]
 
 		while True:
@@ -29,12 +30,16 @@ class Game:
 			self.clock.tick(FPS)
 
 	def check_event(self) -> bool:
-		for event in pygame.event.get():
+		self.events = pygame.event.get()
+
+		for event in self.events:
 			if event.type == pygame.QUIT:
 				self.end()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					self.end()
+				if event.key == pygame.K_F11:
+					pygame.display.toggle_fullscreen()
 
 		return True
 
@@ -44,7 +49,7 @@ class Game:
 
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
-		self.player.loop(self.display, self.objs)
+		self.player.loop(self.events, self.display, self.objs)
 
 		# Objects: Blocks
 		for obj in self.objs:

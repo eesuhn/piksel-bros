@@ -11,6 +11,7 @@ class Player:
 		self.x_vel = 0
 		self.y_vel = 0
 		self.fall_count = 0
+		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
 			PLAYER_WIDTH,
@@ -19,9 +20,9 @@ class Player:
 		self.direction = "right"
 		self.animation_count = 0
 
-	def loop(self, display: pygame.Surface, objs: list) -> None:
+	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
 		self.update_sprites()
-		self.move()
+		self.move(events)
 		self.collision(objs)
 		self.gravity()
 		self.draw(display)
@@ -29,7 +30,16 @@ class Player:
 	def update_sprites(self) -> None:
 		sprites_sheet = "idle"
 
-		if self.x_vel != 0:
+		if self.y_vel < 0:
+			if self.jump_count == 1:
+				sprites_sheet = "jump"
+			elif self.jump_count == 2:
+				sprites_sheet = "double_jump"
+		
+		elif self.y_vel > 1:
+			sprites_sheet = "fall"
+
+		elif self.x_vel != 0:
 			sprites_sheet = "run"
 
 		sheet_name = f"{sprites_sheet}_{self.direction}"
@@ -47,7 +57,7 @@ class Player:
 	def draw(self, display: pygame.Surface) -> None:
 		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
-	def move(self) -> None:
+	def move(self, events: pygame.event) -> None:
 		self.x_vel = 0
 		keys = pygame.key.get_pressed()
 
@@ -56,6 +66,11 @@ class Player:
 
 		if keys[pygame.K_RIGHT]:
 			self.move_right()
+
+		for event in events:
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_SPACE and self.jump_count < 2:
+					self.jump()
 
 		self.handle_move(self.x_vel, self.y_vel)
 
@@ -73,18 +88,36 @@ class Player:
 		if self.direction != "right":
 			self.direction = "right"
 
+	def jump(self) -> None:
+		if self.jump_count == 0:
+			self.y_vel = round(-PLAYER_VEL * 1.25)
+		elif self.jump_count == 1:
+			self.y_vel = round(-PLAYER_VEL * 2)
+
+		self.animation_count = 0
+		self.jump_count += 1
+		if self.jump_count == 1:
+			self.fall_count = 0
+
 	def gravity(self) -> None:
 		self.y_vel += min(1, self.fall_count / (PLAYER_VEL * 10))
 		if self.fall_count < (PLAYER_VEL * 10):
 			self.fall_count += 1
 
-	def landed(self) -> None:
+	def land(self) -> None:
 		self.fall_count = 0
 		self.y_vel = 0
+		self.jump_count = 0
+
+	def hit_head(self) -> None:
+		self.y_vel *= -1
 
 	def collision(self, objs: list) -> None:
 		for obj in objs:
 			if pygame.sprite.collide_mask(self, obj):
 				if self.y_vel > 0:
 					self.rect.bottom = obj.rect.top
-					self.landed()
+					self.land()
+				elif self.y_vel < 0:
+					self.rect.top = obj.rect.bottom
+					self.hit_head()
