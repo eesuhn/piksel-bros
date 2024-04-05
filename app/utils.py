@@ -25,3 +25,8 @@ def get_sprites_sheet(sub_dir: list, width, height, direction=False) -> dict:
 
 def flip_sprites(sprites: list) -> list:
 	return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
+
+
+def get_image(sub_dir: list, file_name: str) -> pygame.Surface:
+	path = os.path.join("assets", *sub_dir, f"{file_name}.png")
+	return pygame.image.load(path).convert_alpha()
