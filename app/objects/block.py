@@ -19,6 +19,6 @@ class Block:
 		surface.blit(image, (0, 0), rect)
 
 		return surface
-	
+
 	def draw(self, display: pygame.Surface) -> None:
 		display.blit(self.surf, (self.rect.x, self.rect.y))
