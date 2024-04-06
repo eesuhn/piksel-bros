@@ -1,4 +1,6 @@
+# cache
 *.sw*
-
 __pycache__
-piksel-bros-env
+
+# virtual environment
+venv-*/

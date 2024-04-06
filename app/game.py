@@ -1,58 +1,67 @@
-import sys
-import pygame
+from . import *
 from .entities.player import Player
-from .utils import load_img, load_imgs
-from .map import Map
+from .objects.block import Block
 
 
 class Game:
-	FPS = 60
-	WIDTH = 1280
-	HEIGHT = 720
-
-	def __init__(self):
+	def __init__(self) -> None:
 		pygame.init()
 		pygame.display.set_caption("Piksel Bros.")
-		self.window = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
+		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.assets = {
-			'dirt': load_imgs('terrain/dirt'),
-			'player': load_img('main_characters/player.png', 4)
-		}
-		self.player = Player(self, (50, 50))
-		self.map = Map(self)
+		self.player = Player(1, 2)
 
-	def run(self):
+		# Objects
+		self.objs = [
+			Block(1, 8),
+			Block(2, 8),
+			Block(3, 8),
+			Block(4, 8),
+			Block(4, 4),
+			Block(10, 8),
+			Block(11, 8),
+			Block(12, 8),
+			Block(13, 8),
+			Block(13, 7),
+			Block(14, 8),
+			Block(15, 8),
+			Block(16, 8),
+			Block(17, 8),
+		]
+
 		while True:
+			self.check_event()
 			self.loop()
+			self.clock.tick(FPS)
 
-			for event in pygame.event.get():
-				if not self.event(event):
-					break
+	def check_event(self) -> bool:
+		self.events = pygame.event.get()
 
-			pygame.display.update()
-			self.clock.tick(Game.FPS)
-
-	def stop(self):
-		pygame.quit()
-		sys.exit()
-
-	def event(self, event):
-		if event.type == pygame.QUIT:
-			self.stop()
-			return False
-
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_ESCAPE:
-				self.stop()
-				return False
-			if event.key == pygame.K_F11:
-				pygame.display.set_mode((Game.WIDTH, Game.HEIGHT), pygame.FULLSCREEN)
+		for event in self.events:
+			if event.type == pygame.QUIT:
+				self.end()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					self.end()
+				if event.key == pygame.K_F11:
+					pygame.display.toggle_fullscreen()
 
 		return True
 
-	def loop(self):
-		# TEMP : Background
-		self.window.fill((10, 186, 180))
-		self.map.render(self.window)
-		self.player.move()
+	def end(self) -> None:
+		pygame.quit()
+		sys.exit()
+
+	def loop(self) -> None:
+		self.display.fill((0, 0, 0))
+		self.player.loop(self.events, self.display, self.objs)
+
+		# Objects: Block
+		for obj in self.objs:
+			obj.draw(self.display)
+
+		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+		pygame.display.update()

@@ -1,7 +1,7 @@
 from app.game import Game
 
 
-def main():
+def main() -> None:
 	game = Game()
 	game.run()
 
