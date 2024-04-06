@@ -10,6 +10,8 @@ class Player:
 		self.mask = None
 		self.x_vel = 0
 		self.y_vel = 0
+		self.collide_left = False
+		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
@@ -48,9 +50,13 @@ class Player:
 		sprite_index = (self.animation_count % max_animation_count) // ANIMATION_DELAY
 		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
-		self.update_mask()
+		self.update()
 
-	def update_mask(self) -> None:
+	def update(self) -> None:
+		"""
+		Update the player's rect and mask
+		"""
+
 		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
 		self.mask = pygame.mask.from_surface(self.sprite)
 
@@ -61,10 +67,10 @@ class Player:
 		self.x_vel = 0
 		keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_LEFT]:
+		if keys[pygame.K_LEFT] and not self.collide_left:
 			self.move_left()
 
-		if keys[pygame.K_RIGHT]:
+		if keys[pygame.K_RIGHT] and not self.collide_right:
 			self.move_right()
 
 		for event in events:
@@ -75,6 +81,10 @@ class Player:
 		self.handle_move(self.x_vel, self.y_vel)
 
 	def handle_move(self, dx, dy) -> None:
+		"""
+		Move the player's rect and mask by dx and dy
+		"""
+
 		self.rect.x += dx
 		self.rect.y += dy
 
@@ -92,7 +102,7 @@ class Player:
 		if self.jump_count == 0:
 			self.y_vel = round(-PLAYER_VEL * 1.25)
 		elif self.jump_count == 1:
-			self.y_vel = round(-PLAYER_VEL * 2)
+			self.y_vel = round(-PLAYER_VEL * 2.5)
 
 		self.animation_count = 0
 		self.jump_count += 1
@@ -110,9 +120,16 @@ class Player:
 		self.jump_count = 0
 
 	def hit_head(self) -> None:
-		self.y_vel *= -1
+		self.y_vel = 0
 
 	def collision(self, objs: list) -> None:
+		self.vertical_collide(objs)
+
+		dx_check = PLAYER_VEL * 1.2
+		self.collide_left = self.horizontal_collide(objs, -dx_check)
+		self.collide_right = self.horizontal_collide(objs, dx_check)
+
+	def vertical_collide(self, objs: list) -> None:
 		for obj in objs:
 			if pygame.sprite.collide_mask(self, obj):
 				if self.y_vel > 0:
@@ -121,3 +138,15 @@ class Player:
 				elif self.y_vel < 0:
 					self.rect.top = obj.rect.bottom
 					self.hit_head()
+
+	def horizontal_collide(self, objs: list, dx) -> bool:
+		self.handle_move(dx, 0)
+
+		collided = False
+		for obj in objs:
+			if pygame.sprite.collide_mask(self, obj):
+				collided = True
+				break
+			
+		self.handle_move(-dx, 0)
+		return collided

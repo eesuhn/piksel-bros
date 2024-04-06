@@ -20,8 +20,16 @@ class Game:
 			Block(2, 8),
 			Block(3, 8),
 			Block(4, 8),
-			Block(4, 7),
-			Block(3, 4),
+			Block(4, 4),
+			Block(10, 8),
+			Block(11, 8),
+			Block(12, 8),
+			Block(13, 8),
+			Block(13, 7),
+			Block(14, 8),
+			Block(15, 8),
+			Block(16, 8),
+			Block(17, 8),
 		]
 
 		while True:
@@ -51,7 +59,7 @@ class Game:
 		self.display.fill((0, 0, 0))
 		self.player.loop(self.events, self.display, self.objs)
 
-		# Objects: Blocks
+		# Objects: Block
 		for obj in self.objs:
 			obj.draw(self.display)
 
