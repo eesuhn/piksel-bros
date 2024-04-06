@@ -16,8 +16,8 @@ class Player:
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
-			PLAYER_WIDTH,
-			PLAYER_HEIGHT,
+			int(PLAYER_WIDTH / 2),
+			int(PLAYER_HEIGHT / 2),
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
@@ -68,6 +68,7 @@ class Player:
 	def draw(self, display: pygame.Surface) -> None:
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
+		# pygame.draw.rect(display, (255, 0, 0), self.rect)
 		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
 	def move(self, events: pygame.event) -> None:
@@ -171,13 +172,11 @@ class Player:
 			self.rect.x + 14,
 			self.rect.y + 8,
 			self.rect.width - 28,
-			2
-		)
+			2)
 
 	def get_foot_rect(self) -> pygame.Rect:
 		return pygame.Rect(
 			self.rect.x + 14,
 			self.rect.y + self.rect.height - 2,
 			self.rect.width - 28,
-			2
-		)
+			2)
