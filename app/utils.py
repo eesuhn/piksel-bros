@@ -1,7 +1,7 @@
 from . import *
 
 
-def get_sprites_sheet(sub_dir: list, width, height, direction=False) -> dict:
+def get_sprites_sheet(sub_dir: list, width, height, scale=1, direction=False) -> dict:
 	sheet = {}
 	path = os.path.join("assets", *sub_dir)
 
@@ -10,8 +10,11 @@ def get_sprites_sheet(sub_dir: list, width, height, direction=False) -> dict:
 			file_name = os.path.splitext(file)[0]
 			sheets = pygame.image.load(os.path.join(path, file)).convert_alpha()
 
-			raw_sprites = [pygame.transform.scale2x(
-				sheets.subsurface(pygame.Rect(width * i, 0, width, height)))
+			raw_sprites = [
+				pygame.transform.scale(
+					sheets.subsurface(
+						pygame.Rect(width * i, 0, width, height)),
+					(width * scale, height * scale))
 				for i in range(sheets.get_width() // width)]
 
 			if direction:

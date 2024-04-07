@@ -4,9 +4,14 @@ from ..utils import get_sprites_sheet
 
 class Player:
 	def __init__(self, x, y) -> None:
-		x *= PLAYER_WIDTH
-		y *= PLAYER_HEIGHT
-		self.rect = pygame.Rect(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
+		player_rect_width = PLAYER_WIDTH * PLAYER_SCALE
+		player_rect_height = PLAYER_HEIGHT * PLAYER_SCALE
+		self.rect = pygame.Rect(
+			x * player_rect_width,
+			y * player_rect_height,
+			player_rect_width,
+			player_rect_height
+		)
 		self.mask = None
 		self.x_vel = 0
 		self.y_vel = 0
@@ -31,8 +36,9 @@ class Player:
 
 		return get_sprites_sheet(
 			["main_characters", character],
-			int(PLAYER_WIDTH / 2),
-			int(PLAYER_HEIGHT / 2),
+			PLAYER_WIDTH,
+			PLAYER_HEIGHT,
+			scale=PLAYER_SCALE,
 			direction=True)
 
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
