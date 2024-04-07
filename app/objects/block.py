@@ -7,14 +7,14 @@ class Block:
 		x *= BLOCK_WIDTH
 		y *= BLOCK_HEIGHT
 		self.rect = pygame.Rect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT)
-		self.surf = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT), pygame.SRCALPHA)
+		self.surf = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT)).convert_alpha()
 		self.block = self.get_block()
 		self.surf.blit(self.block, (0, 0))
 		self.mask = pygame.mask.from_surface(self.surf)
 
 	def get_block(self) -> pygame.Surface:
 		image = get_image(["terrain"], "grass")
-		surface = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT), pygame.SRCALPHA)
+		surface = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT)).convert_alpha()
 		rect = pygame.Rect(0, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
 		surface.blit(image, (0, 0), rect)
 

@@ -9,7 +9,7 @@ class Game:
 		pygame.init()
 		pygame.display.set_caption("Piksel Bros.")
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()

@@ -26,12 +26,7 @@ class Player:
 		self.foot_sprite = pygame.sprite.Sprite()
 
 	def random_character(self) -> dict:
-		characters = [
-			"mask_dude",
-			"ninja_frog",
-			"pink_man",
-			"virtual_guy"
-		]
+		characters = os.listdir(os.path.join("assets", "main_characters"))
 		character = random.choice(characters)
 
 		return get_sprites_sheet(
@@ -43,6 +38,7 @@ class Player:
 
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
 		self.update_sprites()
+		self.update_rect()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
@@ -69,11 +65,10 @@ class Player:
 		sprite_index = (self.animation_count % max_animation_count) // ANIMATION_DELAY
 		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
-		self.update()
 
-	def update(self) -> None:
+	def update_rect(self) -> None:
 		"""
-		Update player's rect and mask
+		Update player's rect and mask.
 		"""
 
 		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
@@ -108,7 +103,7 @@ class Player:
 
 	def handle_move(self, dx, dy) -> None:
 		"""
-		Move player's rect by dx, dy
+		Move player's rect by dx, dy.
 		"""
 
 		self.rect.x += dx
