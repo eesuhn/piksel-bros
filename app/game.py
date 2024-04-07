@@ -1,6 +1,7 @@
 from . import *
 from .entities.player import Player
 from .objects.block import Block
+from .background import Background
 
 
 class Game:
@@ -12,18 +13,19 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.player = Player(1, 2)
+		self.background = Background()
+		self.player = Player(1, 1)
 
 		# Objects
 		self.objs = []
 
 		i = 0
 		while i < 20:
-			self.objs.append(Block(i, 10))
+			self.objs.append(Block(i, 9))
 			i += 1
 
 		self.objs.append(Block(4, 8))
-		self.objs.append(Block(9, 9))
+		self.objs.append(Block(9, 6))
 
 		while True:
 			self.check_event()
@@ -49,7 +51,7 @@ class Game:
 		sys.exit()
 
 	def loop(self) -> None:
-		self.display.fill((0, 0, 0))
+		self.background.draw(self.display)
 		self.player.loop(self.events, self.display, self.objs)
 
 		# Objects: Block

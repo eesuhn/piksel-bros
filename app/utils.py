@@ -30,6 +30,10 @@ def flip_sprites(sprites: list) -> list:
 	return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
 
-def get_image(sub_dir: list, file_name: str) -> pygame.Surface:
+def get_image(sub_dir: list, file_name: str, scale=1) -> pygame.Surface:
 	path = os.path.join("assets", *sub_dir, f"{file_name}.png")
-	return pygame.image.load(path).convert_alpha()
+	image = pygame.image.load(path).convert_alpha()
+
+	return pygame.transform.scale(
+		image,
+		(image.get_width() * scale, image.get_height() * scale))
