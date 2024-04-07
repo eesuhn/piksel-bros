@@ -14,15 +14,26 @@ class Player:
 		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
-		self.sheet = get_sprites_sheet(
-			["main_characters", "ninja_frog"],
-			int(PLAYER_WIDTH / 2),
-			int(PLAYER_HEIGHT / 2),
-			direction=True)
+		self.sheet = self.random_character()
 		self.direction = "right"
 		self.animation_count = 0
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
+
+	def random_character(self) -> dict:
+		characters = [
+			"mask_dude",
+			"ninja_frog",
+			"pink_man",
+			"virtual_guy"
+		]
+		character = random.choice(characters)
+
+		return get_sprites_sheet(
+			["main_characters", character],
+			int(PLAYER_WIDTH / 2),
+			int(PLAYER_HEIGHT / 2),
+			direction=True)
 
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
 		self.update_sprites()
@@ -56,8 +67,7 @@ class Player:
 
 	def update(self) -> None:
 		"""
-		Update the player's rect and mask
-			Includes the head and foot rects
+		Update player's rect and mask
 		"""
 
 		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
@@ -66,9 +76,11 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface) -> None:
+		# Debug: Uncomment to see player's hitboxes
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.rect)
+
 		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
 	def move(self, events: pygame.event) -> None:
@@ -90,8 +102,7 @@ class Player:
 
 	def handle_move(self, dx, dy) -> None:
 		"""
-		Move the player's rect and mask by dx and dy
-			Includes the head and foot rects
+		Move player's rect by dx, dy
 		"""
 
 		self.rect.x += dx
@@ -113,9 +124,9 @@ class Player:
 
 	def jump(self) -> None:
 		if self.jump_count == 0:
-			self.y_vel = round(-PLAYER_VEL * 1.25)
+			self.y_vel = round(-PLAYER_VEL * 1.5)
 		elif self.jump_count == 1:
-			self.y_vel = round(-PLAYER_VEL * 2.5)
+			self.y_vel = round(-PLAYER_VEL * 3)
 
 		self.animation_count = 0
 		self.jump_count += 1

@@ -15,22 +15,15 @@ class Game:
 		self.player = Player(1, 2)
 
 		# Objects
-		self.objs = [
-			Block(1, 8),
-			Block(2, 8),
-			Block(3, 8),
-			Block(4, 8),
-			Block(4, 4),
-			Block(10, 8),
-			Block(11, 8),
-			Block(12, 8),
-			Block(13, 8),
-			Block(13, 7),
-			Block(14, 8),
-			Block(15, 8),
-			Block(16, 8),
-			Block(17, 8),
-		]
+		self.objs = []
+
+		i = 0
+		while i < 20:
+			self.objs.append(Block(i, 10))
+			i += 1
+
+		self.objs.append(Block(4, 8))
+		self.objs.append(Block(9, 9))
 
 		while True:
 			self.check_event()
