@@ -88,15 +88,15 @@ class Player:
 		self.x_vel = 0
 		keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_LEFT] and not self.collide_left:
+		if keys[pygame.K_LEFT]:
 			self.move_left()
 
-		if keys[pygame.K_RIGHT] and not self.collide_right:
+		if keys[pygame.K_RIGHT]:
 			self.move_right()
 
 		for event in events:
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_SPACE and self.jump_count < 2:
+				if event.key == pygame.K_SPACE:
 					self.jump()
 
 		self.handle_move(self.x_vel, self.y_vel)
@@ -114,16 +114,25 @@ class Player:
 		self.foot_rect.y += dy
 
 	def move_left(self) -> None:
+		if self.collide_left:
+			return
+
 		self.x_vel = -PLAYER_VEL
 		if self.direction != "left":
 			self.direction = "left"
 
 	def move_right(self) -> None:
+		if self.collide_right:
+			return
+
 		self.x_vel = PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
 
 	def jump(self) -> None:
+		if self.jump_count >= 2:
+			return
+
 		if self.jump_count == 0:
 			self.y_vel = round(-PLAYER_VEL * 1.5)
 		elif self.jump_count == 1:
@@ -159,11 +168,11 @@ class Player:
 		self.foot_sprite.rect = self.foot_rect
 
 		for obj in objs:
-			if pygame.sprite.collide_rect(self.head_sprite, obj) and self.y_vel < 0:
+			if pygame.sprite.collide_rect(self.head_sprite, obj):
 				self.rect.top = obj.rect.bottom
 				self.hit_head()
 
-			if pygame.sprite.collide_rect(self.foot_sprite, obj) and self.y_vel > 0:
+			if pygame.sprite.collide_rect(self.foot_sprite, obj):
 				self.rect.bottom = obj.rect.top
 				self.land()
 
