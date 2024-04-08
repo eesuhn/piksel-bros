@@ -12,9 +12,13 @@ class Game:
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
-		self.check_cpu = len(sys.argv) == 2 and sys.argv[1] == "--cpu"
+		self.check_cpu = "--cpu" in sys.argv
 
 	def cpu(self, event_type: int) -> None:
+		"""
+		Check CPU usage when "--cpu" is passed as an argument.
+		"""
+
 		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
