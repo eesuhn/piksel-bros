@@ -12,9 +12,11 @@ class Game:
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
+		self.check_cpu = len(sys.argv) == 2 and sys.argv[1] == "--cpu"
 
-	def check_cpu(self) -> None:
-		print(f"CPU: {psutil.cpu_percent()}%")
+	def cpu(self, event_type: int) -> None:
+		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
+			print(f"CPU: {psutil.cpu_percent()}%")
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
@@ -41,8 +43,7 @@ class Game:
 		self.events = pygame.event.get()
 
 		for event in self.events:
-			if event.type == CPU_MONITOR_EVENT:
-				self.check_cpu()
+			self.cpu(event.type)
 			if event.type == pygame.QUIT:
 				self.end()
 			if event.type == pygame.KEYDOWN:

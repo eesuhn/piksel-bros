@@ -4,13 +4,13 @@ from ..utils import get_sprites_sheet
 
 class Player:
 	def __init__(self, x, y) -> None:
-		player_rect_width = PLAYER_WIDTH * PLAYER_SCALE
-		player_rect_height = PLAYER_HEIGHT * PLAYER_SCALE
+		rect_width = PLAYER_WIDTH * PLAYER_SCALE
+		rect_height = PLAYER_HEIGHT * PLAYER_SCALE
 		self.rect = pygame.Rect(
-			x * player_rect_width,
-			y * player_rect_height,
-			player_rect_width,
-			player_rect_height
+			x * rect_width,
+			y * rect_height,
+			rect_width,
+			rect_height
 		)
 		self.mask = None
 		self.x_vel = 0

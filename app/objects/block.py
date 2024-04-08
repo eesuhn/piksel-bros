@@ -4,9 +4,11 @@ from ..utils import get_image
 
 class Block:
 	def __init__(self, x, y) -> None:
-		x *= BLOCK_WIDTH
-		y *= BLOCK_HEIGHT
-		self.rect = pygame.Rect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT)
+		self.rect = pygame.Rect(
+			x * BLOCK_WIDTH,
+			y * BLOCK_HEIGHT,
+			BLOCK_WIDTH,
+			BLOCK_HEIGHT)
 		self.surf = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT)).convert_alpha()
 		self.block = self.get_block()
 		self.surf.blit(self.block, (0, 0))
