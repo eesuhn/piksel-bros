@@ -37,12 +37,15 @@ class Player:
 			direction=True)
 
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
-		self.update_sprites()
-		self.update_rect()
+		self.update()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
 		self.draw(display)
+
+	def update(self) -> None:
+		self.update_sprites()
+		self.update_rect()
 
 	def update_sprites(self) -> None:
 		sprites_sheet = "idle"
