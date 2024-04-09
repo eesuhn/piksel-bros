@@ -30,7 +30,7 @@ class Player:
 		character = random.choice(characters)
 
 		return get_sprites_sheet(
-			["main_characters", character],
+			["main_characters", "ninja_frog"],
 			PLAYER_WIDTH,
 			PLAYER_HEIGHT,
 			scale=PLAYER_SCALE,

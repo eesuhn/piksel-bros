@@ -9,33 +9,34 @@ class Background:
 			for filename in os.listdir(os.path.join("assets", "background"))
 		]
 		background = random.choice(backgrounds)
-		self.image = get_image(["background"], background, scale=2)
-		self.surf = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
+		self.image = get_image(["background"], "green", scale=2)
+		self.tile_width = self.image.get_width()
+		self.tile_height = self.image.get_height()
+		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
+		self.num_tiles_y = SCREEN_HEIGHT // self.tile_height + 1
+		self.offset_y = 0
 
-		for tile in self.get_tiles():
-			self.surf.blit(*tile)
-
-		self.dim_surface(30)
-
-	def dim_surface(self, alpha: int) -> None:
-		"""
-		Create a dim surface to overlay the background.
-		"""
-
-		dim_surf = pygame.Surface(self.surf.get_size()).convert_alpha()
+	def dim_surface(self, display: pygame.Surface, alpha: int) -> None:
+		dim_surf = pygame.Surface(display.get_size()).convert_alpha()
 		dim_surf.fill((0, 0, 0, alpha))
-		self.surf.blit(dim_surf, (0, 0))
+		display.blit(dim_surf, (0, 0))
 
 	def get_tiles(self) -> list:
 		tiles = []
-		width = self.image.get_width()
-		height = self.image.get_height()
-
-		for x in range(SCREEN_WIDTH // width + 1):
-			for y in range(SCREEN_HEIGHT // height + 1):
-				tiles.append((self.image, (x * width, y * height)))
-
+		for x in range(self.num_tiles_x):
+			for y in range(self.num_tiles_y):
+				tile_x = x * self.tile_width
+				tile_y = (y * self.tile_height) - self.offset_y
+				tiles.append((self.image, (tile_x, tile_y)))
 		return tiles
 
+	def update_y(self, dt: float) -> None:
+		self.offset_y += 0.1 * dt
+		if self.offset_y >= self.tile_height:
+			self.offset_y -= self.tile_height
+
 	def draw(self, display: pygame.Surface) -> None:
-		display.blit(self.surf, (0, 0))
+		self.update_y(10)
+		for tile in self.get_tiles():
+			display.blit(*tile)
+		self.dim_surface(display, 30)

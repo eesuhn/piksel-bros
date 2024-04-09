@@ -15,6 +15,11 @@ class Block:
 		self.mask = pygame.mask.from_surface(self.surf)
 
 	def get_block(self) -> pygame.Surface:
+		blocks = [
+			filename.replace(".png", "")
+			for filename in os.listdir(os.path.join("assets", "terrain"))
+		]
+		block = random.choice(blocks)
 		image = get_image(["terrain"], "grass")
 		surface = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT)).convert_alpha()
 		rect = pygame.Rect(0, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
