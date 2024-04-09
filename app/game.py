@@ -1,36 +1,42 @@
 from . import *
 from .entities.player import Player
 from .objects.block import Block
+from .background import Background
 
 
 class Game:
 	def __init__(self) -> None:
 		pygame.init()
+		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
+		self.is_fullscreen = False
+		self.check_cpu = "--cpu" in sys.argv
+
+	def cpu(self, event_type: int) -> None:
+		"""
+		Check CPU usage when "--cpu" is passed as an argument.
+		"""
+
+		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
+			print(f"CPU: {psutil.cpu_percent()}%")
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.player = Player(1, 2)
+		self.background = Background()
+		self.player = Player(1, 1)
 
 		# Objects
-		self.objs = [
-			Block(1, 8),
-			Block(2, 8),
-			Block(3, 8),
-			Block(4, 8),
-			Block(4, 4),
-			Block(10, 8),
-			Block(11, 8),
-			Block(12, 8),
-			Block(13, 8),
-			Block(13, 7),
-			Block(14, 8),
-			Block(15, 8),
-			Block(16, 8),
-			Block(17, 8),
-		]
+		self.objs = []
+
+		i = 0
+		while i < 20:
+			self.objs.append(Block(i, 9))
+			i += 1
+
+		self.objs.append(Block(4, 8))
+		self.objs.append(Block(9, 6))
 
 		while True:
 			self.check_event()
@@ -41,13 +47,21 @@ class Game:
 		self.events = pygame.event.get()
 
 		for event in self.events:
+			self.cpu(event.type)
 			if event.type == pygame.QUIT:
 				self.end()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
-					self.end()
+					if not self.is_fullscreen:
+						self.end()
+					else:
+						self.default_screen_size()
 				if event.key == pygame.K_F11:
-					pygame.display.toggle_fullscreen()
+					if not self.is_fullscreen:
+						self.is_fullscreen = True
+						pygame.display.toggle_fullscreen()
+					else:
+						self.default_screen_size()
 
 		return True
 
@@ -55,8 +69,12 @@ class Game:
 		pygame.quit()
 		sys.exit()
 
+	def default_screen_size(self) -> None:
+		self.is_fullscreen = False
+		pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 	def loop(self) -> None:
-		self.display.fill((0, 0, 0))
+		self.background.draw(self.display)
 		self.player.loop(self.events, self.display, self.objs)
 
 		# Objects: Block

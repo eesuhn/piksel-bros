@@ -4,9 +4,14 @@ from ..utils import get_sprites_sheet
 
 class Player:
 	def __init__(self, x, y) -> None:
-		x *= PLAYER_WIDTH
-		y *= PLAYER_HEIGHT
-		self.rect = pygame.Rect(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
+		rect_width = PLAYER_WIDTH * PLAYER_SCALE
+		rect_height = PLAYER_HEIGHT * PLAYER_SCALE
+		self.rect = pygame.Rect(
+			x * rect_width,
+			y * rect_height,
+			rect_width,
+			rect_height
+		)
 		self.mask = None
 		self.x_vel = 0
 		self.y_vel = 0
@@ -14,22 +19,33 @@ class Player:
 		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
-		self.sheet = get_sprites_sheet(
-			["main_characters", "ninja_frog"],
-			int(PLAYER_WIDTH / 2),
-			int(PLAYER_HEIGHT / 2),
-			direction=True)
+		self.sheet = self.random_character()
 		self.direction = "right"
 		self.animation_count = 0
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
+	def random_character(self) -> dict:
+		characters = os.listdir(os.path.join("assets", "main_characters"))
+		character = random.choice(characters)
+
+		return get_sprites_sheet(
+			["main_characters", "ninja_frog"],
+			PLAYER_WIDTH,
+			PLAYER_HEIGHT,
+			scale=PLAYER_SCALE,
+			direction=True)
+
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
-		self.update_sprites()
+		self.update()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
 		self.draw(display)
+
+	def update(self) -> None:
+		self.update_sprites()
+		self.update_rect()
 
 	def update_sprites(self) -> None:
 		sprites_sheet = "idle"
@@ -52,12 +68,10 @@ class Player:
 		sprite_index = (self.animation_count % max_animation_count) // ANIMATION_DELAY
 		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
-		self.update()
 
-	def update(self) -> None:
+	def update_rect(self) -> None:
 		"""
-		Update the player's rect and mask
-			Includes the head and foot rects
+		Update player's rect and mask.
 		"""
 
 		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
@@ -66,32 +80,33 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface) -> None:
+		# Debug: Uncomment to see player's hitboxes
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.rect)
+
 		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
 	def move(self, events: pygame.event) -> None:
 		self.x_vel = 0
 		keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_LEFT] and not self.collide_left:
+		if keys[pygame.K_LEFT]:
 			self.move_left()
 
-		if keys[pygame.K_RIGHT] and not self.collide_right:
+		if keys[pygame.K_RIGHT]:
 			self.move_right()
 
 		for event in events:
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_SPACE and self.jump_count < 2:
+				if event.key == pygame.K_SPACE:
 					self.jump()
 
 		self.handle_move(self.x_vel, self.y_vel)
 
 	def handle_move(self, dx, dy) -> None:
 		"""
-		Move the player's rect and mask by dx and dy
-			Includes the head and foot rects
+		Move player's rect by dx, dy.
 		"""
 
 		self.rect.x += dx
@@ -102,20 +117,29 @@ class Player:
 		self.foot_rect.y += dy
 
 	def move_left(self) -> None:
+		if self.collide_left:
+			return
+
 		self.x_vel = -PLAYER_VEL
 		if self.direction != "left":
 			self.direction = "left"
 
 	def move_right(self) -> None:
+		if self.collide_right:
+			return
+
 		self.x_vel = PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
 
 	def jump(self) -> None:
+		if self.jump_count >= 2:
+			return
+
 		if self.jump_count == 0:
-			self.y_vel = round(-PLAYER_VEL * 1.25)
+			self.y_vel = round(-PLAYER_VEL * 1.5)
 		elif self.jump_count == 1:
-			self.y_vel = round(-PLAYER_VEL * 2.5)
+			self.y_vel = round(-PLAYER_VEL * 3)
 
 		self.animation_count = 0
 		self.jump_count += 1
@@ -147,11 +171,11 @@ class Player:
 		self.foot_sprite.rect = self.foot_rect
 
 		for obj in objs:
-			if pygame.sprite.collide_rect(self.head_sprite, obj) and self.y_vel < 0:
+			if pygame.sprite.collide_rect(self.head_sprite, obj):
 				self.rect.top = obj.rect.bottom
 				self.hit_head()
 
-			if pygame.sprite.collide_rect(self.foot_sprite, obj) and self.y_vel > 0:
+			if pygame.sprite.collide_rect(self.foot_sprite, obj):
 				self.rect.bottom = obj.rect.top
 				self.land()
 

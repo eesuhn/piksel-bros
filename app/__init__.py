@@ -1,9 +1,12 @@
 import pygame
 import sys
 import os
+import random
+import psutil
 
 
 FPS = 60
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
 ANIMATION_DELAY = 3
+CPU_MONITOR_EVENT = pygame.USEREVENT + 1
