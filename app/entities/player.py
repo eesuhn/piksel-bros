@@ -30,12 +30,12 @@ class Player:
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
-	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
+	def loop(self, events: pygame.event, display: pygame.Surface, offset: tuple, objs: list) -> None:
 		self.update()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
-		self.draw(display)
+		self.draw(display, offset)
 
 	def update(self) -> None:
 		self.update_sprites()
@@ -73,13 +73,15 @@ class Player:
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
-	def draw(self, display: pygame.Surface) -> None:
+	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		# Debug: Uncomment to see player's hitboxes
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.rect)
+		pos_x = self.rect.x - offset[0] - 3
+		pos_y = self.rect.y - offset[1] - 3
 
-		display.blit(self.sprite, (self.rect.x, self.rect.y))
+		display.blit(self.sprite, (pos_x, pos_y))
 
 	def move(self, events: pygame.event) -> None:
 		self.x_vel = 0
