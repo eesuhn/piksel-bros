@@ -78,10 +78,11 @@ class Player:
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.rect)
-		pos_x = self.rect.x - offset[0] - 3
-		pos_y = self.rect.y - offset[1] - 3
 
-		display.blit(self.sprite, (pos_x, pos_y))
+		pos_x = self.rect.x - offset[0] - OFFSET_DELAY
+		pos_y = self.rect.y - offset[1] - OFFSET_DELAY
+
+		display.blit(self.sprite, (pos_x, pos_y + Y_OFFSET))
 
 	def move(self, events: pygame.event) -> None:
 		self.x_vel = 0

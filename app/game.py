@@ -25,7 +25,7 @@ class Game:
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 		self.background = Background()
-		self.player = Player(1, 1)
+		self.player = Player(1, 5)
 		self.offset = [0, 0]
 
 		# Objects
@@ -78,8 +78,12 @@ class Game:
 	def loop(self) -> None:
 		self.background.draw(self.display)
 
-		self.offset[0] += (self.player.rect.centerx - self.display.get_width() / 2 - self.offset[0]) / 30
-		self.offset[1] += (self.player.rect.centery - self.display.get_height() / 2 - self.offset[1]) / 30
+		self.offset[0] += (
+			self.player.rect.centerx - self.display.get_width() / 2 - self.offset[0]) / (
+			OFFSET_DELAY * 10)
+		self.offset[1] += (
+			self.player.rect.centery - self.display.get_height() / 2 - self.offset[1]) / (
+			OFFSET_DELAY * 10)
 		offset = (int(self.offset[0]), int(self.offset[1]))
 
 		self.player.loop(self.events, self.display, offset, self.objs)
