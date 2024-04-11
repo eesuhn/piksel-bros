@@ -25,20 +25,25 @@ class Game:
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 		self.background = Background()
-		self.player = Player(1, 5)
+		self.player = Player(9, -7)
 		self.offset = [0, 0]
 
 		# Objects
 		self.objs = []
 
 		i = 0
-		while i < 20:
+		while i < 16:
 			self.objs.append(Block(i, 9))
 			i += 1
 
 		self.objs.append(Block(4, 8))
 		self.objs.append(Block(9, 6))
 		self.objs.append(Block(4, 4))
+		self.objs.append(Block(9, 2))
+		self.objs.append(Block(4, 0))
+		self.objs.append(Block(9, -2))
+		self.objs.append(Block(4, -4))
+		self.objs.append(Block(9, -6))
 
 		while True:
 			self.check_event()
@@ -76,14 +81,15 @@ class Game:
 		pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 	def loop(self) -> None:
-		self.background.draw(self.display)
+		# self.background.draw(self.display)
+		self.display.fill((0, 0, 0))
 
 		self.offset[0] += (
 			self.player.rect.centerx - self.display.get_width() / 2 - self.offset[0]) / (
-			OFFSET_DELAY * 10)
+			OFFSET_DELAY * 2)
 		self.offset[1] += (
 			self.player.rect.centery - self.display.get_height() / 2 - self.offset[1]) / (
-			OFFSET_DELAY * 10)
+			OFFSET_DELAY)
 		offset = (int(self.offset[0]), int(self.offset[1]))
 
 		self.player.loop(self.events, self.display, offset, self.objs)

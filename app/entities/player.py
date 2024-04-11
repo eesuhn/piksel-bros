@@ -74,7 +74,8 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
-		# Debug: Uncomment to see player's hitboxes
+		# Debug: Uncomment to see player's hitboxes 
+		# 	(Deprecated) Due to camera offset
 		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
 		# pygame.draw.rect(display, (255, 0, 0), self.rect)
@@ -147,6 +148,8 @@ class Player:
 		self.y_vel += min(1, self.fall_count / (PLAYER_VEL * 10))
 		if self.fall_count < (PLAYER_VEL * 10):
 			self.fall_count += 1
+		if self.y_vel >= MAX_GRAVITY:
+			self.y_vel = MAX_GRAVITY
 
 	def land(self) -> None:
 		self.fall_count = 0
