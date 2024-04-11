@@ -4,11 +4,6 @@ from .utils import get_image
 
 class Background:
 	def __init__(self) -> None:
-		backgrounds = [
-			filename.replace(".png", "")
-			for filename in os.listdir(os.path.join("assets", "background"))
-		]
-		background = random.choice(backgrounds)
 		self.image = get_image(["background"], "green", scale=2)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()

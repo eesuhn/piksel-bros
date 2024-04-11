@@ -19,22 +19,16 @@ class Player:
 		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
-		self.sheet = self.random_character()
-		self.direction = "right"
-		self.animation_count = 0
-		self.head_sprite = pygame.sprite.Sprite()
-		self.foot_sprite = pygame.sprite.Sprite()
-
-	def random_character(self) -> dict:
-		characters = os.listdir(os.path.join("assets", "main_characters"))
-		character = random.choice(characters)
-
-		return get_sprites_sheet(
+		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
 			PLAYER_WIDTH,
 			PLAYER_HEIGHT,
 			scale=PLAYER_SCALE,
 			direction=True)
+		self.direction = "right"
+		self.animation_count = 0
+		self.head_sprite = pygame.sprite.Sprite()
+		self.foot_sprite = pygame.sprite.Sprite()
 
 	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
 		self.update()

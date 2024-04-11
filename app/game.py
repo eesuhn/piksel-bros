@@ -37,6 +37,7 @@ class Game:
 
 		self.objs.append(Block(4, 8))
 		self.objs.append(Block(9, 6))
+		self.objs.append(Block(4, 4))
 
 		while True:
 			self.check_event()
