@@ -74,32 +74,31 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
-		offset_x = -offset[0] - OFFSET_DELAY
-		offset_y = -offset[1] - OFFSET_DELAY + Y_OFFSET
+		# self.debug_hitbox(display, offset)
 
-		# self.debug_hitbox(display, offset_x, offset_y)
+		display.blit(self.sprite, (
+			self.rect.x - offset[0],
+			self.rect.y - offset[1]))
 
-		display.blit(self.sprite, (self.rect.x + offset_x, self.rect.y + offset_y))
-
-	def debug_hitbox(self, display: pygame.Surface, offset_x, offset_y) -> None:
+	def debug_hitbox(self, display: pygame.Surface, offset: tuple) -> None:
 		"""
 		Debug:
 			Draw player's hitbox.
 		"""
 
 		pygame.draw.rect(display, (0, 255, 0), (
-			self.rect.x + offset_x,
-			self.rect.y + offset_y,
+			self.rect.x - offset[0],
+			self.rect.y - offset[1],
 			self.rect.width,
 			self.rect.height))
 		pygame.draw.rect(display, (255, 0, 0), (
-			self.head_rect.x + offset_x,
-			self.head_rect.y + offset_y,
+			self.head_rect.x - offset[0],
+			self.head_rect.y - offset[1],
 			self.head_rect.width,
 			self.head_rect.height))
 		pygame.draw.rect(display, (255, 0, 0), (
-			self.foot_rect.x + offset_x,
-			self.foot_rect.y + offset_y,
+			self.foot_rect.x - offset[0],
+			self.foot_rect.y - offset[1],
 			self.foot_rect.width,
 			self.foot_rect.height))
 

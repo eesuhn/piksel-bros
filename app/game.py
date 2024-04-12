@@ -91,7 +91,9 @@ class Game:
 		self.offset[1] += (
 			self.player.rect.centery - self.display.get_height() / 2 - self.offset[1]) / (
 			OFFSET_DELAY)
-		offset = (int(self.offset[0]), int(self.offset[1]))
+		offset = (
+			int(self.offset[0]) + OFFSET_DELAY,
+			int(self.offset[1]) + OFFSET_DELAY - Y_OFFSET)
 
 		self.player.loop(self.events, self.display, offset, self.objs)
 
