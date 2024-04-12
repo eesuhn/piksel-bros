@@ -9,7 +9,8 @@ class Game:
 		pygame.init()
 		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
-		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+		screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
+		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), screen_flags)
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
 		self.check_cpu = "--cpu" in sys.argv

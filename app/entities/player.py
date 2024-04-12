@@ -74,16 +74,34 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
-		# Debug: Uncomment to see player's hitboxes 
-		# 	(Deprecated) Due to camera offset
-		# pygame.draw.rect(display, (255, 0, 0), self.head_rect)
-		# pygame.draw.rect(display, (255, 0, 0), self.foot_rect)
-		# pygame.draw.rect(display, (255, 0, 0), self.rect)
+		offset_x = -offset[0] - OFFSET_DELAY
+		offset_y = -offset[1] - OFFSET_DELAY + Y_OFFSET
 
-		pos_x = self.rect.x - offset[0] - OFFSET_DELAY
-		pos_y = self.rect.y - offset[1] - OFFSET_DELAY
+		# self.debug_hitbox(display, offset_x, offset_y)
 
-		display.blit(self.sprite, (pos_x, pos_y + Y_OFFSET))
+		display.blit(self.sprite, (self.rect.x + offset_x, self.rect.y + offset_y))
+
+	def debug_hitbox(self, display: pygame.Surface, offset_x, offset_y) -> None:
+		"""
+		Debug:
+			Draw player's hitbox.
+		"""
+
+		pygame.draw.rect(display, (0, 255, 0), (
+			self.rect.x + offset_x,
+			self.rect.y + offset_y,
+			self.rect.width,
+			self.rect.height))
+		pygame.draw.rect(display, (255, 0, 0), (
+			self.head_rect.x + offset_x,
+			self.head_rect.y + offset_y,
+			self.head_rect.width,
+			self.head_rect.height))
+		pygame.draw.rect(display, (255, 0, 0), (
+			self.foot_rect.x + offset_x,
+			self.foot_rect.y + offset_y,
+			self.foot_rect.width,
+			self.foot_rect.height))
 
 	def move(self, events: pygame.event) -> None:
 		self.x_vel = 0
