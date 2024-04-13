@@ -37,6 +37,12 @@ class Player:
 		self.gravity()
 		self.draw(display, offset)
 
+	def get_x_vel(self) -> float:
+		return self.x_vel
+
+	def get_y_vel(self) -> float:
+		return self.y_vel
+
 	def update(self) -> None:
 		self.update_sprites()
 		self.update_rect()

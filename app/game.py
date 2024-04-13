@@ -2,6 +2,7 @@ from . import *
 from .entities.player import Player
 from .objects.block import Block
 from .background import Background
+from .camera import Camera
 
 
 class Game:
@@ -27,7 +28,7 @@ class Game:
 		self.clock = pygame.time.Clock()
 		self.background = Background()
 		self.player = Player(9, -7)
-		self.offset = [0, 0]
+		self.camera = Camera()
 
 		# Objects
 		self.objs = []
@@ -85,15 +86,7 @@ class Game:
 		# self.background.draw(self.display)
 		self.display.fill((0, 0, 0))
 
-		self.offset[0] += (
-			self.player.rect.centerx - self.display.get_width() / 2 - self.offset[0]) / (
-			OFFSET_DELAY * 2)
-		self.offset[1] += (
-			self.player.rect.centery - self.display.get_height() / 2 - self.offset[1]) / (
-			OFFSET_DELAY)
-		offset = (
-			int(self.offset[0]) + OFFSET_DELAY,
-			int(self.offset[1]) + OFFSET_DELAY - Y_OFFSET)
+		offset = self.camera.get_offset(self.display, self.player)
 
 		self.player.loop(self.events, self.display, offset, self.objs)
 
