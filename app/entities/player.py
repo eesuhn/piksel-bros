@@ -215,15 +215,21 @@ class Player:
 		return collided
 
 	def get_head_rect(self) -> pygame.Rect:
+		x_pos = 14
+		y_pos = 8
+
 		return pygame.Rect(
-			self.rect.x + 14,
-			self.rect.y + 8,
-			self.rect.width - 28,
+			self.rect.x + x_pos,
+			self.rect.y + y_pos,
+			self.rect.width - (x_pos * 2),
 			2)
 
 	def get_foot_rect(self) -> pygame.Rect:
+		x_pos = 14
+		y_pos = self.rect.height - 2
+
 		return pygame.Rect(
-			self.rect.x + 14,
-			self.rect.y + self.rect.height - 2,
-			self.rect.width - 28,
+			self.rect.x + x_pos,
+			self.rect.y + y_pos,
+			self.rect.width - (x_pos * 2),
 			2)
