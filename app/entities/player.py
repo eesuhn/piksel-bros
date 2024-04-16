@@ -1,21 +1,22 @@
 from . import *
+from .entity import Entity
 
 
-class Player:
+class Player(Entity):
 	PLAYER_WIDTH = 32
 	PLAYER_HEIGHT = 32
 	PLAYER_SCALE = 2
 	PLAYER_VEL = 4
 
 	def __init__(self, x, y) -> None:
+		super().__init__()
 		rect_width = Player.PLAYER_WIDTH * Player.PLAYER_SCALE
 		rect_height = Player.PLAYER_HEIGHT * Player.PLAYER_SCALE
 		self.rect = pygame.Rect(
 			x * rect_width,
 			y * rect_height,
 			rect_width,
-			rect_height
-		)
+			rect_height)
 		self.mask = None
 		self.vel = pygame.Vector2((0, 0))
 		self.collide_left = False
@@ -77,11 +78,11 @@ class Player:
 		self.foot_rect = self.get_foot_rect()
 
 	def draw(self, display: pygame.Surface) -> None:
-		# self.debug_hitbox(display, offset)
+		# self.debug_hitbox(display)
 
 		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
-	def debug_hitbox(self, display: pygame.Surface, offset: tuple) -> None:
+	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		"""
 		Debug:
 			Draw player's hitbox.
@@ -161,13 +162,6 @@ class Player:
 		self.jump_count += 1
 		if self.jump_count == 1:
 			self.fall_count = 0
-
-	def gravity(self) -> None:
-		self.vel.y += min(1, self.fall_count / (int(MAX_GRAVITY * 1.25)))
-		if self.fall_count < (int(MAX_GRAVITY * 1.25)):
-			self.fall_count += 1
-		if self.vel.y >= MAX_GRAVITY:
-			self.vel.y = MAX_GRAVITY
 
 	def land(self) -> None:
 		self.fall_count = 0
