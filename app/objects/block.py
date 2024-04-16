@@ -22,7 +22,5 @@ class Block:
 
 		return surface
 
-	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
-		display.blit(self.surf, (
-			self.rect.x - offset[0],
-			self.rect.y - offset[1]))
+	def draw(self, display: pygame.Surface) -> None:
+		display.blit(self.surf, (self.rect.x, self.rect.y))

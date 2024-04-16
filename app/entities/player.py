@@ -30,12 +30,12 @@ class Player:
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
-	def loop(self, events: pygame.event, display: pygame.Surface, offset: tuple, objs: list) -> None:
+	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
 		self.update()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
-		self.draw(display, offset)
+		self.draw(display)
 
 	def get_x_vel(self) -> float:
 		return self.x_vel
@@ -79,12 +79,10 @@ class Player:
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
-	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
+	def draw(self, display: pygame.Surface) -> None:
 		# self.debug_hitbox(display, offset)
 
-		display.blit(self.sprite, (
-			self.rect.x - offset[0],
-			self.rect.y - offset[1]))
+		display.blit(self.sprite, (self.rect.x, self.rect.y))
 
 	def debug_hitbox(self, display: pygame.Surface, offset: tuple) -> None:
 		"""
