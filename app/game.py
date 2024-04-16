@@ -1,6 +1,6 @@
 from . import *
 from .entities.player import Player
-from .objects.block import Block
+from .entities.terrain import Terrain
 from .background import Background
 
 
@@ -33,17 +33,17 @@ class Game:
 
 		i = 0
 		while i < 16:
-			self.objs.append(Block(i, 9))
+			self.objs.append(Terrain(i, 9))
 			i += 1
 
-		self.objs.append(Block(4, 8))
-		self.objs.append(Block(9, 6))
-		self.objs.append(Block(4, 4))
-		self.objs.append(Block(9, 2))
-		self.objs.append(Block(4, 0))
-		self.objs.append(Block(9, -2))
-		self.objs.append(Block(4, -4))
-		self.objs.append(Block(9, -6))
+		self.objs.append(Terrain(4, 8))
+		self.objs.append(Terrain(9, 6))
+		self.objs.append(Terrain(4, 4))
+		self.objs.append(Terrain(9, 2))
+		self.objs.append(Terrain(4, 0))
+		self.objs.append(Terrain(9, -2))
+		self.objs.append(Terrain(4, -4))
+		self.objs.append(Terrain(9, -6))
 
 		while True:
 			self.check_event()
@@ -86,7 +86,7 @@ class Game:
 
 		self.player.loop(self.events, self.display, self.objs)
 
-		# Objects: Block
+		# Objects: Terrain
 		for obj in self.objs:
 			obj.draw(self.display)
 

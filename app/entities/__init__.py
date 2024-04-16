@@ -1,8 +1,6 @@
 from .. import *
+from ..utils import *
 
 
-PLAYER_WIDTH = 32
-PLAYER_HEIGHT = 32
-PLAYER_SCALE = 2
-PLAYER_VEL = 4
+ANIMATION_DELAY = 3
 MAX_GRAVITY = 32
