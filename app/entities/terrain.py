@@ -24,5 +24,9 @@ class Terrain(Entity):
 
 		return surface
 
-	def draw(self, display: pygame.Surface) -> None:
+	def update(self, display: pygame.Surface, **kwargs) -> None:
+		"""
+		Call in game loop.
+		"""
+
 		display.blit(self.block, (self.rect.x, self.rect.y))

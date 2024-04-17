@@ -40,9 +40,9 @@ class Game:
 		for row in level:
 			for col in row:
 				if col == "P":
-					self.objs.append(Terrain(x, y))
+					self.objs.append(Terrain(x, y, self.all_sprites))
 				if col == "S":
-					self.player = Player(x, y)
+					Player(x, y, self.all_sprites)
 				x += 1
 			y += 1
 			x = 0
@@ -50,8 +50,7 @@ class Game:
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 		self.background = Background()
-
-		# Objects
+		self.all_sprites = pygame.sprite.Group()
 		self.objs = []
 		self.level()
 
@@ -94,11 +93,10 @@ class Game:
 		# self.background.draw(self.display)
 		self.display.fill((0, 0, 0))
 
-		self.player.loop(self.events, self.display, self.objs)
-
-		# Objects: Terrain
-		for obj in self.objs:
-			obj.draw(self.display)
+		self.all_sprites.update(
+			events=self.events,
+			display=self.display,
+			objs=self.objs)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()

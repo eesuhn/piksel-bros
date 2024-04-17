@@ -8,8 +8,8 @@ class Player(Entity):
 	PLAYER_SCALE = 2
 	PLAYER_VEL = 4
 
-	def __init__(self, x, y) -> None:
-		super().__init__()
+	def __init__(self, x, y, *groups) -> None:
+		super().__init__(*groups)
 		rect_width = Player.PLAYER_WIDTH * Player.PLAYER_SCALE
 		rect_height = Player.PLAYER_HEIGHT * Player.PLAYER_SCALE
 		self.rect = pygame.Rect(
@@ -34,18 +34,19 @@ class Player(Entity):
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
-	def loop(self, events: pygame.event, display: pygame.Surface, objs: list) -> None:
-		self.update()
+	def update(self, events: pygame.event, display: pygame.Surface, objs: list, **kwargs) -> None:
+		"""
+		Call in game loop.
+		"""
+
+		self.animate()
+		self.update_rect()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
 		self.draw(display)
 
-	def update(self) -> None:
-		self.update_sprites()
-		self.update_rect()
-
-	def update_sprites(self) -> None:
+	def animate(self) -> None:
 		sprites_sheet = "idle"
 
 		if self.vel.y < 0:
