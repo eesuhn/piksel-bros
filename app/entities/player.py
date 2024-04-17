@@ -5,18 +5,15 @@ from .entity import Entity
 class Player(Entity):
 	PLAYER_WIDTH = 32
 	PLAYER_HEIGHT = 32
-	PLAYER_SCALE = 2
 	PLAYER_VEL = 4
 
 	def __init__(self, x, y, *groups) -> None:
 		super().__init__(*groups)
-		rect_width = Player.PLAYER_WIDTH * Player.PLAYER_SCALE
-		rect_height = Player.PLAYER_HEIGHT * Player.PLAYER_SCALE
 		self.rect = pygame.Rect(
-			x * rect_width,
-			y * rect_height,
-			rect_width,
-			rect_height)
+			x * RECT_WIDTH,
+			y * RECT_HEIGHT,
+			RECT_WIDTH,
+			RECT_HEIGHT)
 		self.mask = None
 		self.vel = pygame.Vector2((0, 0))
 		self.collide_left = False
@@ -27,7 +24,7 @@ class Player(Entity):
 			["main_characters", "ninja_frog"],
 			Player.PLAYER_WIDTH,
 			Player.PLAYER_HEIGHT,
-			scale=Player.PLAYER_SCALE,
+			scale=(RECT_WIDTH // Player.PLAYER_WIDTH),
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
