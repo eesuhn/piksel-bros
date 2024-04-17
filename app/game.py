@@ -47,8 +47,8 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.background = Background()
-		self.all_sprites = pygame.sprite.Group()
+		self.all_sprites = pygame.sprite.LayeredUpdates()
+		# self.background = Background(self.all_sprites)
 		self.objs = []
 		self.level()
 
@@ -88,7 +88,6 @@ class Game:
 		pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 	def loop(self) -> None:
-		# self.background.draw(self.display)
 		self.display.fill((0, 0, 0))
 
 		self.all_sprites.update(

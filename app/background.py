@@ -1,14 +1,18 @@
 from ._internal import *
 
 
-class Background:
-	def __init__(self) -> None:
+class Background(pygame.sprite.Sprite):
+	def __init__(self, *groups) -> None:
+		super().__init__(*groups)
 		self.image = Utils.get_image(["background"], "green", scale=2)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
 		self.num_tiles_y = SCREEN_HEIGHT // self.tile_height + 1
 		self.offset_y = 0
+
+		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+			groups[0].change_layer(self, 0)
 
 	def dim_surface(self, display: pygame.Surface, alpha: int) -> None:
 		dim_surf = pygame.Surface(display.get_size()).convert_alpha()
@@ -29,7 +33,7 @@ class Background:
 		if self.offset_y >= self.tile_height:
 			self.offset_y -= self.tile_height
 
-	def draw(self, display: pygame.Surface) -> None:
+	def update(self, display: pygame.Surface, **kwargs) -> None:
 		self.update_y(10)
 		for tile in self.get_tiles():
 			display.blit(*tile)

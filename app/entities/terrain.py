@@ -13,6 +13,9 @@ class Terrain(Entity):
 		self.block = self.get_terrain()
 		self.mask = pygame.mask.from_surface(self.block)
 
+		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+			groups[0].change_layer(self, 1)
+
 	def get_terrain(self) -> pygame.Surface:
 		image = Utils.get_image(["terrain"], "block_stone")
 		rect = pygame.Rect(0, 0, RECT_WIDTH, RECT_HEIGHT)

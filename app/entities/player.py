@@ -31,6 +31,9 @@ class Player(Entity):
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
+		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+			groups[0].change_layer(self, 1)
+
 	def update(self, events: pygame.event, display: pygame.Surface, objs: list, **kwargs) -> None:
 		"""
 		Call in game loop.
