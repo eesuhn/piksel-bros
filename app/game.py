@@ -23,27 +23,37 @@ class Game:
 		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
+	def level(self) -> None:
+		level = [
+			"                ",
+			"    PP          ",
+			"           PP   ",
+			"                ",
+			"     PP         ",
+			"                ",
+			"                ",
+			"    PPP         ",
+			" S              ",
+			"PPPPPPPPPPPPPPPP"]
+
+		x = y = 0
+		for row in level:
+			for col in row:
+				if col == "P":
+					self.objs.append(Terrain(x, y))
+				if col == "S":
+					self.player = Player(x, y)
+				x += 1
+			y += 1
+			x = 0
+
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 		self.background = Background()
-		self.player = Player(9, -7)
 
 		# Objects
 		self.objs = []
-
-		i = 0
-		while i < 16:
-			self.objs.append(Terrain(i, 9))
-			i += 1
-
-		self.objs.append(Terrain(4, 8))
-		self.objs.append(Terrain(9, 6))
-		self.objs.append(Terrain(4, 4))
-		self.objs.append(Terrain(9, 2))
-		self.objs.append(Terrain(4, 0))
-		self.objs.append(Terrain(9, -2))
-		self.objs.append(Terrain(4, -4))
-		self.objs.append(Terrain(9, -6))
+		self.level()
 
 		while True:
 			self.check_event()

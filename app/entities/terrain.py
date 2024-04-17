@@ -17,7 +17,7 @@ class Terrain(Entity):
 		self.mask = pygame.mask.from_surface(self.block)
 
 	def get_terrain(self) -> pygame.Surface:
-		image = get_image(["terrain"], "grass")
+		image = get_image(["terrain"], "block_stone")
 		rect = pygame.Rect(0, 0, Terrain.BLOCK_WIDTH, Terrain.BLOCK_HEIGHT)
 		surface = pygame.Surface((Terrain.BLOCK_WIDTH, Terrain.BLOCK_HEIGHT)).convert_alpha()
 		surface.blit(image, (0, 0), rect)
