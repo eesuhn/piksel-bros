@@ -1,4 +1,4 @@
-from . import *
+from ._internal import *
 
 
 class Entity(pygame.sprite.Sprite):

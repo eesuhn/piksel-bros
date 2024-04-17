@@ -1,7 +1,5 @@
+from ._internal import *
 from . import *
-from .entities.player import Player
-from .entities.terrain import Terrain
-from .background import Background
 
 
 class Game:

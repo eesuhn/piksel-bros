@@ -1,5 +1,5 @@
+from ._internal import *
 from . import *
-from .entity import Entity
 
 
 class Terrain(Entity):
@@ -14,7 +14,7 @@ class Terrain(Entity):
 		self.mask = pygame.mask.from_surface(self.block)
 
 	def get_terrain(self) -> pygame.Surface:
-		image = get_image(["terrain"], "block_stone")
+		image = Utils.get_image(["terrain"], "block_stone")
 		rect = pygame.Rect(0, 0, RECT_WIDTH, RECT_HEIGHT)
 		surface = pygame.Surface((RECT_WIDTH, RECT_HEIGHT)).convert_alpha()
 		surface.blit(image, (0, 0), rect)

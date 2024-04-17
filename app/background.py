@@ -1,10 +1,9 @@
-from . import *
-from .utils import get_image
+from ._internal import *
 
 
 class Background:
 	def __init__(self) -> None:
-		self.image = get_image(["background"], "green", scale=2)
+		self.image = Utils.get_image(["background"], "green", scale=2)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
