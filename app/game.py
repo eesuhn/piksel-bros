@@ -4,6 +4,7 @@ from . import *
 
 class Game:
 	def __init__(self) -> None:
+		self.ignore_warnings()
 		pygame.init()
 		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
@@ -12,6 +13,17 @@ class Game:
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
 		self.check_cpu = "--cpu" in sys.argv
+
+	def ignore_warnings(self) -> None:
+		"""
+		Ignore warnings from `pygame`.
+		"""
+
+		message = [
+			"re-creating window in toggle_fullscreen",
+		]
+		for m in message:
+			warnings.filterwarnings("ignore", message=m)
 
 	def cpu(self, event_type: int) -> None:
 		"""
@@ -32,7 +44,8 @@ class Game:
 			"                ",
 			"    PPP         ",
 			" S              ",
-			"PPPPPPPPPPPPPPPP"]
+			"PPPPPPPPPPPPPPPP",
+		]
 
 		x = y = 0
 		for row in level:

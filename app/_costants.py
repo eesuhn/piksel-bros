@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import psutil
+import warnings
 
 
 FPS = 60
