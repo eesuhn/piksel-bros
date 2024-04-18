@@ -1,65 +1,65 @@
+from ._internal import *
 from . import *
-from ..utils import get_sprites_sheet
+from ..utils import *
 
 
-class Player:
-	def __init__(self, x, y) -> None:
-		rect_width = PLAYER_WIDTH * PLAYER_SCALE
-		rect_height = PLAYER_HEIGHT * PLAYER_SCALE
+class Player(Entity):
+	PLAYER_WIDTH = 32
+	PLAYER_HEIGHT = 32
+	PLAYER_VEL = 4
+
+	def __init__(self, x, y, *groups) -> None:
+		super().__init__(*groups)
 		self.rect = pygame.Rect(
-			x * rect_width,
-			y * rect_height,
-			rect_width,
-			rect_height
-		)
+			x * RECT_WIDTH,
+			y * RECT_HEIGHT,
+			RECT_WIDTH,
+			RECT_HEIGHT)
 		self.mask = None
-		self.x_vel = 0
-		self.y_vel = 0
+		self.vel = pygame.Vector2((0, 0))
 		self.collide_left = False
 		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
-			PLAYER_WIDTH,
-			PLAYER_HEIGHT,
-			scale=PLAYER_SCALE,
+			self.PLAYER_WIDTH,
+			self.PLAYER_HEIGHT,
+			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
-	def loop(self, events: pygame.event, display: pygame.Surface, offset: tuple, objs: list) -> None:
-		self.update()
+		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+			groups[0].change_layer(self, 1)
+
+	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, objs: list, **kwargs) -> None:
+		"""
+		Call in game loop.
+		"""
+
+		self.animate()
+		self.update_rect()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
 		self.draw(display, offset)
 
-	def get_x_vel(self) -> float:
-		return self.x_vel
-
-	def get_y_vel(self) -> float:
-		return self.y_vel
-
-	def update(self) -> None:
-		self.update_sprites()
-		self.update_rect()
-
-	def update_sprites(self) -> None:
+	def animate(self) -> None:
 		sprites_sheet = "idle"
 
-		if self.y_vel < 0:
+		if self.vel.y < 0:
 			if self.jump_count == 1:
 				sprites_sheet = "jump"
 			elif self.jump_count == 2:
 				sprites_sheet = "double_jump"
 
-		elif self.y_vel > 1:
+		elif self.vel.y > 1:
 			sprites_sheet = "fall"
 
-		elif self.x_vel != 0:
+		elif self.vel.x != 0:
 			sprites_sheet = "run"
 
 		sheet_name = f"{sprites_sheet}_{self.direction}"
@@ -79,14 +79,14 @@ class Player:
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
-	def draw(self, display: pygame.Surface, offset=(0, 0)) -> None:
-		# self.debug_hitbox(display, offset)
+	def draw(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
+		# self.debug_hitbox(display)
 
 		display.blit(self.sprite, (
-			self.rect.x - offset[0],
-			self.rect.y - offset[1]))
+			self.rect.x - offset.x,
+			self.rect.y - offset.y))
 
-	def debug_hitbox(self, display: pygame.Surface, offset: tuple) -> None:
+	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		"""
 		Debug:
 			Draw player's hitbox.
@@ -109,7 +109,7 @@ class Player:
 			self.foot_rect.height))
 
 	def move(self, events: pygame.event) -> None:
-		self.x_vel = 0
+		self.vel.x = 0
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_LEFT]:
@@ -123,7 +123,7 @@ class Player:
 				if event.key == pygame.K_SPACE:
 					self.jump()
 
-		self.handle_move(self.x_vel, self.y_vel)
+		self.handle_move(self.vel.x, self.vel.y)
 
 	def handle_move(self, dx, dy) -> None:
 		"""
@@ -141,7 +141,7 @@ class Player:
 		if self.collide_left:
 			return
 
-		self.x_vel = -PLAYER_VEL
+		self.vel.x = -self.PLAYER_VEL
 		if self.direction != "left":
 			self.direction = "left"
 
@@ -149,7 +149,7 @@ class Player:
 		if self.collide_right:
 			return
 
-		self.x_vel = PLAYER_VEL
+		self.vel.x = self.PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
 
@@ -158,34 +158,27 @@ class Player:
 			return
 
 		if self.jump_count == 0:
-			self.y_vel = round(-PLAYER_VEL * 1.5)
+			self.vel.y = round(-self.PLAYER_VEL * 1.5)
 		elif self.jump_count == 1:
-			self.y_vel = round(-PLAYER_VEL * 3)
+			self.vel.y = round(-self.PLAYER_VEL * 3)
 
 		self.animation_count = 0
 		self.jump_count += 1
 		if self.jump_count == 1:
 			self.fall_count = 0
 
-	def gravity(self) -> None:
-		self.y_vel += min(1, self.fall_count / (PLAYER_VEL * 10))
-		if self.fall_count < (PLAYER_VEL * 10):
-			self.fall_count += 1
-		if self.y_vel >= MAX_GRAVITY:
-			self.y_vel = MAX_GRAVITY
-
 	def land(self) -> None:
 		self.fall_count = 0
-		self.y_vel = 0
+		self.vel.y = 0
 		self.jump_count = 0
 
 	def hit_head(self) -> None:
-		self.y_vel = 0
+		self.vel.y = 0
 
 	def collision(self, objs: list) -> None:
 		self.vertical_collide(objs)
 
-		dx_check = PLAYER_VEL * 1.2
+		dx_check = self.PLAYER_VEL * 1.2
 		self.collide_left = self.horizontal_collide(objs, -dx_check)
 		self.collide_right = self.horizontal_collide(objs, dx_check)
 

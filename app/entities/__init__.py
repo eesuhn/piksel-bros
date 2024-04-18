@@ -1,8 +1,3 @@
-from .. import *
-
-
-PLAYER_WIDTH = 32
-PLAYER_HEIGHT = 32
-PLAYER_SCALE = 2
-PLAYER_VEL = 4
-MAX_GRAVITY = 32
+from .entity import Entity
+from .player import Player
+from .terrain import Terrain

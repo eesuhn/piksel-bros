@@ -1,12 +1,11 @@
+from ._internal import *
 from . import *
-from .entities.player import Player
-from .objects.block import Block
-from .background import Background
-from .camera import Camera
+from .entities import *
 
 
 class Game:
 	def __init__(self) -> None:
+		self.ignore_warnings()
 		pygame.init()
 		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
@@ -15,6 +14,17 @@ class Game:
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
 		self.check_cpu = "--cpu" in sys.argv
+
+	def ignore_warnings(self) -> None:
+		"""
+		Ignore warnings from `pygame`.
+		"""
+
+		message = [
+			"re-creating window in toggle_fullscreen",
+		]
+		for m in message:
+			warnings.filterwarnings("ignore", message=m)
 
 	def cpu(self, event_type: int) -> None:
 		"""
@@ -26,31 +36,48 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.background = Background()
-		self.player = Player(9, -7)
-		self.camera = Camera()
+		self.all_sprites = pygame.sprite.LayeredUpdates()
 
-		# Objects
-		self.objs = []
-
-		i = 0
-		while i < 16:
-			self.objs.append(Block(i, 9))
-			i += 1
-
-		self.objs.append(Block(4, 8))
-		self.objs.append(Block(9, 6))
-		self.objs.append(Block(4, 4))
-		self.objs.append(Block(9, 2))
-		self.objs.append(Block(4, 0))
-		self.objs.append(Block(9, -2))
-		self.objs.append(Block(4, -4))
-		self.objs.append(Block(9, -6))
+		self.player = Player(1, 8, self.all_sprites)
+		self.level()
 
 		while True:
 			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
+
+	def level(self) -> None:
+		level = [
+			"PPPPPPPPPPPPPPPPPPPPPPPPP",
+			"P                       P",
+			"P                       P",
+			"P    PPP     PP         P",
+			"P                       P",
+			"P                PPP    P",
+			"P        PPP            P",
+			"P                       P",
+			"P            PPP        P",
+			"P      PP               P",
+			"P  P                    P",
+			"P                       P",
+			"PPPPPPPPPPPPPPPPPPPPPPPPP",
+		]
+		level_width = len(level[0]) * RECT_WIDTH
+		level_height = len(level) * RECT_HEIGHT
+
+		self.camera = Camera(self.player, level_width, level_height)
+		# Background(self.all_sprites, self.camera)
+		self.objs = []
+
+		x = y = 0
+		for row in level:
+			for col in row:
+				if col == "P":
+					self.objs.append(
+						Terrain(x, y, self.all_sprites, self.camera))
+				x += 1
+			y += 1
+			x = 0
 
 	def check_event(self) -> bool:
 		self.events = pygame.event.get()
@@ -83,16 +110,12 @@ class Game:
 		pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 	def loop(self) -> None:
-		# self.background.draw(self.display)
 		self.display.fill((0, 0, 0))
 
-		offset = self.camera.get_offset(self.display, self.player)
-
-		self.player.loop(self.events, self.display, offset, self.objs)
-
-		# Objects: Block
-		for obj in self.objs:
-			obj.draw(self.display, offset)
+		self.camera.update(
+			display=self.display,
+			events=self.events,
+			objs=self.objs)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
