@@ -25,9 +25,11 @@ class Terrain(Entity):
 
 		return surface
 
-	def update(self, display: pygame.Surface, **kwargs) -> None:
+	def update(self, display: pygame.Surface, offset: pygame.Vector2, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
 
-		display.blit(self.block, (self.rect.x, self.rect.y))
+		display.blit(self.block, (
+			self.rect.x - offset.x,
+			self.rect.y - offset.y))

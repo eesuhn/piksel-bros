@@ -23,9 +23,9 @@ class Player(Entity):
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
-			Player.PLAYER_WIDTH,
-			Player.PLAYER_HEIGHT,
-			scale=(RECT_WIDTH // Player.PLAYER_WIDTH),
+			self.PLAYER_WIDTH,
+			self.PLAYER_HEIGHT,
+			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
@@ -35,7 +35,7 @@ class Player(Entity):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
-	def update(self, events: pygame.event, display: pygame.Surface, objs: list, **kwargs) -> None:
+	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, objs: list, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
@@ -45,7 +45,7 @@ class Player(Entity):
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
-		self.draw(display)
+		self.draw(display, offset)
 
 	def animate(self) -> None:
 		sprites_sheet = "idle"
@@ -79,10 +79,12 @@ class Player(Entity):
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
-	def draw(self, display: pygame.Surface) -> None:
+	def draw(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
 		# self.debug_hitbox(display)
 
-		display.blit(self.sprite, (self.rect.x, self.rect.y))
+		display.blit(self.sprite, (
+			self.rect.x - offset.x,
+			self.rect.y - offset.y))
 
 	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		"""
@@ -139,7 +141,7 @@ class Player(Entity):
 		if self.collide_left:
 			return
 
-		self.vel.x = -Player.PLAYER_VEL
+		self.vel.x = -self.PLAYER_VEL
 		if self.direction != "left":
 			self.direction = "left"
 
@@ -147,7 +149,7 @@ class Player(Entity):
 		if self.collide_right:
 			return
 
-		self.vel.x = Player.PLAYER_VEL
+		self.vel.x = self.PLAYER_VEL
 		if self.direction != "right":
 			self.direction = "right"
 
@@ -156,9 +158,9 @@ class Player(Entity):
 			return
 
 		if self.jump_count == 0:
-			self.vel.y = round(-Player.PLAYER_VEL * 1.5)
+			self.vel.y = round(-self.PLAYER_VEL * 1.5)
 		elif self.jump_count == 1:
-			self.vel.y = round(-Player.PLAYER_VEL * 3)
+			self.vel.y = round(-self.PLAYER_VEL * 3)
 
 		self.animation_count = 0
 		self.jump_count += 1
@@ -176,7 +178,7 @@ class Player(Entity):
 	def collision(self, objs: list) -> None:
 		self.vertical_collide(objs)
 
-		dx_check = Player.PLAYER_VEL * 1.2
+		dx_check = self.PLAYER_VEL * 1.2
 		self.collide_left = self.horizontal_collide(objs, -dx_check)
 		self.collide_right = self.horizontal_collide(objs, dx_check)
 

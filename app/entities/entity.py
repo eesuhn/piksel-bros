@@ -13,7 +13,7 @@ class Entity(pygame.sprite.Sprite):
 			Declare `self.vel.y`, `self.fall_count` in child class.
 		"""
 
-		max_g = Entity.MAX_GRAVITY
+		max_g = self.MAX_GRAVITY
 		self.vel.y += min(1, self.fall_count / (int(max_g * 1.25)))
 		if self.fall_count < (int(max_g * 1.25)):
 			self.fall_count += 1

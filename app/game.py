@@ -34,42 +34,49 @@ class Game:
 		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
-	def level(self) -> None:
-		level = [
-			"                ",
-			"    PP          ",
-			"           PP   ",
-			"                ",
-			"     PP         ",
-			"                ",
-			"                ",
-			"    PPP         ",
-			" S              ",
-			"PPPPPPPPPPPPPPPP",
-		]
-
-		x = y = 0
-		for row in level:
-			for col in row:
-				if col == "P":
-					self.objs.append(Terrain(x, y, self.all_sprites))
-				if col == "S":
-					Player(x, y, self.all_sprites)
-				x += 1
-			y += 1
-			x = 0
-
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.all_sprites = pygame.sprite.LayeredUpdates()
-		# self.background = Background(self.all_sprites)
-		self.objs = []
+		self.all_sprites = pygame.sprite.Group()
+
+		self.player = Player(1, 8, self.all_sprites)
 		self.level()
 
 		while True:
 			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
+
+	def level(self) -> None:
+		level = [
+			"PPPPPPPPPPPPPPPPPPPPPPPPP",
+			"P                       P",
+			"P                       P",
+			"P    PPP     PP         P",
+			"P                       P",
+			"P                PPP    P",
+			"P        PPP            P",
+			"P                       P",
+			"P            PPP        P",
+			"P      PP               P",
+			"P  P                    P",
+			"P                       P",
+			"PPPPPPPPPPPPPPPPPPPPPPPPP",
+		]
+		level_width = len(level[0]) * RECT_WIDTH
+		level_height = len(level) * RECT_HEIGHT
+
+		self.camera = Camera(self.player, level_width, level_height)
+		self.objs = []
+
+		x = y = 0
+		for row in level:
+			for col in row:
+				if col == "P":
+					self.objs.append(
+						Terrain(x, y, self.all_sprites, self.camera))
+				x += 1
+			y += 1
+			x = 0
 
 	def check_event(self) -> bool:
 		self.events = pygame.event.get()
@@ -104,9 +111,9 @@ class Game:
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
 
-		self.all_sprites.update(
-			events=self.events,
+		self.camera.update(
 			display=self.display,
+			events=self.events,
 			objs=self.objs)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
