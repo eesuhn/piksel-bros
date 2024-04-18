@@ -1,5 +1,6 @@
 from ._internal import *
 from . import *
+from .entities import *
 
 
 class Game:

@@ -1,5 +1,6 @@
 from ._internal import *
 from . import *
+from ..utils import *
 
 
 class Player(Entity):
@@ -20,7 +21,7 @@ class Player(Entity):
 		self.collide_right = False
 		self.fall_count = 0
 		self.jump_count = 0
-		self.sheet = Utils.get_sprites_sheet(
+		self.sheet = get_sprites_sheet(
 			["main_characters", "ninja_frog"],
 			Player.PLAYER_WIDTH,
 			Player.PLAYER_HEIGHT,

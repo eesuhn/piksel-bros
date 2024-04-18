@@ -1,5 +1,6 @@
 from ._internal import *
 from . import *
+from ..utils import *
 
 
 class Terrain(Entity):
@@ -17,7 +18,7 @@ class Terrain(Entity):
 			groups[0].change_layer(self, 1)
 
 	def get_terrain(self) -> pygame.Surface:
-		image = Utils.get_image(["terrain"], "block_stone")
+		image = get_image(["terrain"], "block_stone")
 		rect = pygame.Rect(0, 0, RECT_WIDTH, RECT_HEIGHT)
 		surface = pygame.Surface((RECT_WIDTH, RECT_HEIGHT)).convert_alpha()
 		surface.blit(image, (0, 0), rect)

@@ -1,10 +1,11 @@
 from ._internal import *
+from .utils import *
 
 
 class Background(pygame.sprite.Sprite):
 	def __init__(self, *groups) -> None:
 		super().__init__(*groups)
-		self.image = Utils.get_image(["background"], "green", scale=2)
+		self.image = get_image(["background"], "green", scale=2)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
