@@ -36,7 +36,7 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.all_sprites = pygame.sprite.Group()
+		self.all_sprites = pygame.sprite.LayeredUpdates()
 
 		self.player = Player(1, 8, self.all_sprites)
 		self.level()
@@ -66,6 +66,7 @@ class Game:
 		level_height = len(level) * RECT_HEIGHT
 
 		self.camera = Camera(self.player, level_width, level_height)
+		# Background(self.all_sprites, self.camera)
 		self.objs = []
 
 		x = y = 0
