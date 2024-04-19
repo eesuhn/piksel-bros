@@ -36,18 +36,15 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.all_sprites = pygame.sprite.LayeredUpdates()
-
-		self.player = Player(1, 8, self.all_sprites)
-		self.level()
+		self.init_level()
 
 		while True:
 			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
 
-	def level(self) -> None:
-		level = [
+	def init_level(self) -> None:
+		self.level = [
 			"PPPPPPPPPPPPPPPPPPPPPPPPP",
 			"P                       P",
 			"P                       P",
@@ -62,19 +59,22 @@ class Game:
 			"P                       P",
 			"PPPPPPPPPPPPPPPPPPPPPPPPP",
 		]
-		level_width = len(level[0]) * RECT_WIDTH
-		level_height = len(level) * RECT_HEIGHT
+		level_width = len(self.level[0]) * RECT_WIDTH
+		level_height = len(self.level) * RECT_HEIGHT
 
-		self.camera = Camera(self.player, level_width, level_height)
-		# Background(self.all_sprites, self.camera)
+		self.camera = Camera(level_width, level_height)
+		Background(self.camera)
+		self.camera.add_target(Player(1, 8, self.camera))
+		self.load_level()
+
+	def load_level(self) -> None:
 		self.objs = []
-
 		x = y = 0
-		for row in level:
+		for row in self.level:
 			for col in row:
 				if col == "P":
 					self.objs.append(
-						Terrain(x, y, self.all_sprites, self.camera))
+						Terrain(x, y, self.camera))
 				x += 1
 			y += 1
 			x = 0

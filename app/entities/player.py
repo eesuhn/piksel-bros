@@ -7,6 +7,7 @@ class Player(Entity):
 	PLAYER_WIDTH = 32
 	PLAYER_HEIGHT = 32
 	PLAYER_VEL = 4
+	ANIMATION_DELAY = 2.4
 
 	def __init__(self, x, y, *groups) -> None:
 		super().__init__(*groups)
@@ -64,8 +65,10 @@ class Player(Entity):
 
 		sheet_name = f"{sprites_sheet}_{self.direction}"
 		sprites = self.sheet[sheet_name]
-		max_animation_count = len(sprites) * ANIMATION_DELAY
-		sprite_index = (self.animation_count % max_animation_count) // ANIMATION_DELAY
+		max_animation_count = int(
+			len(sprites) * self.ANIMATION_DELAY)
+		sprite_index = int(
+			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
 		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
 
