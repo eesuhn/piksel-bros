@@ -37,6 +37,7 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
+		self.level = Level("01")
 		self.load_level()
 
 		while True:
@@ -45,10 +46,9 @@ class Game:
 			self.clock.tick(FPS)
 
 	def load_level(self) -> None:
-		level = Level()
-		width, height = level.get_size("01")
+		width, height = self.level.get_size()
 		self.camera = Camera(width, height)
-		self.objs = level.init_level("01", self.camera)
+		self.objs = self.level.init_level(self.camera)
 
 	def check_event(self) -> None:
 		self.events = pygame.event.get()

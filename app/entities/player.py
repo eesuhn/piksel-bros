@@ -41,6 +41,7 @@ class Player(Entity):
 		Call in game loop.
 		"""
 
+		# self.debug_hitbox(display, offset)
 		self.animate(display, offset)
 		self.update_rect()
 		self.move(events)
@@ -88,19 +89,21 @@ class Player(Entity):
 			Draw player's hitbox.
 		"""
 
+		self.head_rect = self.get_head_rect()
+		self.foot_rect = self.get_foot_rect()
 		pygame.draw.rect(display, (0, 255, 0), (
-			self.rect.x - offset[0],
-			self.rect.y - offset[1],
+			self.rect.x - offset.x,
+			self.rect.y - offset.y,
 			self.rect.width,
 			self.rect.height))
 		pygame.draw.rect(display, (255, 0, 0), (
-			self.head_rect.x - offset[0],
-			self.head_rect.y - offset[1],
+			self.head_rect.x - offset.x,
+			self.head_rect.y - offset.y,
 			self.head_rect.width,
 			self.head_rect.height))
 		pygame.draw.rect(display, (255, 0, 0), (
-			self.foot_rect.x - offset[0],
-			self.foot_rect.y - offset[1],
+			self.foot_rect.x - offset.x,
+			self.foot_rect.y - offset.y,
 			self.foot_rect.width,
 			self.foot_rect.height))
 

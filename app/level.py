@@ -4,13 +4,14 @@ from .background import Background
 
 
 class Level:
-	def __init__(self) -> None:
+	def __init__(self, level: str) -> None:
+		self.level = level
 		self.map = {}
 		self.on_grid = {}
 		self.objs = []
 
-	def load(self, level: str) -> None:
-		file = open(f"app/levels/{level}.json", "r")
+	def load(self) -> None:
+		file = open(f"app/levels/{self.level}.json", "r")
 		data = json.load(file)
 		file.close()
 
@@ -19,8 +20,8 @@ class Level:
 		self.background = data["background"]
 		self.on_grid = data["on_grid"]
 
-	def init_level(self, level: str, camera: pygame.sprite.Group, target_player=True) -> list:
-		self.load(level)
+	def init_level(self, camera: pygame.sprite.Group, target_player=True) -> list:
+		self.load()
 
 		if target_player:
 			Background(self.background, camera)
@@ -41,8 +42,8 @@ class Level:
 
 		return self.objs
 
-	def get_size(self, level: str) -> tuple:
-		self.load(level)
+	def get_size(self) -> tuple:
+		self.load()
 
 		min_x, min_y = float('inf'), float('inf')
 		max_x, max_y = 0, 0
@@ -59,8 +60,8 @@ class Level:
 
 		return width, height
 
-	def save(self, level: str) -> None:
-		file = open(f"app/levels/{level}.json", "w")
+	def save(self) -> None:
+		file = open(f"app/levels/{self.level}.json", "w")
 		json.dump(
 			{
 				"on_grid": self.on_grid,
