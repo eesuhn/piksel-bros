@@ -1,17 +1,17 @@
 from ._internal import *
-from . import *
+from .entity import Entity
 from ..utils import *
 
 
 class Terrain(Entity):
-	def __init__(self, x, y, *groups) -> None:
+	def __init__(self, type: str, var: int, x, y, *groups) -> None:
 		super().__init__(*groups)
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
 			y * RECT_HEIGHT,
 			RECT_WIDTH,
 			RECT_HEIGHT)
-		self.image = get_image(["terrain"], "stone")
+		self.image = get_image(["terrain", type], f"{var}")
 		self.mask = pygame.mask.from_surface(self.image)
 
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):

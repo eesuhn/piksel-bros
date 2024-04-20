@@ -1,6 +1,7 @@
 from ._internal import *
-from . import *
 from .entities import *
+from .camera import Camera
+from .level import Level
 
 
 class Game:
@@ -36,48 +37,18 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.init_level()
+		self.load_level()
 
 		while True:
 			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
 
-	def init_level(self) -> None:
-		self.level = [
-			"PPPPPPPPPPPPPPPPPPPPPPPPP",
-			"P                       P",
-			"P                       P",
-			"P    PPP     PP         P",
-			"P                       P",
-			"P                PPP    P",
-			"P        PPP            P",
-			"P                       P",
-			"P            PPP        P",
-			"P      PP               P",
-			"P  P                    P",
-			"P                       P",
-			"PPPPPPPPPPPPPPPPPPPPPPPPP",
-		]
-		level_width = len(self.level[0]) * RECT_WIDTH
-		level_height = len(self.level) * RECT_HEIGHT
-
-		self.camera = Camera(level_width, level_height)
-		Background(self.camera)
-		self.camera.add_target(Player(1, 8, self.camera))
-		self.load_level()
-
 	def load_level(self) -> None:
-		self.objs = []
-		x = y = 0
-		for row in self.level:
-			for col in row:
-				if col == "P":
-					self.objs.append(
-						Terrain(x, y, self.camera))
-				x += 1
-			y += 1
-			x = 0
+		level = Level()
+		width, height = level.get_size("01")
+		self.camera = Camera(width, height)
+		self.objs = level.init_level("01", self.camera)
 
 	def check_event(self) -> bool:
 		self.events = pygame.event.get()

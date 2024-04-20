@@ -3,9 +3,9 @@ from .utils import *
 
 
 class Background(pygame.sprite.Sprite):
-	def __init__(self, *groups) -> None:
+	def __init__(self, var: str, *groups) -> None:
 		super().__init__(*groups)
-		self.image = get_image(["background"], "green", scale=2)
+		self.image = get_image(["background"], var, scale=2)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
@@ -35,7 +35,7 @@ class Background(pygame.sprite.Sprite):
 			self.offset_y -= self.tile_height
 
 	def update(self, display: pygame.Surface, **kwargs) -> None:
-		self.update_y(10)
+		# self.update_y(10)
 		for tile in self.get_tiles():
 			display.blit(*tile)
 		self.dim_surface(display, 30)

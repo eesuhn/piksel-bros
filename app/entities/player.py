@@ -1,5 +1,5 @@
 from ._internal import *
-from . import *
+from .entity import Entity
 from ..utils import *
 
 
