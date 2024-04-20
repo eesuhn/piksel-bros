@@ -1,4 +1,4 @@
-from . import *
+from ._internal import *
 
 
 def get_sprites_sheet(sub_dir: list, width, height, scale=1, direction=False) -> dict:
