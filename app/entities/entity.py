@@ -7,6 +7,11 @@ class Entity(pygame.sprite.Sprite):
 	def __init__(self, *groups) -> None:
 		super().__init__(*groups)
 
+	def draw(self, image: pygame.Surface, display: pygame.Surface, offset: pygame.Vector2) -> None:
+		display.blit(image, (
+			self.rect.x - offset.x,
+			self.rect.y - offset.y))
+
 	def gravity(self) -> None:
 		"""
 		Usage:

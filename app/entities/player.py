@@ -41,14 +41,13 @@ class Player(Entity):
 		Call in game loop.
 		"""
 
-		self.animate()
+		self.animate(display, offset)
 		self.update_rect()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
-		self.draw(display, offset)
 
-	def animate(self) -> None:
+	def animate(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
 		sprites_sheet = "idle"
 
 		if self.vel.y < 0:
@@ -69,8 +68,9 @@ class Player(Entity):
 			len(sprites) * self.ANIMATION_DELAY)
 		sprite_index = int(
 			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
-		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
+		self.sprite = sprites[sprite_index]
+		self.draw(self.sprite, display, offset)
 
 	def update_rect(self) -> None:
 		"""
@@ -81,13 +81,6 @@ class Player(Entity):
 		self.mask = pygame.mask.from_surface(self.sprite)
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
-
-	def draw(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
-		# self.debug_hitbox(display)
-
-		display.blit(self.sprite, (
-			self.rect.x - offset.x,
-			self.rect.y - offset.y))
 
 	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		"""
