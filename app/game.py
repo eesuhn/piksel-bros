@@ -50,7 +50,7 @@ class Game:
 		self.camera = Camera(width, height)
 		self.objs = level.init_level("01", self.camera)
 
-	def check_event(self) -> bool:
+	def check_event(self) -> None:
 		self.events = pygame.event.get()
 
 		for event in self.events:
@@ -69,8 +69,6 @@ class Game:
 						pygame.display.toggle_fullscreen()
 					else:
 						self.default_screen_size()
-
-		return True
 
 	def end(self) -> None:
 		pygame.quit()

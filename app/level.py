@@ -19,15 +19,15 @@ class Level:
 		self.background = data["background"]
 		self.on_grid = data["on_grid"]
 
-	def init_level(self, level: str, camera: pygame.sprite.Group) -> list:
+	def init_level(self, level: str, camera: pygame.sprite.Group, target_player=True) -> list:
 		self.load(level)
 
-		Background(self.background, camera)
-
-		camera.add_target(Player(
-			self.player["start"][0],
-			self.player["start"][1],
-			camera))
+		if target_player:
+			Background(self.background, camera)
+			camera.add_target(Player(
+				self.player["start"][0],
+				self.player["start"][1],
+				camera))
 
 		for key in self.on_grid:
 			on = self.on_grid[key]
@@ -38,6 +38,7 @@ class Level:
 					on["pos"][0],
 					on["pos"][1],
 					camera))
+
 		return self.objs
 
 	def get_size(self, level: str) -> tuple:
