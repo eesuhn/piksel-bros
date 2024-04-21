@@ -18,8 +18,8 @@ class Editor(Game):
 
 		self.camera.add_target(
 			EditorCamera(
-				int(width * 0.3),
-				int(height * 0.3),
+				width // 2,
+				height // 2,
 				self.camera))
 
 		self.level.init_level(self.camera, target_player=False)

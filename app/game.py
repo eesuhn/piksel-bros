@@ -49,6 +49,7 @@ class Game:
 		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
 		self.top_left = (min_x * RECT_WIDTH, min_y * RECT_HEIGHT)
 		self.camera = Camera(width, height)
+
 		self.objs = self.level.init_level(self.camera)
 
 	def check_event(self) -> None:

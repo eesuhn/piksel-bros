@@ -36,17 +36,19 @@ class Player(Entity):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
-	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, top_left: tuple, objs: list, **kwargs) -> None:
+	def update(self, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
 
-		# self.debug_hitbox(display, offset)
+		for k, v in kwargs.items():
+			setattr(self, k, v)
+
 		self.animate()
-		self.draw(self.sprite, display, offset, top_left)
+		self.draw()
 		self.update_rect()
-		self.move(events)
-		self.collision(objs)
+		self.move()
+		self.collision()
 		self.gravity()
 
 	def animate(self) -> None:
@@ -71,20 +73,22 @@ class Player(Entity):
 		sprite_index = int(
 			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
 		self.animation_count = (self.animation_count + 1) % max_animation_count
-		self.sprite = sprites[sprite_index]
+		self.image = sprites[sprite_index]
 
 	def update_rect(self) -> None:
 		"""
 		Update player's rect and mask.
 		"""
 
-		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
-		self.mask = pygame.mask.from_surface(self.sprite)
+		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+		self.mask = pygame.mask.from_surface(self.image)
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
 	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
 		"""
+		Deprecated.
+
 		Debug:
 			Draw player's hitbox.
 		"""
@@ -107,7 +111,7 @@ class Player(Entity):
 			self.foot_rect.width,
 			self.foot_rect.height))
 
-	def move(self, events: pygame.event) -> None:
+	def move(self) -> None:
 		self.vel.x = 0
 		keys = pygame.key.get_pressed()
 
@@ -117,7 +121,7 @@ class Player(Entity):
 		if keys[pygame.K_RIGHT]:
 			self.move_right()
 
-		for event in events:
+		for event in self.events:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_SPACE:
 					self.jump()
@@ -174,12 +178,12 @@ class Player(Entity):
 	def hit_head(self) -> None:
 		self.vel.y = 0
 
-	def collision(self, objs: list) -> None:
-		self.vertical_collide(objs)
+	def collision(self) -> None:
+		self.vertical_collide(self.objs)
 
 		dx_check = self.PLAYER_VEL * 1.2
-		self.collide_left = self.horizontal_collide(objs, -dx_check)
-		self.collide_right = self.horizontal_collide(objs, dx_check)
+		self.collide_left = self.horizontal_collide(self.objs, -dx_check)
+		self.collide_right = self.horizontal_collide(self.objs, dx_check)
 
 	def vertical_collide(self, objs: list) -> None:
 		self.head_sprite.rect = self.head_rect
