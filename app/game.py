@@ -83,10 +83,12 @@ class Game:
 		self.display.fill((0, 0, 0))
 
 		self.camera.update(
-			display=self.display,
 			events=self.events,
+			display=self.display,
+			top_left=self.top_left,
 			objs=self.objs,
-			top_left=self.top_left)
+			set_border=True,
+			delay=True)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
