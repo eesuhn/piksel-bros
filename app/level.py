@@ -42,11 +42,11 @@ class Level:
 
 		return self.objs
 
-	def get_size(self) -> tuple:
+	def get_size(self, get_x_y=False) -> tuple:
 		self.load()
 
 		min_x, min_y = float('inf'), float('inf')
-		max_x, max_y = 0, 0
+		max_x, max_y = float('-inf'), float('-inf')
 
 		for key, value in self.map["on_grid"].items():
 			x, y = value["pos"]
@@ -57,6 +57,9 @@ class Level:
 
 		width = (max_x - min_x + 1) * RECT_WIDTH
 		height = (max_y - min_y + 1) * RECT_HEIGHT
+
+		if get_x_y:
+			return width, height, min_x, min_y, max_x, max_y
 
 		return width, height
 

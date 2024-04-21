@@ -46,7 +46,8 @@ class Game:
 			self.clock.tick(FPS)
 
 	def load_level(self) -> None:
-		width, height = self.level.get_size()
+		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
+		self.top_left = (min_x * RECT_WIDTH, min_y * RECT_HEIGHT)
 		self.camera = Camera(width, height)
 		self.objs = self.level.init_level(self.camera)
 
@@ -84,7 +85,8 @@ class Game:
 		self.camera.update(
 			display=self.display,
 			events=self.events,
-			objs=self.objs)
+			objs=self.objs,
+			top_left=self.top_left)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()

@@ -17,9 +17,9 @@ class Terrain(Entity):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
-	def update(self, display: pygame.Surface, offset: pygame.Vector2, **kwargs) -> None:
+	def update(self, display: pygame.Surface, offset: pygame.Vector2, top_left: tuple, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
 
-		self.draw(self.image, display, offset)
+		self.draw(self.image, display, offset, top_left)

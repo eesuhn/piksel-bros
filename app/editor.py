@@ -15,22 +15,25 @@ class Editor(Game):
 		self.right_click = False
 
 	def load_level(self) -> None:
-		width, height = self.level.get_size()
+		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
+		self.top_left = (min_x * RECT_WIDTH, min_y * RECT_HEIGHT)
 		self.camera = Camera(width, height)
 		self.camera.add_target(
 			EditorCamera(
-				width // 2,
-				height // 2,
+				int(width * 0.3),
+				int(height * 0.3),
 				self.camera))
 		self.level.init_level(self.camera, target_player=False)
 
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
 
+		self.check_mouse()
 		self.camera.update(
 			display=self.display,
 			level=self.level,
-			set_border=False)
+			set_border=False,
+			top_left=self.top_left)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -53,6 +56,14 @@ class Editor(Game):
 					self.left_click = False
 				if event.button == 3:
 					self.right_click = False
+
+	def check_mouse(self) -> None:
+		mpos = pygame.Vector2(pygame.mouse.get_pos())
+
+	def add_terrain(self) -> None:
+		if not self.left_click:
+			return
+		...
 
 
 class EditorCamera(pygame.sprite.Sprite):

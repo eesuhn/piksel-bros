@@ -36,19 +36,20 @@ class Player(Entity):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
-	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, objs: list, **kwargs) -> None:
+	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, top_left: tuple, objs: list, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
 
 		# self.debug_hitbox(display, offset)
-		self.animate(display, offset)
+		self.animate()
+		self.draw(self.sprite, display, offset, top_left)
 		self.update_rect()
 		self.move(events)
 		self.collision(objs)
 		self.gravity()
 
-	def animate(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
+	def animate(self) -> None:
 		sprites_sheet = "idle"
 
 		if self.vel.y < 0:
@@ -71,7 +72,6 @@ class Player(Entity):
 			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
 		self.animation_count = (self.animation_count + 1) % max_animation_count
 		self.sprite = sprites[sprite_index]
-		self.draw(self.sprite, display, offset)
 
 	def update_rect(self) -> None:
 		"""
