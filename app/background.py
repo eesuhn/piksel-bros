@@ -3,6 +3,9 @@ from .utils import *
 
 
 class Background(pygame.sprite.Sprite):
+	BG_VEL = 10
+	BG_OPACITY = 30
+
 	def __init__(self, var: str, *groups) -> None:
 		super().__init__(*groups)
 		self.image = get_image(["background"], var, scale=2)
@@ -15,10 +18,10 @@ class Background(pygame.sprite.Sprite):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 0)
 
-	def dim_surface(self, display: pygame.Surface, alpha: int) -> None:
-		dim_surf = pygame.Surface(display.get_size()).convert_alpha()
-		dim_surf.fill((0, 0, 0, alpha))
-		display.blit(dim_surf, (0, 0))
+	def dim_surface(self) -> None:
+		dim_surf = pygame.Surface(self.display.get_size()).convert_alpha()
+		dim_surf.fill((0, 0, 0, self.BG_OPACITY))
+		self.display.blit(dim_surf, (0, 0))
 
 	def get_tiles(self) -> list:
 		tiles = []
@@ -29,13 +32,20 @@ class Background(pygame.sprite.Sprite):
 				tiles.append((self.image, (tile_x, tile_y)))
 		return tiles
 
-	def update_y(self, dt: float) -> None:
-		self.offset_y += 0.1 * dt
+	def update_y(self) -> None:
+		self.offset_y += 0.1 * self.BG_VEL
 		if self.offset_y >= self.tile_height:
 			self.offset_y -= self.tile_height
 
-	def update(self, display: pygame.Surface, **kwargs) -> None:
-		# self.update_y(10)
+	def update(self, **kwargs) -> None:
+		"""
+		Call in game loop.
+		"""
+
+		for k, v in kwargs.items():
+			setattr(self, k, v)
+
+		self.update_y()
 		for tile in self.get_tiles():
-			display.blit(*tile)
-		self.dim_surface(display, 30)
+			self.display.blit(*tile)
+		self.dim_surface()

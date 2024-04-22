@@ -44,6 +44,7 @@ class Player(Entity):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
+		# self.debug_hitbox()
 		self.animate()
 		self.draw()
 		self.update_rect()
@@ -85,31 +86,21 @@ class Player(Entity):
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
 
-	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
+	def debug_hitbox(self) -> None:
 		"""
-		Deprecated.
-
 		Debug:
 			Draw player's hitbox.
 		"""
 
+		def draw_rect(rect, color):
+			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
+
 		self.head_rect = self.get_head_rect()
 		self.foot_rect = self.get_foot_rect()
-		pygame.draw.rect(display, (0, 255, 0), (
-			self.rect.x - offset.x,
-			self.rect.y - offset.y,
-			self.rect.width,
-			self.rect.height))
-		pygame.draw.rect(display, (255, 0, 0), (
-			self.head_rect.x - offset.x,
-			self.head_rect.y - offset.y,
-			self.head_rect.width,
-			self.head_rect.height))
-		pygame.draw.rect(display, (255, 0, 0), (
-			self.foot_rect.x - offset.x,
-			self.foot_rect.y - offset.y,
-			self.foot_rect.width,
-			self.foot_rect.height))
+
+		draw_rect(self.rect, (0, 255, 0))
+		draw_rect(self.head_rect, (255, 0, 0))
+		draw_rect(self.foot_rect, (255, 0, 0))
 
 	def move(self) -> None:
 		self.vel.x = 0

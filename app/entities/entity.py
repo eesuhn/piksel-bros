@@ -8,14 +8,24 @@ class Entity(pygame.sprite.Sprite):
 		super().__init__(*groups)
 
 	def draw(self) -> None:
+		"""
+		Usage (Declare in child class):
+			`self.display`
+			`self.image`
+			`self.rect`
+			`self.offset`
+			`self.top_left`
+		"""
+
 		self.display.blit(self.image, (
 			self.rect.x - self.offset.x - self.top_left[0],
 			self.rect.y - self.offset.y - self.top_left[1]))
 
 	def gravity(self) -> None:
 		"""
-		Usage:
-			Declare `self.vel.y`, `self.fall_count` in child class.
+		Usage (Declare in child class):
+			`self.vel`
+			`self.fall_count`
 		"""
 
 		max_g = self.MAX_GRAVITY

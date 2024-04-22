@@ -48,7 +48,7 @@ class Level:
 		min_x, min_y = float('inf'), float('inf')
 		max_x, max_y = float('-inf'), float('-inf')
 
-		for key, value in self.map["on_grid"].items():
+		for _, value in self.map["on_grid"].items():
 			x, y = value["pos"]
 			min_x = min(min_x, x)
 			min_y = min(min_y, y)
