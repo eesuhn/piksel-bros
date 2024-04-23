@@ -4,13 +4,15 @@ from .background import Background
 
 
 class Level:
-	def __init__(self, level: str) -> None:
-		self.level = level
+	def __init__(self) -> None:
+		self.level = None
 		self.map = {}
 		self.on_grid = {}
 		self.objs = []
 
-	def load(self) -> None:
+	def load(self, level: str) -> None:
+		self.level = level
+
 		file = open(f"app/levels/{self.level}.json", "r")
 		data = json.load(file)
 		file.close()
@@ -21,7 +23,7 @@ class Level:
 		self.on_grid = data["on_grid"]
 
 	def init_level(self, camera: pygame.sprite.Group, target_player=True) -> list:
-		self.load()
+		self.camera = camera
 
 		if target_player:
 			Background(self.background, camera)
@@ -30,6 +32,9 @@ class Level:
 				self.player["start"][1],
 				camera))
 
+		return self.render()
+
+	def render(self) -> list:
 		for key in self.on_grid:
 			on = self.on_grid[key]
 			self.objs.append(
@@ -38,12 +43,30 @@ class Level:
 					on["var"],
 					on["pos"][0],
 					on["pos"][1],
-					camera))
+					self.camera))
 
 		return self.objs
 
+	def load_added(self, x, y) -> None:
+		on = self.on_grid[f"{x};{y}"]
+		self.objs.append(
+			Terrain(
+				on["type"],
+				on["var"],
+				on["pos"][0],
+				on["pos"][1],
+				self.camera))
+
+	def load_removed(self, x, y) -> None:
+		x *= RECT_WIDTH
+		y *= RECT_HEIGHT
+
+		for obj in self.objs:
+			if obj.rect.x == x and obj.rect.y == y:
+				obj.kill()
+
 	def get_size(self, get_x_y=False) -> tuple:
-		self.load()
+		self.load(self.level)
 
 		min_x, min_y = float('inf'), float('inf')
 		max_x, max_y = float('-inf'), float('-inf')
@@ -67,7 +90,10 @@ class Level:
 		file = open(f"app/levels/{self.level}.json", "w")
 		json.dump(
 			{
+				"player": self.player,
+				"background": self.background,
 				"on_grid": self.on_grid,
 			},
-			file)
+			file,
+			indent="\t")
 		file.close()

@@ -17,6 +17,8 @@ class Editor(Game):
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
 
 	def load_level(self) -> None:
+		self.level.load("02")
+
 		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
 		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
 		self.camera = Camera(width, height)
@@ -28,6 +30,7 @@ class Editor(Game):
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
 
+		self.check_mouse()
 		self.camera.update(
 			display=self.display,
 			top_left=self.top_left)
@@ -39,6 +42,9 @@ class Editor(Game):
 		super().check_event()
 
 		for event in self.events:
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_RETURN:
+					self.level.save()
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1 and not self.right_click:
 					self.left_click = True
@@ -64,6 +70,29 @@ class Editor(Game):
 			0 - offset.y,
 			width,
 			height), 2)
+
+	def check_mouse(self) -> None:
+		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen, self.top_left)
+		x = int(self.wpos.x)
+		y = int(self.wpos.y)
+
+		if self.left_click:
+			self.add_block(x, y)
+		if self.right_click:
+			self.remove_block(x, y)
+
+	def add_block(self, x, y) -> None:
+		self.level.on_grid[f"{x};{y}"] = {
+			"type": "stone",
+			"var": 1,
+			"pos": [x, y]}
+		self.level.load_added(x, y)
+
+	def remove_block(self, x, y) -> None:
+		key = f"{x};{y}"
+		if key in self.level.on_grid:
+			del self.level.on_grid[key]
+			self.level.load_removed(x, y)
 
 
 class EditorCamera(pygame.sprite.Sprite):
@@ -103,8 +132,8 @@ class EditorCamera(pygame.sprite.Sprite):
 		adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
 		# 8 and 5 prob. due to 16/10 ratio.
-		w_pos = pygame.Vector2((
+		wpos = pygame.Vector2((
 			int((adjust.x + self.scroll.x) / RECT_WIDTH) + (top_left[0] // RECT_WIDTH) - 8,
 			int((adjust.y + self.scroll.y) / RECT_HEIGHT) + (top_left[1] // RECT_HEIGHT) - 5))
 
-		return w_pos
+		return wpos

@@ -37,7 +37,7 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.level = Level("02")
+		self.level = Level()
 		self.load_level()
 
 		while True:
@@ -46,6 +46,8 @@ class Game:
 			self.clock.tick(FPS)
 
 	def load_level(self) -> None:
+		self.level.load("02")
+
 		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
 		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
 		self.camera = Camera(width, height)
