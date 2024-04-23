@@ -4,11 +4,12 @@ from .utils import *
 
 class Background(pygame.sprite.Sprite):
 	BG_VEL = 10
-	BG_OPACITY = 30
+	BG_OPACITY = 215
 
 	def __init__(self, var: str, *groups) -> None:
 		super().__init__(*groups)
 		self.image = get_image(["background"], var, scale=2)
+		self.image.set_alpha(self.BG_OPACITY)
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
@@ -17,11 +18,6 @@ class Background(pygame.sprite.Sprite):
 
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 0)
-
-	def dim_surface(self) -> None:
-		dim_surf = pygame.Surface(self.display.get_size()).convert_alpha()
-		dim_surf.fill((0, 0, 0, self.BG_OPACITY))
-		self.display.blit(dim_surf, (0, 0))
 
 	def get_tiles(self) -> list:
 		tiles = []
@@ -48,4 +44,3 @@ class Background(pygame.sprite.Sprite):
 		self.update_y()
 		for tile in self.get_tiles():
 			self.display.blit(*tile)
-		self.dim_surface()
