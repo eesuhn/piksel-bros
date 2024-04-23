@@ -37,7 +37,7 @@ class Game:
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.level = Level("01")
+		self.level = Level("02")
 		self.load_level()
 
 		while True:
@@ -47,7 +47,7 @@ class Game:
 
 	def load_level(self) -> None:
 		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
-		self.top_left = (min_x * RECT_WIDTH, min_y * RECT_HEIGHT)
+		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
 		self.camera = Camera(width, height)
 
 		self.objs = self.level.init_level(self.camera)

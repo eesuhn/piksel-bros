@@ -18,8 +18,8 @@ class Entity(pygame.sprite.Sprite):
 		"""
 
 		self.display.blit(self.image, (
-			self.rect.x - self.offset.x - self.top_left[0],
-			self.rect.y - self.offset.y - self.top_left[1]))
+			self.rect.x - self.offset.x - self.top_left.x,
+			self.rect.y - self.offset.y - self.top_left.y))
 
 	def gravity(self) -> None:
 		"""

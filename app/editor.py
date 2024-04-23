@@ -8,13 +8,17 @@ class Editor(Game):
 	def __init__(self) -> None:
 		super().__init__()
 		pygame.display.set_caption("Editor - Piksel Bros.")
+		self.display = pygame.Surface((
+			SCREEN_WIDTH * CAM_SCALE,
+			SCREEN_HEIGHT * CAM_SCALE)).convert_alpha()
 		self.left_click = False
 		self.right_click = False
+		self.wpos = pygame.Vector2((0, 0))
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
 
 	def load_level(self) -> None:
 		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
-		self.top_left = (min_x * RECT_WIDTH, min_y * RECT_HEIGHT)
+		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
 		self.camera = Camera(width, height)
 
 		self.editor_camera = EditorCamera(0, 0, self.camera)
@@ -87,18 +91,20 @@ class EditorCamera(pygame.sprite.Sprite):
 		self.scroll.x += dir_x
 		self.scroll.y += dir_y
 
-	def mpos_to_wpos(self, o_screen: pygame.Vector2) -> tuple:
+	def mpos_to_wpos(self, o_screen: pygame.Vector2, top_left: pygame.Vector2) -> pygame.Vector2:
 		"""
 		Returns world position based on mouse position.
 		"""
 
 		mpos = pygame.Vector2(pygame.mouse.get_pos())
 
-		ratio_x = SCREEN_WIDTH / o_screen.x
-		ratio_y = SCREEN_HEIGHT / o_screen.y
+		ratio_x = SCREEN_WIDTH * CAM_SCALE / o_screen.x
+		ratio_y = SCREEN_HEIGHT * CAM_SCALE / o_screen.y
 		adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
-		w_pos_x = int((adjust.x + self.scroll.x) / RECT_WIDTH) - 8
-		w_pos_y = int((adjust.y + self.scroll.y) / RECT_HEIGHT) - 5
+		# 8 and 5 prob. due to 16/10 ratio.
+		w_pos = pygame.Vector2((
+			int((adjust.x + self.scroll.x) / RECT_WIDTH) + (top_left[0] // RECT_WIDTH) - 8,
+			int((adjust.y + self.scroll.y) / RECT_HEIGHT) + (top_left[1] // RECT_HEIGHT) - 5))
 
-		return w_pos_x, w_pos_y
+		return w_pos
