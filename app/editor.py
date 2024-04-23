@@ -34,6 +34,7 @@ class Editor(Game):
 		self.camera.update(
 			display=self.display,
 			top_left=self.top_left)
+		self.border()
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -63,13 +64,21 @@ class Editor(Game):
 				self.o_screen = pygame.Vector2((event.w, event.h))
 
 	def border(self) -> None:
+		keys = pygame.key.get_pressed()
+		if not keys[pygame.K_b]:
+			return
+
 		offset = self.camera.get_offset()
-		width, height = self.level.get_size()
-		pygame.draw.rect(self.display, (255, 0, 0, 128), (
-			0 - offset.x,
-			0 - offset.y,
-			width,
-			height), 2)
+		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
+
+		x = min_x * RECT_WIDTH - offset.x - RECT_WIDTH
+		y = min_y * RECT_HEIGHT - offset.y - RECT_HEIGHT
+
+		pygame.draw.rect(
+			self.display,
+			(255, 0, 0, 128),
+			(x, y, width, height),
+			2)
 
 	def check_mouse(self) -> None:
 		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen, self.top_left)
@@ -82,7 +91,11 @@ class Editor(Game):
 			self.remove_block(x, y)
 
 	def add_block(self, x, y) -> None:
-		self.level.on_grid[f"{x};{y}"] = {
+		key = f"{x};{y}"
+		if key in self.level.on_grid:
+			return
+
+		self.level.on_grid[key] = {
 			"type": "stone",
 			"var": 1,
 			"pos": [x, y]}
