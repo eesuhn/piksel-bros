@@ -29,8 +29,8 @@ class Camera(pygame.sprite.LayeredUpdates):
 			`self.set_border`, `self.delay`
 		"""
 
-		x = (self.target.rect.centerx - SCREEN_WIDTH / 2) - self.offset.x
-		y = (self.target.rect.centery - SCREEN_HEIGHT / 2) - self.offset.y
+		x = (-SCREEN_WIDTH // 2) + self.target.rect.centerx - self.offset.x
+		y = (-SCREEN_HEIGHT // 2) + self.target.rect.centery - self.offset.y
 
 		if self.delay:
 			self.offset.x += int(x / self.OFFSET_DELAY)

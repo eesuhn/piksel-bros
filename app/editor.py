@@ -90,7 +90,7 @@ class EditorCamera(pygame.sprite.Sprite):
 
 	def __init__(self, x, y, *groups) -> None:
 		super().__init__(*groups)
-		self.rect = pygame.Rect(x, y, 2, 2)
+		self.rect = pygame.Rect(x, y, SCREEN_WIDTH, SCREEN_HEIGHT)
 		self.scroll = pygame.Vector2((0, 0))
 
 	def update(self, **kwargs) -> None:
@@ -120,7 +120,6 @@ class EditorCamera(pygame.sprite.Sprite):
 		ratio_y = SCREEN_HEIGHT * CAM_SCALE / o_screen.y
 		adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
-		# -8, -5 prob. due to 16/10 ratio.
 		return pygame.Vector2((
-			int((adjust.x + self.scroll.x) / RECT_WIDTH) + (top_left.x // RECT_WIDTH) - 8,
-			int((adjust.y + self.scroll.y) / RECT_HEIGHT) + (top_left.y // RECT_HEIGHT) - 5))
+			((adjust.x + self.scroll.x) // RECT_WIDTH) + (top_left.x // RECT_WIDTH),
+			((adjust.y + self.scroll.y) // RECT_HEIGHT) + (top_left.y // RECT_HEIGHT)))
