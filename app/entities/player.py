@@ -30,6 +30,7 @@ class Player(Entity):
 			direction=True)
 		self.direction = "right"
 		self.animation_count = 0
+		self.head_rect, self.foot_rect = self.get_head_foot_rect()
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
@@ -78,31 +79,34 @@ class Player(Entity):
 
 	def update_rect(self) -> None:
 		"""
-		Update player's rect and mask.
+		Update `self.rect`, `self.mask`, `self.head_rect`, `self.foot_rect`.
 		"""
 
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
 		self.mask = pygame.mask.from_surface(self.image)
-		self.head_rect = self.get_head_rect()
-		self.foot_rect = self.get_foot_rect()
+		self.head_rect, self.foot_rect = self.get_head_foot_rect()
 
 	def debug_hitbox(self) -> None:
 		"""
+		Params:
+			`self.display`
 		Debug:
 			Draw player's hitbox.
 		"""
 
-		def draw_rect(rect, color):
+		def draw_rect(rect, color) -> None:
 			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
-
-		self.head_rect = self.get_head_rect()
-		self.foot_rect = self.get_foot_rect()
 
 		draw_rect(self.rect, (0, 255, 0))
 		draw_rect(self.head_rect, (255, 0, 0))
 		draw_rect(self.foot_rect, (255, 0, 0))
 
 	def move(self) -> None:
+		"""
+		Params:
+			`self.events`
+		"""
+
 		self.vel.x = 0
 		keys = pygame.key.get_pressed()
 
@@ -152,24 +156,28 @@ class Player(Entity):
 			return
 
 		if self.jump_count == 0:
-			self.vel.y = round(-self.PLAYER_VEL * 1.5)
+			self.vel.y = round(-self.PLAYER_VEL * 1.6)
 		elif self.jump_count == 1:
-			self.vel.y = round(-self.PLAYER_VEL * 3)
+			self.vel.y = round(-self.PLAYER_VEL * 1.8)
 
-		self.animation_count = 0
+		self.fall_count = 0
 		self.jump_count += 1
-		if self.jump_count == 1:
-			self.fall_count = 0
+		self.animation_count = 0
 
 	def land(self) -> None:
 		self.fall_count = 0
-		self.vel.y = 0
 		self.jump_count = 0
+		self.vel.y = 0
 
 	def hit_head(self) -> None:
 		self.vel.y = 0
 
 	def collision(self) -> None:
+		"""
+		Params:
+			`self.objs`
+		"""
+
 		self.vertical_collide(self.objs)
 
 		dx_check = self.PLAYER_VEL * 1.2
@@ -201,22 +209,16 @@ class Player(Entity):
 		self.handle_move(-dx, 0)
 		return collided
 
-	def get_head_rect(self) -> pygame.Rect:
-		x_pos = 14
-		y_pos = 8
+	def get_head_foot_rect(self) -> tuple[pygame.Rect, pygame.Rect]:
 
-		return pygame.Rect(
-			self.rect.x + x_pos,
-			self.rect.y + y_pos,
-			self.rect.width - (x_pos * 2),
-			2)
+		def get_rect(x_pos, y_pos) -> pygame.Rect:
+			return pygame.Rect(
+				self.rect.x + x_pos,
+				self.rect.y + y_pos,
+				self.rect.width - (x_pos * 2),
+				2)
 
-	def get_foot_rect(self) -> pygame.Rect:
-		x_pos = 14
-		y_pos = self.rect.height - 2
+		head_rect = get_rect(14, 8)
+		foot_rect = get_rect(14, self.rect.height - 2)
 
-		return pygame.Rect(
-			self.rect.x + x_pos,
-			self.rect.y + y_pos,
-			self.rect.width - (x_pos * 2),
-			2)
+		return head_rect, foot_rect

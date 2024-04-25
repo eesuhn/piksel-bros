@@ -19,14 +19,18 @@ class Background(pygame.sprite.Sprite):
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 0)
 
-	def get_tiles(self) -> list:
-		tiles = []
+	def load(self) -> None:
+		"""
+		Params:
+			`self.display`
+		"""
+
+		self.update_y()
 		for x in range(self.num_tiles_x):
 			for y in range(self.num_tiles_y):
 				tile_x = x * self.tile_width
 				tile_y = (y * self.tile_height) - self.offset_y
-				tiles.append((self.image, (tile_x, tile_y)))
-		return tiles
+				self.display.blit(self.image, (tile_x, tile_y))
 
 	def update_y(self) -> None:
 		self.offset_y += 0.1 * self.BG_VEL
@@ -41,6 +45,4 @@ class Background(pygame.sprite.Sprite):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
-		self.update_y()
-		for tile in self.get_tiles():
-			self.display.blit(*tile)
+		self.load()

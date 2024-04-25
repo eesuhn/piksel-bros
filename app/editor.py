@@ -17,24 +17,22 @@ class Editor(Game):
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
 
 	def load_level(self) -> None:
-		self.level.load("02")
+		self.level.init_level("01")
 
-		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
-		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
+		width, height = self.level.get_size()
 		self.camera = Camera(width, height)
+		self.top_left, _ = self.level.get_min_max()
 
 		self.editor_camera = EditorCamera(0, 0, self.camera)
 		self.camera.add_target(self.editor_camera)
-		self.level.init_level(self.camera, target_player=False)
+		self.level.load(self.camera, target_player=False)
 
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
 
 		self.check_mouse()
 		self.camera.update(
-			display=self.display,
-			top_left=self.top_left)
-		self.border()
+			display=self.display)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -51,10 +49,6 @@ class Editor(Game):
 					self.left_click = True
 				if event.button == 3 and not self.left_click:
 					self.right_click = True
-				if event.button == 4:
-					...
-				if event.button == 5:
-					...
 			if event.type == pygame.MOUSEBUTTONUP:
 				if event.button == 1:
 					self.left_click = False
@@ -62,23 +56,6 @@ class Editor(Game):
 					self.right_click = False
 			if event.type == pygame.VIDEORESIZE:
 				self.o_screen = pygame.Vector2((event.w, event.h))
-
-	def border(self) -> None:
-		keys = pygame.key.get_pressed()
-		if not keys[pygame.K_b]:
-			return
-
-		offset = self.camera.get_offset()
-		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
-
-		x = min_x * RECT_WIDTH - offset.x - RECT_WIDTH
-		y = min_y * RECT_HEIGHT - offset.y - RECT_HEIGHT
-
-		pygame.draw.rect(
-			self.display,
-			(255, 0, 0, 128),
-			(x, y, width, height),
-			2)
 
 	def check_mouse(self) -> None:
 		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen, self.top_left)
@@ -139,14 +116,11 @@ class EditorCamera(pygame.sprite.Sprite):
 		"""
 
 		mpos = pygame.Vector2(pygame.mouse.get_pos())
-
 		ratio_x = SCREEN_WIDTH * CAM_SCALE / o_screen.x
 		ratio_y = SCREEN_HEIGHT * CAM_SCALE / o_screen.y
 		adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
-		# 8 and 5 prob. due to 16/10 ratio.
-		wpos = pygame.Vector2((
-			int((adjust.x + self.scroll.x) / RECT_WIDTH) + (top_left[0] // RECT_WIDTH) - 8,
-			int((adjust.y + self.scroll.y) / RECT_HEIGHT) + (top_left[1] // RECT_HEIGHT) - 5))
-
-		return wpos
+		# -8, -5 prob. due to 16/10 ratio.
+		return pygame.Vector2((
+			int((adjust.x + self.scroll.x) / RECT_WIDTH) + (top_left.x // RECT_WIDTH) - 8,
+			int((adjust.y + self.scroll.y) / RECT_HEIGHT) + (top_left.y // RECT_HEIGHT) - 5))

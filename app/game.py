@@ -46,13 +46,12 @@ class Game:
 			self.clock.tick(FPS)
 
 	def load_level(self) -> None:
-		self.level.load("02")
+		self.level.init_level("01")
 
-		width, height, min_x, min_y, _, _ = self.level.get_size(get_x_y=True)
-		self.top_left = pygame.Vector2((min_x * RECT_WIDTH, min_y * RECT_HEIGHT))
+		width, height = self.level.get_size()
 		self.camera = Camera(width, height)
 
-		self.objs = self.level.init_level(self.camera)
+		self.objs = self.level.load(self.camera)
 
 	def check_event(self) -> None:
 		self.events = pygame.event.get()
@@ -88,7 +87,6 @@ class Game:
 		self.camera.update(
 			events=self.events,
 			display=self.display,
-			top_left=self.top_left,
 			objs=self.objs,
 			set_border=True,
 			delay=True)
