@@ -19,8 +19,7 @@ class Editor(Game):
 	def load_level(self) -> None:
 		self.level.init_level("01")
 
-		width, height = self.level.get_size()
-		self.camera = Camera(width, height)
+		self.camera = Camera()
 		self.top_left, _ = self.level.get_min_max()
 
 		self.editor_camera = EditorCamera(0, 0, self.camera)
@@ -109,6 +108,13 @@ class EditorCamera(pygame.sprite.Sprite):
 		self.rect.y += dir_y
 		self.scroll.x += dir_x
 		self.scroll.y += dir_y
+		self.set_border()
+
+	def set_border(self) -> None:
+		self.rect.x = max(0, self.rect.x)
+		self.rect.y = max(0, self.rect.y)
+		self.scroll.x = max(0, self.scroll.x)
+		self.scroll.y = max(0, self.scroll.y)
 
 	def mpos_to_wpos(self, o_screen: pygame.Vector2, top_left: pygame.Vector2) -> pygame.Vector2:
 		"""

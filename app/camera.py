@@ -4,10 +4,10 @@ from ._internal import *
 class Camera(pygame.sprite.LayeredUpdates):
 	OFFSET_DELAY = 10
 
-	def __init__(self, level_width, level_height) -> None:
+	def __init__(self, width=0, height=0) -> None:
 		super().__init__()
-		self.level_width = level_width
-		self.level_height = level_height
+		self.width = width
+		self.height = height
 		self.offset = pygame.Vector2((0, 0))
 		self.set_border = False
 		self.delay = False
@@ -40,5 +40,5 @@ class Camera(pygame.sprite.LayeredUpdates):
 			self.offset.y += y
 
 		if self.set_border:
-			self.offset.x = max(0, min(self.offset.x, self.level_width - SCREEN_WIDTH))
-			self.offset.y = max(0, min(self.offset.y, self.level_height - SCREEN_HEIGHT))
+			self.offset.x = max(0, min(self.offset.x, self.width - SCREEN_WIDTH))
+			self.offset.y = max(0, min(self.offset.y, self.height - SCREEN_HEIGHT))
