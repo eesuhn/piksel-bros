@@ -19,10 +19,10 @@ class Editor(Game):
 	def load_level(self) -> None:
 		self.level.init_level("01")
 
-		self.top_left = pygame.Vector2((0, 0))
+		min_pos, _ = self.level.get_min_max()
 		self.camera = Camera()
 
-		self.editor_camera = EditorCamera(0, 0, self.camera)
+		self.editor_camera = EditorCamera(min_pos.x, min_pos.y, self.camera)
 		self.camera.add_target(self.editor_camera)
 		self.level.load(self.camera, target_player=False)
 
@@ -32,7 +32,7 @@ class Editor(Game):
 		self.check_mouse()
 		self.camera.update(
 			display=self.display,
-			top_left=self.top_left)
+			top_left=pygame.Vector2((0, 0)))
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -92,7 +92,7 @@ class EditorCamera(pygame.sprite.Sprite):
 	def __init__(self, x, y, *groups) -> None:
 		super().__init__(*groups)
 		self.rect = pygame.Rect(x, y, SCREEN_WIDTH, SCREEN_HEIGHT)
-		self.scroll = pygame.Vector2((0, 0))
+		self.scroll = pygame.Vector2((x, y))
 
 	def update(self, **kwargs) -> None:
 		self.move()
