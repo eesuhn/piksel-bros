@@ -49,6 +49,7 @@ class Game:
 		self.level.init_level("01")
 
 		width, height = self.level.get_size()
+		self.top_left, _ = self.level.get_min_max()
 		self.camera = Camera(width, height)
 
 		self.objs = self.level.load(self.camera)
@@ -88,6 +89,7 @@ class Game:
 			events=self.events,
 			display=self.display,
 			objs=self.objs,
+			top_left=self.top_left,
 			set_border=True,
 			delay=True)
 

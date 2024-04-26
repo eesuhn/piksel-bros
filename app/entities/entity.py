@@ -10,12 +10,12 @@ class Entity(pygame.sprite.Sprite):
 	def draw(self) -> None:
 		"""
 		Params:
-			`self.display`, `self.image`, `self.rect`, `self.offset`
+			`self.display`, `self.image`, `self.rect`, `self.offset`, `self.top_left`
 		"""
 
 		self.display.blit(self.image, (
-			self.rect.x - self.offset.x,
-			self.rect.y - self.offset.y))
+			self.rect.x - self.offset.x - self.top_left.x,
+			self.rect.y - self.offset.y - self.top_left.y))
 
 	def gravity(self) -> None:
 		"""

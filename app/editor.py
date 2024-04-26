@@ -19,8 +19,8 @@ class Editor(Game):
 	def load_level(self) -> None:
 		self.level.init_level("01")
 
+		self.top_left = pygame.Vector2((0, 0))
 		self.camera = Camera()
-		self.top_left, _ = self.level.get_min_max()
 
 		self.editor_camera = EditorCamera(0, 0, self.camera)
 		self.camera.add_target(self.editor_camera)
@@ -31,7 +31,8 @@ class Editor(Game):
 
 		self.check_mouse()
 		self.camera.update(
-			display=self.display)
+			display=self.display,
+			top_left=self.top_left)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -57,9 +58,10 @@ class Editor(Game):
 				self.o_screen = pygame.Vector2((event.w, event.h))
 
 	def check_mouse(self) -> None:
-		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen, self.top_left)
+		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen)
 		x = int(self.wpos.x)
 		y = int(self.wpos.y)
+		print(x, y)
 
 		if self.left_click:
 			self.add_block(x, y)
@@ -116,7 +118,7 @@ class EditorCamera(pygame.sprite.Sprite):
 		self.scroll.x = max(0, self.scroll.x)
 		self.scroll.y = max(0, self.scroll.y)
 
-	def mpos_to_wpos(self, o_screen: pygame.Vector2, top_left: pygame.Vector2) -> pygame.Vector2:
+	def mpos_to_wpos(self, o_screen: pygame.Vector2) -> pygame.Vector2:
 		"""
 		Returns world position based on mouse position.
 		"""
@@ -127,5 +129,5 @@ class EditorCamera(pygame.sprite.Sprite):
 		adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
 		return pygame.Vector2((
-			((adjust.x + self.scroll.x) // RECT_WIDTH) + (top_left.x // RECT_WIDTH),
-			((adjust.y + self.scroll.y) // RECT_HEIGHT) + (top_left.y // RECT_HEIGHT)))
+			(adjust.x + self.scroll.x) // RECT_WIDTH,
+			(adjust.y + self.scroll.y) // RECT_HEIGHT))
