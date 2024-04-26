@@ -9,7 +9,7 @@ class Player(Entity):
 	PLAYER_VEL = 4
 	ANIMATION_DELAY = 2.4
 
-	def __init__(self, x, y, *groups) -> None:
+	def __init__(self, name, x, y, *groups) -> None:
 		super().__init__(*groups)
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
@@ -23,16 +23,21 @@ class Player(Entity):
 		self.fall_count = 0
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
-			["main_characters", "ninja_frog"],
+			["main_characters", name],
 			self.PLAYER_WIDTH,
 			self.PLAYER_HEIGHT,
 			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
+		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT))
+		self.static_image = get_image(
+			["main_characters", name],
+			"static")
 		self.direction = "right"
 		self.animation_count = 0
 		self.head_rect, self.foot_rect = self.get_head_foot_rect()
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
+		self.static_player = False
 
 		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
@@ -45,13 +50,14 @@ class Player(Entity):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
+		if self.static_player:
+			self.draw_static()
+			return
+
 		# self.debug_hitbox()
 		self.animate()
-		self.draw()
-		self.update_rect_mask()
 		self.move()
 		self.collision()
-		self.gravity()
 
 	def animate(self) -> None:
 		sprites_sheet = "idle"
@@ -76,6 +82,21 @@ class Player(Entity):
 			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
 		self.animation_count = (self.animation_count + 1) % max_animation_count
 		self.image = sprites[sprite_index]
+
+		self.draw()
+
+	def draw_static(self) -> None:
+		"""
+		For editor.
+		"""
+
+		pygame.draw.rect(
+			self.image,
+			(0, 255, 0),
+			(0, 0, RECT_WIDTH, RECT_HEIGHT))
+		self.image.blit(self.static_image, (0, 0))
+
+		self.draw()
 
 	def update_rect_mask(self) -> None:
 		"""
@@ -106,6 +127,8 @@ class Player(Entity):
 		Params:
 			`self.events`
 		"""
+
+		self.update_rect_mask()
 
 		self.vel.x = 0
 		keys = pygame.key.get_pressed()
@@ -183,6 +206,8 @@ class Player(Entity):
 		dx_check = self.PLAYER_VEL * 1.2
 		self.collide_left = self.horizontal_collide(self.objs, -dx_check)
 		self.collide_right = self.horizontal_collide(self.objs, dx_check)
+
+		self.gravity()
 
 	def vertical_collide(self, objs: list) -> None:
 		self.head_sprite.rect = self.head_rect

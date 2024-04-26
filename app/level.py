@@ -97,3 +97,6 @@ class Level:
 
 	def get_player_pos(self) -> pygame.Vector2:
 		return pygame.Vector2((self.player["start"][0], self.player["start"][1]))
+
+	def get_player_name(self) -> str:
+		return self.player["name"]

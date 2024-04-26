@@ -20,10 +20,12 @@ class Editor(Game):
 		self.level.init_level("01")
 
 		self.camera = Camera()
-		player_pos = self.level.get_player_pos()
+		player_name = self.level.get_player_name()
+		self.player_pos = self.level.get_player_pos()
+		self.player = Player(player_name, self.player_pos.x, self.player_pos.y, self.camera)
 		cam_pos = pygame.Vector2((
-			(player_pos.x * RECT_WIDTH) - (SCREEN_WIDTH // 2),
-			(player_pos.y * RECT_HEIGHT) - (SCREEN_HEIGHT // 2)
+			(self.player_pos.x * RECT_WIDTH) - (SCREEN_WIDTH // 2),
+			(self.player_pos.y * RECT_HEIGHT) - (SCREEN_HEIGHT // 2)
 		))
 		self.editor_camera = EditorCamera(cam_pos.x, cam_pos.y, self.camera)
 
@@ -35,7 +37,8 @@ class Editor(Game):
 		self.check_mouse()
 		self.camera.update(
 			display=self.display,
-			top_left=pygame.Vector2((0, 0)))
+			top_left=pygame.Vector2((0, 0)),
+			static_player=True)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()
@@ -75,6 +78,8 @@ class Editor(Game):
 		key = f"{x};{y}"
 		if key in self.level.on_grid:
 			return
+		if x == self.player_pos.x and y == self.player_pos.y:
+			return
 
 		self.level.on_grid[key] = {
 			"type": "stone",
@@ -98,6 +103,10 @@ class EditorCamera(pygame.sprite.Sprite):
 		self.scroll = pygame.Vector2((x, y))
 
 	def update(self, **kwargs) -> None:
+		"""
+		Call in game loop.
+		"""
+
 		self.move()
 
 	def move(self) -> None:
