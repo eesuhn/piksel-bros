@@ -48,7 +48,7 @@ class Player(Entity):
 		# self.debug_hitbox()
 		self.animate()
 		self.draw()
-		self.update_rect()
+		self.update_rect_mask()
 		self.move()
 		self.collision()
 		self.gravity()
@@ -77,7 +77,7 @@ class Player(Entity):
 		self.animation_count = (self.animation_count + 1) % max_animation_count
 		self.image = sprites[sprite_index]
 
-	def update_rect(self) -> None:
+	def update_rect_mask(self) -> None:
 		"""
 		Update `self.rect`, `self.mask`, `self.head_rect`, `self.foot_rect`.
 		"""
