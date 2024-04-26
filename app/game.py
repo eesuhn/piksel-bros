@@ -49,7 +49,7 @@ class Game:
 		self.level.init_level("01")
 
 		width, height = self.level.get_size()
-		self.top_left, _ = self.level.get_min_max()
+		self.top_left, self.bottom_right = self.level.get_min_max()
 		self.camera = Camera(width, height)
 
 		player_name = self.level.get_player_name()
@@ -94,6 +94,7 @@ class Game:
 			display=self.display,
 			objs=self.objs,
 			top_left=self.top_left,
+			bottom_right=self.bottom_right,
 			set_border=True,
 			delay=True)
 

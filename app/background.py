@@ -16,7 +16,7 @@ class Background(pygame.sprite.Sprite):
 		self.num_tiles_y = SCREEN_HEIGHT // self.tile_height + 1
 		self.offset_y = 0
 
-		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 0)
 
 	def load(self) -> None:

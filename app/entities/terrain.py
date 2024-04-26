@@ -14,7 +14,7 @@ class Terrain(Entity):
 		self.image = get_image(["terrain", type], f"{var}")
 		self.mask = pygame.mask.from_surface(self.image)
 
-		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
 	def update(self, **kwargs) -> None:

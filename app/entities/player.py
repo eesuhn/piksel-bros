@@ -39,7 +39,7 @@ class Player(Entity):
 		self.foot_sprite = pygame.sprite.Sprite()
 		self.static_player = False
 
-		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
 	def update(self, **kwargs) -> None:
@@ -145,6 +145,13 @@ class Player(Entity):
 					self.jump()
 
 		self.handle_move(self.vel.x, self.vel.y)
+		self.set_level_border()
+
+	def set_level_border(self) -> None:
+		if self.rect.x < self.top_left.x:
+			self.rect.x = self.top_left.x
+		if self.rect.right > self.bottom_right.x:
+			self.rect.right = self.bottom_right.x
 
 	def handle_move(self, dx, dy) -> None:
 		"""
