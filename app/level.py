@@ -19,15 +19,12 @@ class Level:
 		self.background = data["background"]
 		self.on_grid = data["on_grid"]
 
-	def load(self, camera: pygame.sprite.Group, target_player=True) -> list:
+	def load(self, camera: pygame.sprite.Group, target, edit=False) -> list:
 		self.camera = camera
+		camera.add_target(target)
 
-		if target_player:
+		if not edit:
 			Background(self.background, camera)
-			camera.add_target(Player(
-				self.player["start"][0],
-				self.player["start"][1],
-				camera))
 
 		for key in self.on_grid:
 			on = self.on_grid[key]
@@ -37,7 +34,7 @@ class Level:
 					on["var"],
 					on["pos"][0],
 					on["pos"][1],
-					self.camera))
+					camera))
 
 		return self.objs
 
@@ -97,3 +94,6 @@ class Level:
 			file,
 			indent="\t")
 		file.close()
+
+	def get_player_pos(self) -> pygame.Vector2:
+		return pygame.Vector2((self.player["start"][0], self.player["start"][1]))

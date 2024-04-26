@@ -19,12 +19,15 @@ class Editor(Game):
 	def load_level(self) -> None:
 		self.level.init_level("01")
 
-		min_pos, _ = self.level.get_min_max()
 		self.camera = Camera()
+		player_pos = self.level.get_player_pos()
+		cam_pos = pygame.Vector2((
+			(player_pos.x * RECT_WIDTH) - (SCREEN_WIDTH // 2),
+			(player_pos.y * RECT_HEIGHT) - (SCREEN_HEIGHT // 2)
+		))
+		self.editor_camera = EditorCamera(cam_pos.x, cam_pos.y, self.camera)
 
-		self.editor_camera = EditorCamera(min_pos.x, min_pos.y, self.camera)
-		self.camera.add_target(self.editor_camera)
-		self.level.load(self.camera, target_player=False)
+		self.level.load(self.camera, self.editor_camera, edit=True)
 
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))

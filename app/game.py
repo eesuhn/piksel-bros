@@ -51,8 +51,10 @@ class Game:
 		width, height = self.level.get_size()
 		self.top_left, _ = self.level.get_min_max()
 		self.camera = Camera(width, height)
+		player_pos = self.level.get_player_pos()
+		self.player = Player(player_pos.x, player_pos.y, self.camera)
 
-		self.objs = self.level.load(self.camera)
+		self.objs = self.level.load(self.camera, self.player)
 
 	def check_event(self) -> None:
 		self.events = pygame.event.get()
