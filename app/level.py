@@ -17,7 +17,7 @@ class Level:
 
 		self.player = data["player"]
 		self.background = data["background"]
-		self.on_grid = data["on_grid"]
+		self.terrain = data["terrain"]
 
 	def load(self, camera: pygame.sprite.Group, target, edit=False) -> list:
 		self.camera = camera
@@ -26,26 +26,26 @@ class Level:
 		if not edit:
 			Background(self.background, camera)
 
-		for key in self.on_grid:
-			on = self.on_grid[key]
+		for key in self.terrain:
+			val = self.terrain[key]
 			self.objs.append(
 				Terrain(
-					on["type"],
-					on["var"],
-					on["pos"][0],
-					on["pos"][1],
+					val["type"],
+					val["var"],
+					val["pos"][0],
+					val["pos"][1],
 					camera))
 
 		return self.objs
 
 	def load_added(self, x, y) -> None:
-		on = self.on_grid[f"{x};{y}"]
+		val = self.terrain[f"{x};{y}"]
 		self.objs.append(
 			Terrain(
-				on["type"],
-				on["var"],
-				on["pos"][0],
-				on["pos"][1],
+				val["type"],
+				val["var"],
+				val["pos"][0],
+				val["pos"][1],
 				self.camera))
 
 	def load_removed(self, x, y) -> None:
@@ -60,7 +60,7 @@ class Level:
 		min_x, min_y = float('inf'), float('inf')
 		max_x, max_y = 0, 0
 
-		for _, value in self.on_grid.items():
+		for _, value in self.terrain.items():
 			x, y = value["pos"]
 			min_x = min(min_x, x)
 			min_y = min(min_y, y)
@@ -89,7 +89,7 @@ class Level:
 			{
 				"player": self.player,
 				"background": self.background,
-				"on_grid": self.on_grid,
+				"terrain": self.terrain
 			},
 			file,
 			indent="\t")

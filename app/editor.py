@@ -59,6 +59,11 @@ class Editor(Game):
 			if event.type == pygame.VIDEORESIZE:
 				self.o_screen = pygame.Vector2((event.w, event.h))
 
+	def handle_per_sec_event(self) -> None:
+		super().handle_per_sec_event()
+
+		print(f"wpos: {self.wpos}")
+
 	def handle_keydown(self, event: pygame.event.Event) -> None:
 		super().handle_keydown(event)
 
@@ -72,6 +77,10 @@ class Editor(Game):
 		if event.button == 3:
 			if not self.left_click:
 				self.right_click = True
+		if event.button == 4:
+			print("Scroll up")
+		if event.button == 5:
+			print("Scroll down")
 
 	def handle_mousebuttonup(self, event: pygame.event.Event) -> None:
 		if event.button == 1:
@@ -82,7 +91,6 @@ class Editor(Game):
 	def check_mouse(self) -> None:
 		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen)
 		x, y = int(self.wpos.x), int(self.wpos.y)
-		print(f"{x + 1}, {y + 1}")
 
 		if self.left_click:
 			if not self.mpos_is_player_pos():
@@ -127,16 +135,15 @@ class Editor(Game):
 		self.player_pos = self.wpos
 
 	def is_block(self, x, y) -> bool:
-		return f"{int(x)};{int(y)}" in self.level.on_grid
+		return f"{int(x)};{int(y)}" in self.level.terrain
 
 	def add_block(self, x, y) -> None:
 		if self.drag_player:
 			return
-
 		if self.is_block(x, y):
 			return
 
-		self.level.on_grid[f"{x};{y}"] = {
+		self.level.terrain[f"{x};{y}"] = {
 			"type": "stone",
 			"var": 1,
 			"pos": [x, y]}
@@ -145,11 +152,10 @@ class Editor(Game):
 	def remove_block(self, x, y) -> None:
 		if self.drag_player:
 			return
-
 		if not self.is_block(x, y):
 			return
 
-		del self.level.on_grid[f"{x};{y}"]
+		del self.level.terrain[f"{x};{y}"]
 		self.level.load_removed(x, y)
 
 

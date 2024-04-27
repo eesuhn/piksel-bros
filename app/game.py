@@ -8,13 +8,13 @@ class Game:
 	def __init__(self) -> None:
 		self.ignore_warnings()
 		pygame.init()
-		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
+		pygame.time.set_timer(PER_SEC_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
 		screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), screen_flags)
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
-		self.check_cpu = "--cpu" in sys.argv
+		self.check_cpu = "--cpu" in sys.argv or "-c" in sys.argv
 
 	def ignore_warnings(self) -> None:
 		"""
@@ -27,12 +27,12 @@ class Game:
 		for m in message:
 			warnings.filterwarnings("ignore", message=m)
 
-	def cpu(self, event_type: int) -> None:
+	def cpu(self) -> None:
 		"""
 		Check CPU usage when "--cpu" is passed as an argument.
 		"""
 
-		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
+		if self.check_cpu:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
 	def run(self) -> None:
@@ -62,11 +62,15 @@ class Game:
 		self.events = pygame.event.get()
 
 		for event in self.events:
-			self.cpu(event.type)
 			if event.type == pygame.QUIT:
 				self.end()
+			if event.type == PER_SEC_EVENT:
+				self.handle_per_sec_event()
 			if event.type == pygame.KEYDOWN:
 				self.handle_keydown(event)
+
+	def handle_per_sec_event(self) -> None:
+		self.cpu()
 
 	def handle_keydown(self, event: pygame.event.Event) -> None:
 		if event.key == pygame.K_ESCAPE:
