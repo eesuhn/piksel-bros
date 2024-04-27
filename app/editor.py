@@ -15,6 +15,11 @@ class Editor(Game):
 		self.right_click = False
 		self.wpos = pygame.Vector2((0, 0))
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
+		self.obj_list = [
+			os.listdir(os.path.join("assets", "terrain"))
+		]
+		self.terrain_type_c = 0
+		self.terrain_type = self.obj_list[0][self.terrain_type_c]
 
 	def load_level(self) -> None:
 		self.level.init_level("01")
@@ -59,11 +64,6 @@ class Editor(Game):
 			if event.type == pygame.VIDEORESIZE:
 				self.o_screen = pygame.Vector2((event.w, event.h))
 
-	def handle_per_sec_event(self) -> None:
-		super().handle_per_sec_event()
-
-		print(f"wpos: {self.wpos}")
-
 	def handle_keydown(self, event: pygame.event.Event) -> None:
 		super().handle_keydown(event)
 
@@ -77,10 +77,8 @@ class Editor(Game):
 		if event.button == 3:
 			if not self.left_click:
 				self.right_click = True
-		if event.button == 4:
-			print("Scroll up")
-		if event.button == 5:
-			print("Scroll down")
+		if event.button == 4 or event.button == 5:
+			self.update_obj(event.button)
 
 	def handle_mousebuttonup(self, event: pygame.event.Event) -> None:
 		if event.button == 1:
@@ -144,7 +142,7 @@ class Editor(Game):
 			return
 
 		self.level.terrain[f"{x};{y}"] = {
-			"type": "stone",
+			"type": self.terrain_type,
 			"var": 1,
 			"pos": [x, y]}
 		self.level.load_added(x, y)
@@ -157,6 +155,15 @@ class Editor(Game):
 
 		del self.level.terrain[f"{x};{y}"]
 		self.level.load_removed(x, y)
+
+	def update_obj(self, event_btn: int) -> None:
+		if event_btn == 4:
+			self.terrain_type_c = (self.terrain_type_c + 1) % len(self.obj_list[0])
+		if event_btn == 5:
+			self.terrain_type_c = (self.terrain_type_c - 1) % len(self.obj_list[0])
+
+		self.terrain_type = self.obj_list[0][self.terrain_type_c]
+		print(f"{self.terrain_type_c}: {self.terrain_type}")
 
 
 class EditorCamera(pygame.sprite.Sprite):
