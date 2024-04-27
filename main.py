@@ -1,9 +1,14 @@
-from app import Game
+import sys
+
+from app import Game, Editor
 
 
 def main() -> None:
-	game = Game()
-	game.run()
+	if "--editor" in sys.argv or "-e" in sys.argv:
+		app = Editor()
+	else:
+		app = Game()
+	app.run()
 
 
 if __name__ == "__main__":

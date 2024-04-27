@@ -1,19 +1,20 @@
 from ._internal import *
-from . import *
 from .entities import *
+from .camera import Camera
+from .level import Level
 
 
 class Game:
 	def __init__(self) -> None:
 		self.ignore_warnings()
 		pygame.init()
-		pygame.time.set_timer(CPU_MONITOR_EVENT, 1000)
+		pygame.time.set_timer(PER_SEC_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
 		screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), screen_flags)
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
-		self.check_cpu = "--cpu" in sys.argv
+		self.check_cpu = "--cpu" in sys.argv or "-c" in sys.argv
 
 	def ignore_warnings(self) -> None:
 		"""
@@ -26,80 +27,63 @@ class Game:
 		for m in message:
 			warnings.filterwarnings("ignore", message=m)
 
-	def cpu(self, event_type: int) -> None:
+	def cpu(self) -> None:
 		"""
 		Check CPU usage when "--cpu" is passed as an argument.
 		"""
 
-		if self.check_cpu and event_type == CPU_MONITOR_EVENT:
+		if self.check_cpu:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
-		self.init_level()
+		self.level = Level()
+		self.load_level()
 
 		while True:
 			self.check_event()
 			self.loop()
 			self.clock.tick(FPS)
 
-	def init_level(self) -> None:
-		self.level = [
-			"PPPPPPPPPPPPPPPPPPPPPPPPP",
-			"P                       P",
-			"P                       P",
-			"P    PPP     PP         P",
-			"P                       P",
-			"P                PPP    P",
-			"P        PPP            P",
-			"P                       P",
-			"P            PPP        P",
-			"P      PP               P",
-			"P  P                    P",
-			"P                       P",
-			"PPPPPPPPPPPPPPPPPPPPPPPPP",
-		]
-		level_width = len(self.level[0]) * RECT_WIDTH
-		level_height = len(self.level) * RECT_HEIGHT
-
-		self.camera = Camera(level_width, level_height)
-		Background(self.camera)
-		self.camera.add_target(Player(1, 8, self.camera))
-		self.load_level()
-
 	def load_level(self) -> None:
-		self.objs = []
-		x = y = 0
-		for row in self.level:
-			for col in row:
-				if col == "P":
-					self.objs.append(
-						Terrain(x, y, self.camera))
-				x += 1
-			y += 1
-			x = 0
+		self.level.init_level("01")
 
-	def check_event(self) -> bool:
+		width, height = self.level.get_size()
+		self.top_left, self.bottom_right = self.level.get_min_max()
+		self.camera = Camera(width, height)
+
+		player_name = self.level.get_player_name()
+		self.player_pos = self.level.get_player_pos()
+		self.player = Player(player_name, self.player_pos.x, self.player_pos.y, self.camera)
+
+		self.objs = self.level.load(self.camera, self.player)
+
+	def check_event(self) -> None:
 		self.events = pygame.event.get()
 
 		for event in self.events:
-			self.cpu(event.type)
 			if event.type == pygame.QUIT:
 				self.end()
+			if event.type == PER_SEC_EVENT:
+				self.handle_per_sec_event()
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					if not self.is_fullscreen:
-						self.end()
-					else:
-						self.default_screen_size()
-				if event.key == pygame.K_F11:
-					if not self.is_fullscreen:
-						self.is_fullscreen = True
-						pygame.display.toggle_fullscreen()
-					else:
-						self.default_screen_size()
+				self.handle_keydown(event)
 
-		return True
+	def handle_per_sec_event(self) -> None:
+		self.cpu()
+
+	def handle_keydown(self, event: pygame.event.Event) -> None:
+		if event.key == pygame.K_ESCAPE:
+			if not self.is_fullscreen:
+				self.end()
+			else:
+				self.default_screen_size()
+		if event.key == pygame.K_F11:
+			if not self.is_fullscreen:
+				self.is_fullscreen = True
+				pygame.display.toggle_fullscreen()
+			else:
+				self.default_screen_size()
 
 	def end(self) -> None:
 		pygame.quit()
@@ -113,9 +97,13 @@ class Game:
 		self.display.fill((0, 0, 0))
 
 		self.camera.update(
-			display=self.display,
 			events=self.events,
-			objs=self.objs)
+			display=self.display,
+			objs=self.objs,
+			top_left=self.top_left,
+			bottom_right=self.bottom_right,
+			set_border=True,
+			delay=True)
 
 		self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 		pygame.display.update()

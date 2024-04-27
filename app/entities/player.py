@@ -1,5 +1,5 @@
 from ._internal import *
-from . import *
+from .entity import Entity
 from ..utils import *
 
 
@@ -9,7 +9,7 @@ class Player(Entity):
 	PLAYER_VEL = 4
 	ANIMATION_DELAY = 2.4
 
-	def __init__(self, x, y, *groups) -> None:
+	def __init__(self, name, x, y, *groups) -> None:
 		super().__init__(*groups)
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
@@ -23,30 +23,41 @@ class Player(Entity):
 		self.fall_count = 0
 		self.jump_count = 0
 		self.sheet = get_sprites_sheet(
-			["main_characters", "ninja_frog"],
+			["main_characters", name],
 			self.PLAYER_WIDTH,
 			self.PLAYER_HEIGHT,
 			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
+		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT))
+		self.static_image = get_image(
+			["main_characters", name],
+			"static")
 		self.direction = "right"
 		self.animation_count = 0
+		self.head_rect, self.foot_rect = self.get_head_foot_rect()
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
+		self.static_player = False
 
-		if isinstance(groups[0], pygame.sprite.LayeredUpdates):
+		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 1)
 
-	def update(self, events: pygame.event, display: pygame.Surface, offset: pygame.Vector2, objs: list, **kwargs) -> None:
+	def update(self, **kwargs) -> None:
 		"""
 		Call in game loop.
 		"""
 
+		for k, v in kwargs.items():
+			setattr(self, k, v)
+
+		if self.static_player:
+			self.draw_static()
+			return
+
+		# self.debug_hitbox()
 		self.animate()
-		self.update_rect()
-		self.move(events)
-		self.collision(objs)
-		self.gravity()
-		self.draw(display, offset)
+		self.move()
+		self.collision()
 
 	def animate(self) -> None:
 		sprites_sheet = "idle"
@@ -69,49 +80,56 @@ class Player(Entity):
 			len(sprites) * self.ANIMATION_DELAY)
 		sprite_index = int(
 			(self.animation_count % max_animation_count) / self.ANIMATION_DELAY)
-		self.sprite = sprites[sprite_index]
 		self.animation_count = (self.animation_count + 1) % max_animation_count
+		self.image = sprites[sprite_index]
 
-	def update_rect(self) -> None:
+		self.draw()
+
+	def draw_static(self) -> None:
 		"""
-		Update player's rect and mask.
+		For editor.
 		"""
 
-		self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
-		self.mask = pygame.mask.from_surface(self.sprite)
-		self.head_rect = self.get_head_rect()
-		self.foot_rect = self.get_foot_rect()
+		pygame.draw.rect(
+			self.image,
+			(0, 255, 0),
+			(0, 0, RECT_WIDTH, RECT_HEIGHT))
+		self.image.blit(self.static_image, (0, 0))
 
-	def draw(self, display: pygame.Surface, offset: pygame.Vector2) -> None:
-		# self.debug_hitbox(display)
+		self.draw()
 
-		display.blit(self.sprite, (
-			self.rect.x - offset.x,
-			self.rect.y - offset.y))
-
-	def debug_hitbox(self, display: pygame.Surface, offset=(0, 0)) -> None:
+	def update_rect_mask(self) -> None:
 		"""
+		Update `self.rect`, `self.mask`, `self.head_rect`, `self.foot_rect`.
+		"""
+
+		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+		self.mask = pygame.mask.from_surface(self.image)
+		self.head_rect, self.foot_rect = self.get_head_foot_rect()
+
+	def debug_hitbox(self) -> None:
+		"""
+		Params:
+			`self.display`
 		Debug:
 			Draw player's hitbox.
 		"""
 
-		pygame.draw.rect(display, (0, 255, 0), (
-			self.rect.x - offset[0],
-			self.rect.y - offset[1],
-			self.rect.width,
-			self.rect.height))
-		pygame.draw.rect(display, (255, 0, 0), (
-			self.head_rect.x - offset[0],
-			self.head_rect.y - offset[1],
-			self.head_rect.width,
-			self.head_rect.height))
-		pygame.draw.rect(display, (255, 0, 0), (
-			self.foot_rect.x - offset[0],
-			self.foot_rect.y - offset[1],
-			self.foot_rect.width,
-			self.foot_rect.height))
+		def draw_rect(rect, color) -> None:
+			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
 
-	def move(self, events: pygame.event) -> None:
+		draw_rect(self.rect, (0, 255, 0))
+		draw_rect(self.head_rect, (255, 0, 0))
+		draw_rect(self.foot_rect, (255, 0, 0))
+
+	def move(self) -> None:
+		"""
+		Params:
+			`self.events`
+		"""
+
+		self.update_rect_mask()
+
 		self.vel.x = 0
 		keys = pygame.key.get_pressed()
 
@@ -121,12 +139,19 @@ class Player(Entity):
 		if keys[pygame.K_RIGHT]:
 			self.move_right()
 
-		for event in events:
+		for event in self.events:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_SPACE:
 					self.jump()
 
 		self.handle_move(self.vel.x, self.vel.y)
+		self.set_level_border()
+
+	def set_level_border(self) -> None:
+		if self.rect.x < self.top_left.x:
+			self.rect.x = self.top_left.x
+		if self.rect.right > self.bottom_right.x:
+			self.rect.right = self.bottom_right.x
 
 	def handle_move(self, dx, dy) -> None:
 		"""
@@ -161,29 +186,35 @@ class Player(Entity):
 			return
 
 		if self.jump_count == 0:
-			self.vel.y = round(-self.PLAYER_VEL * 1.5)
+			self.vel.y = round(-self.PLAYER_VEL * 1.6)
 		elif self.jump_count == 1:
-			self.vel.y = round(-self.PLAYER_VEL * 3)
+			self.vel.y = round(-self.PLAYER_VEL * 1.8)
 
-		self.animation_count = 0
+		self.fall_count = 0
 		self.jump_count += 1
-		if self.jump_count == 1:
-			self.fall_count = 0
+		self.animation_count = 0
 
 	def land(self) -> None:
 		self.fall_count = 0
-		self.vel.y = 0
 		self.jump_count = 0
+		self.vel.y = 0
 
 	def hit_head(self) -> None:
 		self.vel.y = 0
 
-	def collision(self, objs: list) -> None:
-		self.vertical_collide(objs)
+	def collision(self) -> None:
+		"""
+		Params:
+			`self.objs`
+		"""
+
+		self.vertical_collide(self.objs)
 
 		dx_check = self.PLAYER_VEL * 1.2
-		self.collide_left = self.horizontal_collide(objs, -dx_check)
-		self.collide_right = self.horizontal_collide(objs, dx_check)
+		self.collide_left = self.horizontal_collide(self.objs, -dx_check)
+		self.collide_right = self.horizontal_collide(self.objs, dx_check)
+
+		self.gravity()
 
 	def vertical_collide(self, objs: list) -> None:
 		self.head_sprite.rect = self.head_rect
@@ -210,22 +241,16 @@ class Player(Entity):
 		self.handle_move(-dx, 0)
 		return collided
 
-	def get_head_rect(self) -> pygame.Rect:
-		x_pos = 14
-		y_pos = 8
+	def get_head_foot_rect(self) -> tuple[pygame.Rect, pygame.Rect]:
 
-		return pygame.Rect(
-			self.rect.x + x_pos,
-			self.rect.y + y_pos,
-			self.rect.width - (x_pos * 2),
-			2)
+		def get_rect(x_pos, y_pos) -> pygame.Rect:
+			return pygame.Rect(
+				self.rect.x + x_pos,
+				self.rect.y + y_pos,
+				self.rect.width - (x_pos * 2),
+				2)
 
-	def get_foot_rect(self) -> pygame.Rect:
-		x_pos = 14
-		y_pos = self.rect.height - 2
+		head_rect = get_rect(14, 8)
+		foot_rect = get_rect(14, self.rect.height - 2)
 
-		return pygame.Rect(
-			self.rect.x + x_pos,
-			self.rect.y + y_pos,
-			self.rect.width - (x_pos * 2),
-			2)
+		return head_rect, foot_rect
