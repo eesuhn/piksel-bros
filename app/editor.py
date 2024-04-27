@@ -23,11 +23,16 @@ class Editor(Game):
 		player_name = self.level.get_player_name()
 		self.player_pos = self.level.get_player_pos()
 		self.player = Player(player_name, self.player_pos.x, self.player_pos.y, self.camera)
+
 		cam_pos = pygame.Vector2((
 			(self.player_pos.x * RECT_WIDTH) - (SCREEN_WIDTH // 2),
 			(self.player_pos.y * RECT_HEIGHT) - (SCREEN_HEIGHT // 2)
 		))
 		self.editor_camera = EditorCamera(cam_pos.x, cam_pos.y, self.camera)
+
+		self.drag_player = False
+		self.player_opos = self.player_pos
+		self.player_dpos = self.player_pos
 
 		self.level.load(self.camera, self.editor_camera, edit=True)
 
@@ -47,51 +52,105 @@ class Editor(Game):
 		super().check_event()
 
 		for event in self.events:
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_RETURN:
-					self.level.save()
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if event.button == 1 and not self.right_click:
-					self.left_click = True
-				if event.button == 3 and not self.left_click:
-					self.right_click = True
+				self.handle_mousebuttondown(event)
 			if event.type == pygame.MOUSEBUTTONUP:
-				if event.button == 1:
-					self.left_click = False
-				if event.button == 3:
-					self.right_click = False
+				self.handle_mousebuttonup(event)
 			if event.type == pygame.VIDEORESIZE:
 				self.o_screen = pygame.Vector2((event.w, event.h))
 
+	def handle_keydown(self, event: pygame.event.Event) -> None:
+		super().handle_keydown(event)
+
+		if event.key == pygame.K_RETURN:
+			self.level.save()
+
+	def handle_mousebuttondown(self, event: pygame.event.Event) -> None:
+		if event.button == 1:
+			if not self.right_click:
+				self.left_click = True
+		if event.button == 3:
+			if not self.left_click:
+				self.right_click = True
+
+	def handle_mousebuttonup(self, event: pygame.event.Event) -> None:
+		if event.button == 1:
+			self.left_click = False
+		if event.button == 3:
+			self.right_click = False
+
 	def check_mouse(self) -> None:
 		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen)
-		x = int(self.wpos.x)
-		y = int(self.wpos.y)
-		print(x, y)
+		x, y = int(self.wpos.x), int(self.wpos.y)
+		print(f"wpos: {self.wpos}")
 
 		if self.left_click:
-			self.add_block(x, y)
+			if not self.mpos_is_player_pos():
+				self.add_block(x, y)
+			else:
+				self.drag_start()
+		else:
+			self.drag_end()
+
 		if self.right_click:
 			self.remove_block(x, y)
 
-	def add_block(self, x, y) -> None:
-		key = f"{x};{y}"
-		if key in self.level.on_grid:
+	def mpos_is_player_pos(self) -> bool:
+		return self.wpos.x == self.player_pos.x and self.wpos.y == self.player_pos.y
+
+	def drag_start(self) -> None:
+		if self.drag_player:
 			return
-		if x == self.player_pos.x and y == self.player_pos.y:
+		self.drag_player = True
+
+	def drag_end(self) -> None:
+		if not self.drag_player:
+			return
+		self.drag_player = False
+
+		if self.is_block(self.wpos.x, self.wpos.y):
+			return
+		self.move_player()
+
+	def move_player(self) -> None:
+		self.player_dpos = self.wpos
+
+		x = (self.player_dpos.x - self.player_opos.x) * self.player.rect.width
+		y = (self.player_dpos.y - self.player_opos.y) * self.player.rect.height
+		self.player.handle_move(int(x), int(y))
+
+		self.level.player["start"] = [
+			int(self.player_dpos.x),
+			int(self.player_dpos.y)]
+
+		self.player_opos = self.wpos
+		self.player_pos = self.wpos
+
+	def is_block(self, x, y) -> bool:
+		return f"{int(x)};{int(y)}" in self.level.on_grid
+
+	def add_block(self, x, y) -> None:
+		if self.drag_player:
 			return
 
-		self.level.on_grid[key] = {
+		if self.is_block(x, y):
+			return
+
+		self.level.on_grid[f"{x};{y}"] = {
 			"type": "stone",
 			"var": 1,
 			"pos": [x, y]}
 		self.level.load_added(x, y)
 
 	def remove_block(self, x, y) -> None:
-		key = f"{x};{y}"
-		if key in self.level.on_grid:
-			del self.level.on_grid[key]
-			self.level.load_removed(x, y)
+		if self.drag_player:
+			return
+
+		if not self.is_block(x, y):
+			return
+
+		del self.level.on_grid[f"{x};{y}"]
+		self.level.load_removed(x, y)
 
 
 class EditorCamera(pygame.sprite.Sprite):

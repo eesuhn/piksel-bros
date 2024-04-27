@@ -66,17 +66,20 @@ class Game:
 			if event.type == pygame.QUIT:
 				self.end()
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					if not self.is_fullscreen:
-						self.end()
-					else:
-						self.default_screen_size()
-				if event.key == pygame.K_F11:
-					if not self.is_fullscreen:
-						self.is_fullscreen = True
-						pygame.display.toggle_fullscreen()
-					else:
-						self.default_screen_size()
+				self.handle_keydown(event)
+
+	def handle_keydown(self, event: pygame.event.Event) -> None:
+		if event.key == pygame.K_ESCAPE:
+			if not self.is_fullscreen:
+				self.end()
+			else:
+				self.default_screen_size()
+		if event.key == pygame.K_F11:
+			if not self.is_fullscreen:
+				self.is_fullscreen = True
+				pygame.display.toggle_fullscreen()
+			else:
+				self.default_screen_size()
 
 	def end(self) -> None:
 		pygame.quit()
