@@ -41,4 +41,4 @@ class Camera(pygame.sprite.LayeredUpdates):
 
 		if self.set_border:
 			self.offset.x = max(0, min(self.offset.x, self.width - SCREEN_WIDTH))
-			self.offset.y = max(0, min(self.offset.y, self.height - SCREEN_HEIGHT))
+			self.offset.y = min(self.offset.y, self.height - SCREEN_HEIGHT)

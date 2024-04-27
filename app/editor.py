@@ -82,7 +82,7 @@ class Editor(Game):
 	def check_mouse(self) -> None:
 		self.wpos = self.editor_camera.mpos_to_wpos(self.o_screen)
 		x, y = int(self.wpos.x), int(self.wpos.y)
-		print(f"wpos: {self.wpos}")
+		print(f"{x + 1}, {y + 1}")
 
 		if self.left_click:
 			if not self.mpos_is_player_pos():
