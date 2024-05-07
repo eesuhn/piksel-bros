@@ -1,6 +1,6 @@
 # cache
 *.sw*
-__pycache__
+__pycache__/
 
 # virtual environment
 venv-*/
