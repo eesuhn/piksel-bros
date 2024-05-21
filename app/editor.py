@@ -15,11 +15,13 @@ class Editor(Game):
 		self.right_click = False
 		self.wpos = pygame.Vector2((0, 0))
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
-		self.obj_list = [
-			os.listdir(os.path.join("assets", "terrain"))
-		]
-		self.terrain_type_c = 0
-		self.terrain_type = self.obj_list[0][self.terrain_type_c]
+		self.obj_list = {
+			"terrain": os.listdir(os.path.join("assets", "terrain")),
+		}
+		self.cats = list(self.obj_list.keys())
+		self.current_cat_i = 0
+		self.current_obj_i = 0
+		self.update_current_obj()
 
 	def load_level(self) -> None:
 		self.level.init_level("01")
@@ -142,7 +144,7 @@ class Editor(Game):
 			return
 
 		self.level.terrain[f"{x};{y}"] = {
-			"type": self.terrain_type,
+			"type": self.current_obj,
 			"var": 1,
 			"pos": [x, y]}
 		self.level.load_added(x, y)
@@ -156,14 +158,28 @@ class Editor(Game):
 		del self.level.terrain[f"{x};{y}"]
 		self.level.load_removed(x, y)
 
-	def update_obj(self, event_btn: int) -> None:
-		if event_btn == 4:
-			self.terrain_type_c = (self.terrain_type_c + 1) % len(self.obj_list[0])
-		if event_btn == 5:
-			self.terrain_type_c = (self.terrain_type_c - 1) % len(self.obj_list[0])
+	def update_current_obj(self) -> None:
+		current_cat = self.cats[self.current_cat_i]
+		self.current_obj = self.obj_list[current_cat][self.current_obj_i]
+		print(f"{current_cat} - {self.current_obj_i}: {self.current_obj}")
 
-		self.terrain_type = self.obj_list[0][self.terrain_type_c]
-		print(f"{self.terrain_type_c}: {self.terrain_type}")
+	def update_obj(self, event_btn: int) -> None:
+		left_shift = pygame.key.get_pressed()[pygame.K_LSHIFT]
+
+		if left_shift:
+			if event_btn == 4:
+				self.current_cat_i = (self.current_cat_i + 1) % len(self.cats)
+			if event_btn == 5:
+				self.current_cat_i = (self.current_cat_i - 1) % len(self.cats)
+			self.current_obj_i = 0
+		else:
+			current_cat = self.cats[self.current_cat_i]
+			if event_btn == 4:
+				self.current_obj_i = (self.current_obj_i + 1) % len(self.obj_list[current_cat])
+			if event_btn == 5:
+				self.current_obj_i = (self.current_obj_i - 1) % len(self.obj_list[current_cat])
+
+		self.update_current_obj()
 
 
 class EditorCamera(pygame.sprite.Sprite):
