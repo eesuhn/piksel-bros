@@ -143,11 +143,13 @@ class Editor(Game):
 		if self.is_block(x, y):
 			return
 
-		self.level.terrain[f"{x};{y}"] = {
-			"type": self.current_obj,
-			"var": 1,
-			"pos": [x, y]}
-		self.level.load_added(x, y)
+		if self.current_cat == "terrain":
+			self.level.terrain[f"{x};{y}"] = {
+				"type": self.current_obj,
+				"var": 1,
+				"pos": [x, y]}
+
+		self.level.load_objs()
 
 	def remove_block(self, x, y) -> None:
 		if self.drag_player:
@@ -159,9 +161,9 @@ class Editor(Game):
 		self.level.load_removed(x, y)
 
 	def update_current_obj(self) -> None:
-		current_cat = self.cats[self.current_cat_i]
-		self.current_obj = self.obj_list[current_cat][self.current_obj_i]
-		print(f"{current_cat} - {self.current_obj_i}: {self.current_obj}")
+		self.current_cat = self.cats[self.current_cat_i]
+		self.current_obj = self.obj_list[self.current_cat][self.current_obj_i]
+		print(f"{self.current_cat} % {self.current_obj_i}: {self.current_obj}")
 
 	def update_obj(self, event_btn: int) -> None:
 		left_shift = pygame.key.get_pressed()[pygame.K_LSHIFT]
@@ -173,11 +175,11 @@ class Editor(Game):
 				self.current_cat_i = (self.current_cat_i - 1) % len(self.cats)
 			self.current_obj_i = 0
 		else:
-			current_cat = self.cats[self.current_cat_i]
+			self.current_cat = self.cats[self.current_cat_i]
 			if event_btn == 4:
-				self.current_obj_i = (self.current_obj_i + 1) % len(self.obj_list[current_cat])
+				self.current_obj_i = (self.current_obj_i + 1) % len(self.obj_list[self.current_cat])
 			if event_btn == 5:
-				self.current_obj_i = (self.current_obj_i - 1) % len(self.obj_list[current_cat])
+				self.current_obj_i = (self.current_obj_i - 1) % len(self.obj_list[self.current_cat])
 
 		self.update_current_obj()
 

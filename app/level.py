@@ -26,6 +26,13 @@ class Level:
 		if not edit:
 			Background(self.background, camera)
 
+		self.load_objs()
+		return self.objs
+
+	def load_objs(self) -> None:
+		self.load_terrain()
+
+	def load_terrain(self) -> None:
 		for key in self.terrain:
 			val = self.terrain[key]
 			self.objs.append(
@@ -34,9 +41,7 @@ class Level:
 					val["var"],
 					val["pos"][0],
 					val["pos"][1],
-					camera))
-
-		return self.objs
+					self.camera))
 
 	def load_added(self, x, y) -> None:
 		val = self.terrain[f"{x};{y}"]
@@ -89,7 +94,7 @@ class Level:
 			{
 				"player": self.player,
 				"background": self.background,
-				"terrain": self.terrain
+				"terrain": self.terrain,
 			},
 			file,
 			indent="\t")
