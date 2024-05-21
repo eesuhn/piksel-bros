@@ -18,7 +18,7 @@ if [ ! -d "$VENV_DIR" ]; then
 	source "$VENV_DIR/bin/activate"
 
 	printf "Installing Requirements...${NC}\n"
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 	if [ $? -ne 0 ]; then
 		printf "${RED}Error${NC}: Failed to install requirements\n"
