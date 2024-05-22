@@ -224,10 +224,12 @@ class Player(Entity):
 			if pygame.sprite.collide_rect(self.head_sprite, obj):
 				self.rect.top = obj.rect.bottom
 				self.hit_head()
+				break
 
 			if pygame.sprite.collide_rect(self.foot_sprite, obj):
 				self.rect.bottom = obj.rect.top
 				self.land()
+				break
 
 	def horizontal_collide(self, objs: list, dx) -> bool:
 		self.handle_move(dx, 0)

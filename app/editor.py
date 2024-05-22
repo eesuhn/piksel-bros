@@ -175,7 +175,6 @@ class Editor(Game):
 	def update_current_obj(self) -> None:
 		self.current_cat = self.cats[self.current_cat_i]
 		self.current_obj = self.obj_list[self.current_cat][self.current_obj_i]
-		# print(f"{self.current_cat} % {self.current_obj_i}: {self.current_obj}")
 
 	def update_obj(self, event_btn: int) -> None:
 		"""
