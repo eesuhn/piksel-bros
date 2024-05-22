@@ -9,6 +9,9 @@ class Level:
 		self.objs = []
 
 	def init_level(self, level: str) -> None:
+		"""
+		Load level data from json file
+		"""
 		self.level = level
 
 		file = open(f"app/levels/{self.level}.json", "r")
@@ -26,6 +29,13 @@ class Level:
 		if not edit:
 			Background(self.background, camera)
 
+		self.load_objs()
+		return self.objs
+
+	def load_objs(self) -> None:
+		self.load_terrain()
+
+	def load_terrain(self) -> None:
 		for key in self.terrain:
 			val = self.terrain[key]
 			self.objs.append(
@@ -34,19 +44,7 @@ class Level:
 					val["var"],
 					val["pos"][0],
 					val["pos"][1],
-					camera))
-
-		return self.objs
-
-	def load_added(self, x, y) -> None:
-		val = self.terrain[f"{x};{y}"]
-		self.objs.append(
-			Terrain(
-				val["type"],
-				val["var"],
-				val["pos"][0],
-				val["pos"][1],
-				self.camera))
+					self.camera))
 
 	def load_removed(self, x, y) -> None:
 		x *= RECT_WIDTH
@@ -57,6 +55,9 @@ class Level:
 				obj.kill()
 
 	def get_min_max(self) -> tuple[pygame.Vector2, pygame.Vector2]:
+		"""
+		Get (top, left), (bottom, right) coordinates of the level
+		"""
 		min_x, min_y = float('inf'), float('inf')
 		max_x, max_y = 0, 0
 
@@ -89,7 +90,7 @@ class Level:
 			{
 				"player": self.player,
 				"background": self.background,
-				"terrain": self.terrain
+				"terrain": self.terrain,
 			},
 			file,
 			indent="\t")

@@ -13,14 +13,14 @@ class Game:
 		screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), screen_flags)
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
+
 		self.is_fullscreen = False
 		self.check_cpu = "--cpu" in sys.argv or "-c" in sys.argv
 
 	def ignore_warnings(self) -> None:
 		"""
-		Ignore warnings from `pygame`.
+		Ignore warnings from `pygame`
 		"""
-
 		message = [
 			"re-creating window in toggle_fullscreen",
 		]
@@ -29,9 +29,8 @@ class Game:
 
 	def cpu(self) -> None:
 		"""
-		Check CPU usage when "--cpu" is passed as an argument.
+		Check CPU usage when "--cpu" is passed as an argument
 		"""
-
 		if self.check_cpu:
 			print(f"CPU: {psutil.cpu_percent()}%")
 
@@ -70,6 +69,9 @@ class Game:
 				self.handle_keydown(event)
 
 	def handle_per_sec_event(self) -> None:
+		"""
+		Handle events that occur every second, outside of main loop
+		"""
 		self.cpu()
 
 	def handle_keydown(self, event: pygame.event.Event) -> None:
