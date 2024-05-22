@@ -30,7 +30,7 @@ class Player(Entity):
 			self.PLAYER_HEIGHT,
 			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
-		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT))
+		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT)).convert_alpha()
 		self.direction = "right"
 		self.animation_count = 0
 		self.static_image = get_image(
