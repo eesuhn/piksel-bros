@@ -2,6 +2,9 @@ from ._internal import *
 
 
 def get_sprites_sheet(sub_dir: list, width, height, scale=1, direction=False) -> dict:
+	"""
+	Load assets from directory, return dictionary of sprites
+	"""
 	sheet = {}
 	path = os.path.join("assets", *sub_dir)
 

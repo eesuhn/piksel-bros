@@ -11,10 +11,16 @@ class Editor(Game):
 		self.display = pygame.Surface((
 			SCREEN_WIDTH * CAM_SCALE,
 			SCREEN_HEIGHT * CAM_SCALE)).convert_alpha()
+
 		self.left_click = False
 		self.right_click = False
+
 		self.wpos = pygame.Vector2((0, 0))
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
+
+		self.init_obj_list()
+
+	def init_obj_list(self) -> None:
 		self.obj_list = {
 			"terrain": os.listdir(os.path.join("assets", "terrain")),
 		}
@@ -138,6 +144,9 @@ class Editor(Game):
 		return f"{int(x)};{int(y)}" in self.level.terrain
 
 	def add_block(self, x, y) -> None:
+		"""
+		Check current category before adding block
+		"""
 		if self.drag_player:
 			return
 		if self.is_block(x, y):
@@ -163,9 +172,12 @@ class Editor(Game):
 	def update_current_obj(self) -> None:
 		self.current_cat = self.cats[self.current_cat_i]
 		self.current_obj = self.obj_list[self.current_cat][self.current_obj_i]
-		print(f"{self.current_cat} % {self.current_obj_i}: {self.current_obj}")
+		# print(f"{self.current_cat} % {self.current_obj_i}: {self.current_obj}")
 
 	def update_obj(self, event_btn: int) -> None:
+		"""
+		Update current object or category
+		"""
 		left_shift = pygame.key.get_pressed()[pygame.K_LSHIFT]
 
 		if left_shift:
@@ -194,9 +206,8 @@ class EditorCamera(pygame.sprite.Sprite):
 
 	def update(self, **kwargs) -> None:
 		"""
-		Call in game loop.
+		Call in game loop
 		"""
-
 		self.move()
 
 	def move(self) -> None:
@@ -204,6 +215,7 @@ class EditorCamera(pygame.sprite.Sprite):
 		dir_x = (keys[pygame.K_d] - keys[pygame.K_a]) * self.CAM_VEL
 		dir_y = (keys[pygame.K_s] - keys[pygame.K_w]) * self.CAM_VEL
 
+		# Normalize diagonal movement
 		if dir_x != 0 and dir_y != 0:
 			dir_x *= 0.7071
 			dir_y *= 0.7071
@@ -222,9 +234,8 @@ class EditorCamera(pygame.sprite.Sprite):
 
 	def mpos_to_wpos(self, o_screen: pygame.Vector2) -> pygame.Vector2:
 		"""
-		Returns world position based on mouse position.
+		Returns world position based on mouse position
 		"""
-
 		mpos = pygame.Vector2(pygame.mouse.get_pos())
 		ratio_x = SCREEN_WIDTH * CAM_SCALE / o_screen.x
 		ratio_y = SCREEN_HEIGHT * CAM_SCALE / o_screen.y

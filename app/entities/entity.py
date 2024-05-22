@@ -12,7 +12,6 @@ class Entity(pygame.sprite.Sprite):
 		Params:
 			`self.display`, `self.image`, `self.rect`, `self.offset`, `self.top_left`
 		"""
-
 		self.display.blit(self.image, (
 			self.rect.x - self.offset.x - self.top_left.x,
 			self.rect.y - self.offset.y - self.top_left.y))
@@ -22,12 +21,13 @@ class Entity(pygame.sprite.Sprite):
 		Params:
 			`self.vel`, `self.fall_count`
 		"""
-
 		max_g = self.MAX_GRAVITY
-		self.vel.y += min(1, self.fall_count / (int(max_g * 1.25)))
 
+		# Increase exponentially
+		self.vel.y += min(1, self.fall_count / (int(max_g * 1.25)))
 		if self.fall_count < (int(max_g * 1.25)):
 			self.fall_count += 1
 
+		# Limit gravity
 		if self.vel.y >= max_g:
 			self.vel.y = max_g

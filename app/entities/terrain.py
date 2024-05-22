@@ -19,9 +19,8 @@ class Terrain(Entity):
 
 	def update(self, **kwargs) -> None:
 		"""
-		Call in game loop.
+		Call in game loop
 		"""
-
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 

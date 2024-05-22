@@ -10,10 +10,12 @@ class Background(pygame.sprite.Sprite):
 		super().__init__(*groups)
 		self.image = get_image(["background"], var, scale=2)
 		self.image.set_alpha(self.BG_OPACITY)
+
 		self.tile_width = self.image.get_width()
 		self.tile_height = self.image.get_height()
 		self.num_tiles_x = SCREEN_WIDTH // self.tile_width + 1
 		self.num_tiles_y = SCREEN_HEIGHT // self.tile_height + 1
+
 		self.offset_y = 0
 
 		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
@@ -24,7 +26,6 @@ class Background(pygame.sprite.Sprite):
 		Params:
 			`self.display`
 		"""
-
 		self.update_y()
 		for x in range(self.num_tiles_x):
 			for y in range(self.num_tiles_y):
@@ -39,9 +40,8 @@ class Background(pygame.sprite.Sprite):
 
 	def update(self, **kwargs) -> None:
 		"""
-		Call in game loop.
+		Call in game loop
 		"""
-
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 

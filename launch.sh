@@ -7,6 +7,7 @@ NC=$(tput sgr0)
 
 VENV_DIR="venv-piksel-bros"
 
+# Build environment if it doesn't exist
 if [ ! -d "$VENV_DIR" ]; then
 	printf "${YELLOW}Building Environment...\n"
 	python3 -m venv $VENV_DIR
@@ -27,6 +28,7 @@ if [ ! -d "$VENV_DIR" ]; then
 	printf "${GREEN}Environment Built!${NC}\n"
 fi
 
+# Activate environment
 printf "${GREEN}Launching Environment...${NC}\n"
 source "$VENV_DIR/bin/activate"
 return 0
