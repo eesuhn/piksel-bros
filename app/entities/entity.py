@@ -9,7 +9,7 @@ class Entity(pygame.sprite.Sprite):
 
 	def draw(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.display`, `self.image`, `self.rect`, `self.offset`, `self.top_left`
 		"""
 		self.display.blit(self.image, (
@@ -18,7 +18,7 @@ class Entity(pygame.sprite.Sprite):
 
 	def gravity(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.vel`, `self.fall_count`
 		"""
 		max_g = self.MAX_GRAVITY

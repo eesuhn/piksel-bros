@@ -23,7 +23,7 @@ class Background(pygame.sprite.Sprite):
 
 	def load(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.display`
 		"""
 		self.update_y()

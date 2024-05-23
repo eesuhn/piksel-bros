@@ -25,7 +25,7 @@ class Camera(pygame.sprite.LayeredUpdates):
 
 	def calc_offset(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.set_border`, `self.delay`, `self.top_left`
 		"""
 		x = (-SCREEN_WIDTH // 2) + self.target.rect.centerx - self.offset.x - self.top_left.x

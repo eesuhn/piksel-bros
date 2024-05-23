@@ -110,8 +110,9 @@ class Player(Entity):
 	def debug_hitbox(self) -> None:
 		"""
 		Draw player's hitbox
-			Params:
-				`self.display`
+
+		Args:
+			`self.display`
 		"""
 		def draw_rect(rect, color) -> None:
 			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
@@ -123,8 +124,9 @@ class Player(Entity):
 	def move(self) -> None:
 		"""
 		Capture input and move player
-			Params:
-				`self.events`
+
+		Args:
+			`self.events`
 		"""
 		self.update_rect_mask()
 
@@ -205,7 +207,7 @@ class Player(Entity):
 
 	def collision(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.objs`
 		"""
 		self.vertical_collide(self.objs)

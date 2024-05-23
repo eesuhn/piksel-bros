@@ -144,7 +144,7 @@ class Editor(Game):
 		self.player_pos = self.wpos
 
 	def is_block(self, x, y) -> bool:
-		return f"{int(x)};{int(y)}" in self.level.terrain
+		return self.level.check_obj_list(x, y) is not None
 
 	def add_block(self, x, y) -> None:
 		"""
@@ -169,7 +169,6 @@ class Editor(Game):
 		if not self.is_block(x, y):
 			return
 
-		del self.level.terrain[f"{x};{y}"]
 		self.level.load_removed(x, y)
 
 	def update_current_obj(self) -> None:
