@@ -6,16 +6,17 @@ from .level import Level
 
 class Game:
 	def __init__(self) -> None:
+		self.check_cpu = "--cpu" in sys.argv
 		self.ignore_warnings()
+
 		pygame.init()
 		pygame.time.set_timer(PER_SEC_EVENT, 1000)
 		pygame.display.set_caption("Piksel Bros.")
+
 		screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), screen_flags)
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
-
 		self.is_fullscreen = False
-		self.check_cpu = "--cpu" in sys.argv or "-c" in sys.argv
 
 	def ignore_warnings(self) -> None:
 		"""

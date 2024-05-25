@@ -11,6 +11,8 @@ class Player(Entity):
 
 	def __init__(self, name, x, y, *groups) -> None:
 		super().__init__(*groups)
+		self.debug_hitbox_flag = "--debug-hitbox" in sys.argv
+
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
 			y * RECT_HEIGHT,
@@ -56,7 +58,9 @@ class Player(Entity):
 			self.draw_static()
 			return
 
-		# self.debug_hitbox()
+		if self.debug_hitbox_flag:
+			self.debug_hitbox()
+
 		self.animate()
 		self.move()
 		self.collision()
@@ -115,7 +119,9 @@ class Player(Entity):
 			`self.display`
 		"""
 		def draw_rect(rect, color) -> None:
-			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
+			pygame.draw.rect(self.display, color, rect.move(
+				-self.offset.x - self.top_left.x,
+				-self.offset.y - self.top_left.y))
 
 		draw_rect(self.rect, (0, 255, 0))
 		draw_rect(self.head_rect, (255, 0, 0))
