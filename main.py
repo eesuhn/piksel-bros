@@ -2,8 +2,8 @@ from app import App
 
 
 def main() -> None:
-	app = App.select_app()
-	app.run()
+	app = App()
+	app.launch()
 
 
 if __name__ == "__main__":
