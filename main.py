@@ -1,13 +1,8 @@
-import sys
-
-from app import Game, Editor
+from app import App
 
 
 def main() -> None:
-	if "--editor" in sys.argv:
-		app = Editor()
-	else:
-		app = Game()
+	app = App.select_app()
 	app.run()
 
 

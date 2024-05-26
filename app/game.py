@@ -6,7 +6,7 @@ from .level import Level
 
 class Game:
 	def __init__(self) -> None:
-		self.check_cpu = "--cpu" in sys.argv
+		self.check_cpu = "--cpu" in sys.argv or "-c" in sys.argv
 		self.ignore_warnings()
 
 		pygame.init()

@@ -11,7 +11,7 @@ class Player(Entity):
 
 	def __init__(self, name, x, y, *groups) -> None:
 		super().__init__(*groups)
-		self.debug_hitbox_flag = "--debug-hitbox" in sys.argv
+		self.debug = "--debug" in sys.argv or "-d" in sys.argv
 
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
@@ -58,7 +58,7 @@ class Player(Entity):
 			self.draw_static()
 			return
 
-		if self.debug_hitbox_flag:
+		if self.debug:
 			self.debug_hitbox()
 
 		self.animate()
