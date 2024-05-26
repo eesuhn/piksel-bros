@@ -20,11 +20,12 @@ class Editor(Game):
 		self.wpos = pygame.Vector2((0, 0))
 		self.o_screen = pygame.Vector2((self.screen.get_size()))
 
-		self.init_obj_list()
-
 	def init_obj_list(self) -> None:
 		self.obj_list = {
 			"terrain": os.listdir(os.path.join("assets", "terrain")),
+		}
+		self.obj_dict = {
+			"terrain": self.add_terrain,
 		}
 		self.cats = list(self.obj_list.keys())
 		self.current_cat_i = 0
@@ -50,6 +51,7 @@ class Editor(Game):
 		self.player_dpos = self.player_pos
 
 		self.level.load(self.camera, self.editor_camera, edit=True)
+		self.init_obj_list()
 
 	def loop(self) -> None:
 		self.display.fill((0, 0, 0))
@@ -155,13 +157,14 @@ class Editor(Game):
 		if self.is_block(x, y):
 			return
 
-		if self.current_cat == "terrain":
-			self.level.terrain[f"{x};{y}"] = {
-				"type": self.current_obj,
-				"var": 1,
-				"pos": [x, y]}
-
+		self.obj_dict[self.current_cat](x, y)
 		self.level.load_objs()
+
+	def add_terrain(self, x, y) -> None:
+		self.level.terrain[f"{x};{y}"] = {
+			"type": self.current_obj,
+			"var": 1,
+			"pos": [x, y]}
 
 	def remove_block(self, x, y) -> None:
 		if self.drag_player:
