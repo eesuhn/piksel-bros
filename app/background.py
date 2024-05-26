@@ -1,5 +1,5 @@
 from ._internal import *
-from .utils import *
+from .utils import Utils
 
 
 class Background(pygame.sprite.Sprite):
@@ -8,7 +8,7 @@ class Background(pygame.sprite.Sprite):
 
 	def __init__(self, var: str, *groups) -> None:
 		super().__init__(*groups)
-		self.image = get_image(["background"], var, scale=2)
+		self.image = Utils.get_image(["background"], var, scale=2)
 		self.image.set_alpha(self.BG_OPACITY)
 
 		self.tile_width = self.image.get_width()

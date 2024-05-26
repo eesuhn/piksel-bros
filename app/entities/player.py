@@ -1,6 +1,6 @@
 from ._internal import *
 from .entity import Entity
-from ..utils import *
+from ..utils import Utils
 
 
 class Player(Entity):
@@ -26,7 +26,7 @@ class Player(Entity):
 		self.fall_count = 0
 		self.jump_count = 0
 
-		self.sheet = get_sprites_sheet(
+		self.sheet = Utils.get_sprites_sheet(
 			["main_characters", name],
 			self.PLAYER_WIDTH,
 			self.PLAYER_HEIGHT,
@@ -35,7 +35,7 @@ class Player(Entity):
 		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT)).convert_alpha()
 		self.direction = "right"
 		self.animation_count = 0
-		self.static_image = get_image(
+		self.static_image = Utils.get_image(
 			["main_characters", name],
 			"static")
 		self.static_player = False

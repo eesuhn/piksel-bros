@@ -5,8 +5,6 @@ import psutil
 import warnings
 import json
 
-from pygame.event import Event
-
 
 FPS = 60
 SCREEN_WIDTH = 1024

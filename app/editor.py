@@ -3,7 +3,7 @@ from .entities import *
 from .game import Game
 from .camera import Camera
 from .editor_camera import EditorCamera
-from .utils import *
+from .utils import Utils
 
 
 class Editor(Game):
@@ -200,6 +200,6 @@ class Editor(Game):
 		self.update_current_obj()
 
 	def get_current_obj(self) -> pygame.Surface:
-		current_obj = get_image([self.current_cat, self.current_obj], "1")
+		current_obj = Utils.get_image([self.current_cat, self.current_obj], "1")
 		current_obj.set_alpha(150)
 		return current_obj
