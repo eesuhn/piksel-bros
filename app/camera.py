@@ -19,11 +19,11 @@ class Camera(pygame.sprite.LayeredUpdates):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
-		self.calc_offset()
+		self._calc_offset()
 
 		super().update(offset=self.offset, **kwargs)
 
-	def calc_offset(self) -> None:
+	def _calc_offset(self) -> None:
 		"""
 		Args:
 			`self.set_border`, `self.delay`, `self.top_left`

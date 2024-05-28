@@ -22,23 +22,23 @@ class EditorCamera(pygame.sprite.Sprite):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
-		self.draw()
-		self.move()
+		self._draw()
+		self._move()
 
-	def draw(self) -> None:
+	def _draw(self) -> None:
 		self.image.fill((0, 0, 0, 0))
 
-		self.draw_current_obj()
+		self._draw_current_obj()
 
 		self.display.blit(self.image, (0, 0))
 
-	def draw_current_obj(self) -> None:
+	def _draw_current_obj(self) -> None:
 		self.image.blit(
 			self.current_obj, (
 				(20) * CAM_SCALE,
 				(SCREEN_HEIGHT - 60) * CAM_SCALE))
 
-	def move(self) -> None:
+	def _move(self) -> None:
 		keys = pygame.key.get_pressed()
 		dir_x = (keys[pygame.K_d] - keys[pygame.K_a]) * self.CAM_VEL
 		dir_y = (keys[pygame.K_s] - keys[pygame.K_w]) * self.CAM_VEL
@@ -52,9 +52,9 @@ class EditorCamera(pygame.sprite.Sprite):
 		self.rect.y += dir_y
 		self.scroll.x += dir_x
 		self.scroll.y += dir_y
-		self.set_border()
+		self._set_border()
 
-	def set_border(self) -> None:
+	def _set_border(self) -> None:
 		self.rect.x = max(0, self.rect.x)
 		self.rect.y = max(0, self.rect.y)
 		self.scroll.x = max(0, self.scroll.x)

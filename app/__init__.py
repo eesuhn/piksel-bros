@@ -9,10 +9,10 @@ class App:
 		pass
 
 	def launch(self) -> None:
-		app = self.select_app()
+		app = self._select_app()
 		app.run()
 
-	def select_app(self) -> object:
+	def _select_app(self) -> object:
 		if "--editor" in sys.argv or "-e" in sys.argv:
 			return Editor()
 		else:

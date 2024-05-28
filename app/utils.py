@@ -22,14 +22,14 @@ class Utils:
 					for i in range(sheets.get_width() // width)]
 
 				if direction:
-					sheet[f"{file_name}_left"] = Utils.flip_sprites(raw_sprites)
+					sheet[f"{file_name}_left"] = Utils._flip_sprites(raw_sprites)
 					sheet[f"{file_name}_right"] = raw_sprites
 				else:
 					sheet[file_name] = raw_sprites
 
 		return sheet
 
-	def flip_sprites(sprites: list) -> list:
+	def _flip_sprites(sprites: list) -> list:
 		return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
 	def get_image(sub_dir: list, file_name: str, scale=1) -> pygame.Surface:

@@ -6,7 +6,7 @@ from .level import Level
 
 class Game:
 	def __init__(self) -> None:
-		self.ignore_warnings()
+		self._ignore_warnings()
 
 		pygame.init()
 		pygame.display.set_caption("Piksel Bros.")
@@ -16,7 +16,7 @@ class Game:
 		self.display = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
 		self.is_fullscreen = False
 
-	def ignore_warnings(self) -> None:
+	def _ignore_warnings(self) -> None:
 		"""
 		Ignore warnings from `pygame`
 		"""
@@ -29,14 +29,14 @@ class Game:
 	def run(self) -> None:
 		self.clock = pygame.time.Clock()
 		self.level = Level()
-		self.load_level()
+		self._load_level()
 
 		while True:
-			self.check_event()
-			self.loop()
+			self._check_event()
+			self._loop()
 			self.clock.tick(FPS)
 
-	def load_level(self) -> None:
+	def _load_level(self) -> None:
 		self.level.init_level("01")
 
 		width, height = self.level.get_size()
@@ -49,37 +49,37 @@ class Game:
 
 		self.objs = self.level.load(self.camera, self.player)
 
-	def check_event(self) -> None:
+	def _check_event(self) -> None:
 		self.events = pygame.event.get()
 
 		for event in self.events:
 			if event.type == pygame.QUIT:
-				self.end()
+				self._end()
 			if event.type == pygame.KEYDOWN:
-				self.handle_keydown(event)
+				self._handle_keydown(event)
 
-	def handle_keydown(self, event: pygame.event.Event) -> None:
+	def _handle_keydown(self, event: pygame.event.Event) -> None:
 		if event.key == pygame.K_ESCAPE:
 			if not self.is_fullscreen:
-				self.end()
+				self._end()
 			else:
-				self.default_screen_size()
+				self._default_screen_size()
 		if event.key == pygame.K_F11:
 			if not self.is_fullscreen:
 				self.is_fullscreen = True
 				pygame.display.toggle_fullscreen()
 			else:
-				self.default_screen_size()
+				self._default_screen_size()
 
-	def end(self) -> None:
+	def _end(self) -> None:
 		pygame.quit()
 		sys.exit()
 
-	def default_screen_size(self) -> None:
+	def _default_screen_size(self) -> None:
 		self.is_fullscreen = False
 		pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-	def loop(self) -> None:
+	def _loop(self) -> None:
 		self.display.fill((0, 0, 0))
 
 		self.camera.update(

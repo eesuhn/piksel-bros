@@ -37,9 +37,9 @@ class Level:
 		return self.objs
 
 	def load_objs(self) -> None:
-		self.load_terrain()
+		self._load_terrain()
 
-	def load_terrain(self) -> None:
+	def _load_terrain(self) -> None:
 		for _, v in self.terrain.items():
 			self.objs.append(
 				Terrain(
@@ -50,7 +50,7 @@ class Level:
 					self.camera))
 
 	def load_removed(self, x, y) -> None:
-		if not self.remove_obj(x, y):
+		if not self._remove_obj(x, y):
 			return
 
 		x *= RECT_WIDTH
@@ -73,7 +73,7 @@ class Level:
 				return obj_type
 		return None
 
-	def remove_obj(self, x, y) -> bool:
+	def _remove_obj(self, x, y) -> bool:
 		obj_type = self.check_obj_list(x, y)
 		if not obj_type:
 			return False
