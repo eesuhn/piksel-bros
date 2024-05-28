@@ -22,6 +22,10 @@ class Level:
 		self.background = data["background"]
 		self.terrain = data["terrain"]
 
+		self.obj_dict = {
+			"terrain": self.terrain,
+		}
+
 	def load(self, camera: pygame.sprite.Group, target, edit=False) -> list:
 		self.camera = camera
 		camera.add_target(target)
@@ -33,26 +37,49 @@ class Level:
 		return self.objs
 
 	def load_objs(self) -> None:
-		self.load_terrain()
+		self._load_terrain()
 
-	def load_terrain(self) -> None:
-		for key in self.terrain:
-			val = self.terrain[key]
+	def _load_terrain(self) -> None:
+		for _, v in self.terrain.items():
 			self.objs.append(
 				Terrain(
-					val["type"],
-					val["var"],
-					val["pos"][0],
-					val["pos"][1],
+					v["type"],
+					v["var"],
+					v["pos"][0],
+					v["pos"][1],
 					self.camera))
 
 	def load_removed(self, x, y) -> None:
+		if not self._remove_obj(x, y):
+			return
+
 		x *= RECT_WIDTH
 		y *= RECT_HEIGHT
 
 		for obj in self.objs:
 			if obj.rect.x == x and obj.rect.y == y:
 				obj.kill()
+
+	def check_obj_list(self, x, y) -> str:
+		"""
+		Check if coordinates are in list of objects
+
+		Returns:
+			Object type if found, None otherwise
+		"""
+		key = f"{x};{y}"
+		for obj_type, obj_list in self.obj_dict.items():
+			if key in obj_list:
+				return obj_type
+		return None
+
+	def _remove_obj(self, x, y) -> bool:
+		obj_type = self.check_obj_list(x, y)
+		if not obj_type:
+			return False
+
+		del self.obj_dict[obj_type][f"{x};{y}"]
+		return True
 
 	def get_min_max(self) -> tuple[pygame.Vector2, pygame.Vector2]:
 		"""

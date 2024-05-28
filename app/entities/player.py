@@ -1,6 +1,6 @@
 from ._internal import *
 from .entity import Entity
-from ..utils import *
+from ..utils import Utils
 
 
 class Player(Entity):
@@ -11,6 +11,8 @@ class Player(Entity):
 
 	def __init__(self, name, x, y, *groups) -> None:
 		super().__init__(*groups)
+		self.debug = "--debug" in sys.argv or "-d" in sys.argv
+
 		self.rect = pygame.Rect(
 			x * RECT_WIDTH,
 			y * RECT_HEIGHT,
@@ -24,21 +26,21 @@ class Player(Entity):
 		self.fall_count = 0
 		self.jump_count = 0
 
-		self.sheet = get_sprites_sheet(
+		self.sheet = Utils.get_sprites_sheet(
 			["main_characters", name],
 			self.PLAYER_WIDTH,
 			self.PLAYER_HEIGHT,
 			scale=(RECT_WIDTH // self.PLAYER_WIDTH),
 			direction=True)
-		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT))
+		self.image = pygame.Surface((RECT_WIDTH, RECT_HEIGHT)).convert_alpha()
 		self.direction = "right"
 		self.animation_count = 0
-		self.static_image = get_image(
+		self.static_image = Utils.get_image(
 			["main_characters", name],
 			"static")
 		self.static_player = False
 
-		self.head_rect, self.foot_rect = self.get_head_foot_rect()
+		self.head_rect, self.foot_rect = self._get_head_foot_rect()
 		self.head_sprite = pygame.sprite.Sprite()
 		self.foot_sprite = pygame.sprite.Sprite()
 
@@ -53,15 +55,17 @@ class Player(Entity):
 			setattr(self, k, v)
 
 		if self.static_player:
-			self.draw_static()
+			self._draw_static()
 			return
 
-		# self.debug_hitbox()
-		self.animate()
-		self.move()
-		self.collision()
+		if self.debug:
+			self._debug_hitbox()
 
-	def animate(self) -> None:
+		self._animate()
+		self._move()
+		self._collision()
+
+	def _animate(self) -> None:
 		sprites_sheet = "idle"
 
 		if self.vel.y < 0:
@@ -87,7 +91,7 @@ class Player(Entity):
 
 		self.draw()
 
-	def draw_static(self) -> None:
+	def _draw_static(self) -> None:
 		"""
 		Draw static in editor
 		"""
@@ -99,53 +103,57 @@ class Player(Entity):
 
 		self.draw()
 
-	def update_rect_mask(self) -> None:
+	def _update_rect_mask(self) -> None:
 		"""
 		Update `self.rect`, `self.mask`, `self.head_rect`, `self.foot_rect`
 		"""
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
 		self.mask = pygame.mask.from_surface(self.image)
-		self.head_rect, self.foot_rect = self.get_head_foot_rect()
+		self.head_rect, self.foot_rect = self._get_head_foot_rect()
 
-	def debug_hitbox(self) -> None:
+	def _debug_hitbox(self) -> None:
 		"""
 		Draw player's hitbox
-			Params:
-				`self.display`
+
+		Args:
+			`self.display`
 		"""
 		def draw_rect(rect, color) -> None:
-			pygame.draw.rect(self.display, color, rect.move(-self.offset.x, -self.offset.y))
+			pygame.draw.rect(self.display, color, rect.move(
+				-self.offset.x - self.top_left.x,
+				-self.offset.y - self.top_left.y))
 
 		draw_rect(self.rect, (0, 255, 0))
 		draw_rect(self.head_rect, (255, 0, 0))
 		draw_rect(self.foot_rect, (255, 0, 0))
 
-	def move(self) -> None:
+	def _move(self) -> None:
 		"""
 		Capture input and move player
-			Params:
-				`self.events`
+
+		Args:
+			`self.events`
 		"""
-		self.update_rect_mask()
+		self._update_rect_mask()
 
 		self.vel.x = 0
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_LEFT]:
-			self.move_left()
+			self._move_left()
 
 		if keys[pygame.K_RIGHT]:
-			self.move_right()
+			self._move_right()
 
 		for event in self.events:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_SPACE:
-					self.jump()
+					self._jump()
 
 		self.handle_move(self.vel.x, self.vel.y)
-		self.set_level_border()
+		self._set_level_border()
 
-	def set_level_border(self) -> None:
+	def _set_level_border(self) -> None:
 		"""
 		Keep player within level border
 		"""
@@ -165,7 +173,7 @@ class Player(Entity):
 		self.foot_rect.x += dx
 		self.foot_rect.y += dy
 
-	def move_left(self) -> None:
+	def _move_left(self) -> None:
 		if self.collide_left:
 			return
 
@@ -173,7 +181,7 @@ class Player(Entity):
 		if self.direction != "left":
 			self.direction = "left"
 
-	def move_right(self) -> None:
+	def _move_right(self) -> None:
 		if self.collide_right:
 			return
 
@@ -181,7 +189,7 @@ class Player(Entity):
 		if self.direction != "right":
 			self.direction = "right"
 
-	def jump(self) -> None:
+	def _jump(self) -> None:
 		if self.jump_count >= 2:
 			return
 
@@ -195,41 +203,43 @@ class Player(Entity):
 		self.jump_count += 1
 		self.animation_count = 0
 
-	def land(self) -> None:
+	def _land(self) -> None:
 		self.fall_count = 0
 		self.jump_count = 0
 		self.vel.y = 0
 
-	def hit_head(self) -> None:
+	def _hit_head(self) -> None:
 		self.vel.y = 0
 
-	def collision(self) -> None:
+	def _collision(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.objs`
 		"""
-		self.vertical_collide(self.objs)
+		self._vertical_collide(self.objs)
 
 		dx_check = self.PLAYER_VEL * 1.2
-		self.collide_left = self.horizontal_collide(self.objs, -dx_check)
-		self.collide_right = self.horizontal_collide(self.objs, dx_check)
+		self.collide_left = self._horizontal_collide(self.objs, -dx_check)
+		self.collide_right = self._horizontal_collide(self.objs, dx_check)
 
 		self.gravity()
 
-	def vertical_collide(self, objs: list) -> None:
+	def _vertical_collide(self, objs: list) -> None:
 		self.head_sprite.rect = self.head_rect
 		self.foot_sprite.rect = self.foot_rect
 
 		for obj in objs:
 			if pygame.sprite.collide_rect(self.head_sprite, obj):
 				self.rect.top = obj.rect.bottom
-				self.hit_head()
+				self._hit_head()
+				break
 
 			if pygame.sprite.collide_rect(self.foot_sprite, obj):
 				self.rect.bottom = obj.rect.top
-				self.land()
+				self._land()
+				break
 
-	def horizontal_collide(self, objs: list, dx) -> bool:
+	def _horizontal_collide(self, objs: list, dx) -> bool:
 		self.handle_move(dx, 0)
 
 		collided = False
@@ -241,16 +251,16 @@ class Player(Entity):
 		self.handle_move(-dx, 0)
 		return collided
 
-	def get_head_foot_rect(self) -> tuple[pygame.Rect, pygame.Rect]:
+	def _get_head_foot_rect(self) -> tuple[pygame.Rect, pygame.Rect]:
 
-		def get_rect(x_pos, y_pos) -> pygame.Rect:
+		def _get_rect(x_pos, y_pos) -> pygame.Rect:
 			return pygame.Rect(
 				self.rect.x + x_pos,
 				self.rect.y + y_pos,
 				self.rect.width - (x_pos * 2),
 				2)
 
-		head_rect = get_rect(14, 8)
-		foot_rect = get_rect(14, self.rect.height - 2)
+		head_rect = _get_rect(14, 8)
+		foot_rect = _get_rect(14, self.rect.height - 2)
 
 		return head_rect, foot_rect

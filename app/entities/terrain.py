@@ -1,6 +1,6 @@
 from ._internal import *
 from .entity import Entity
-from ..utils import *
+from ..utils import Utils
 
 
 class Terrain(Entity):
@@ -11,7 +11,7 @@ class Terrain(Entity):
 			y * RECT_HEIGHT,
 			RECT_WIDTH,
 			RECT_HEIGHT)
-		self.image = get_image(["terrain", type], f"{var}")
+		self.image = Utils.get_image(["terrain", type], f"{var}")
 		self.mask = pygame.mask.from_surface(self.image)
 
 		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):

@@ -1,5 +1,5 @@
 from ._internal import *
-from .utils import *
+from .utils import Utils
 
 
 class Background(pygame.sprite.Sprite):
@@ -8,7 +8,7 @@ class Background(pygame.sprite.Sprite):
 
 	def __init__(self, var: str, *groups) -> None:
 		super().__init__(*groups)
-		self.image = get_image(["background"], var, scale=2)
+		self.image = Utils.get_image(["background"], var, scale=2)
 		self.image.set_alpha(self.BG_OPACITY)
 
 		self.tile_width = self.image.get_width()
@@ -21,19 +21,19 @@ class Background(pygame.sprite.Sprite):
 		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
 			groups[0].change_layer(self, 0)
 
-	def load(self) -> None:
+	def _load(self) -> None:
 		"""
-		Params:
+		Args:
 			`self.display`
 		"""
-		self.update_y()
+		self._update_y()
 		for x in range(self.num_tiles_x):
 			for y in range(self.num_tiles_y):
 				tile_x = x * self.tile_width
 				tile_y = (y * self.tile_height) - self.offset_y
 				self.display.blit(self.image, (tile_x, tile_y))
 
-	def update_y(self) -> None:
+	def _update_y(self) -> None:
 		self.offset_y += 0.1 * self.BG_VEL
 		if self.offset_y >= self.tile_height:
 			self.offset_y -= self.tile_height
@@ -45,4 +45,4 @@ class Background(pygame.sprite.Sprite):
 		for k, v in kwargs.items():
 			setattr(self, k, v)
 
-		self.load()
+		self._load()
