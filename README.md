@@ -22,8 +22,6 @@ Just a <i>2D</i> platformer made with <b>Pygame</b> <br>
 - <kbd>←</kbd> to move left
 - <kbd>→</kbd> to move right
 
-<br>
-
 > For editor:
 > - <kbd>w a s d</kbd> to move camera <br>
 > - <kbd>Left Click</kbd> to place object <br>
