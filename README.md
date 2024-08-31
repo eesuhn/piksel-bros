@@ -2,7 +2,7 @@
 
 <img src="https://github.com/eesuhn/piksel-bros/assets/102596628/5b522ad5-a89c-49db-9cf1-3be3263a46c6" alt="main-character" width="240" /> <br>
 
-Just a <i>2D</i> platformer made with <b>Pygame</b> <br>
+Just a 2D platformer made with <i>Pygame</i> <br>
 
 #### Setting up:
 1. Make sure you have `python3` installed
