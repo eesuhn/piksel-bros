@@ -1,6 +1,0 @@
-# cache
-*.sw*
-__pycache__/
-
-# virtual environment
-venv-*/
