@@ -1,0 +1,5 @@
+pygame==2.5.2
+nose2==0.15.1
+pyclean==3.0.0
+pylint==3.2.7
+pycodestyle==2.11.1
