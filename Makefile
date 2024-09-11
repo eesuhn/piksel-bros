@@ -9,7 +9,7 @@ $(VENV)/bin/activate: requirements.txt
 	./$(VENV)/bin/pip install -r requirements.txt
 
 run: venv
-	./$(VENV)/bin/python3 main.py
+	@./$(VENV)/bin/python3 main.py
 
 clean:
 	@if [ -d $(VENV) ]; then \
@@ -21,6 +21,6 @@ re: clean all
 
 lint: venv
 	@./$(VENV)/bin/pycodestyle app
-	@./$(VENV)/bin/pylint --disable=C0114,C0116 app
+	@./$(VENV)/bin/pylint app
 
 .PHONY: all venv run clean re lint
