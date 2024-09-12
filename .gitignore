@@ -6,3 +6,6 @@ __pycache__/
 
 # Vim
 *.sw*
+
+# Linting
+.mypy_cache/

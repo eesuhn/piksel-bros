@@ -15,6 +15,7 @@ clean:
 	@if [ -d $(VENV) ]; then \
 		./$(VENV)/bin/pyclean . || true; \
 		rm -rf $(VENV); \
+		rm -rf .mypy_cache; \
 	fi
 
 re: clean all
@@ -22,5 +23,6 @@ re: clean all
 lint: venv
 	@./$(VENV)/bin/pycodestyle app
 	@./$(VENV)/bin/pylint app
+	@./$(VENV)/bin/mypy app
 
 .PHONY: all venv run clean re lint
