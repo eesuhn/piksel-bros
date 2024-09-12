@@ -1,4 +1,6 @@
 VENV := .venv
+PACKAGE := app
+MAIN := main.py
 
 all: venv
 
@@ -9,7 +11,7 @@ $(VENV)/bin/activate: requirements.txt
 	./$(VENV)/bin/pip install -r requirements.txt
 
 run: venv
-	@./$(VENV)/bin/python3 main.py
+	@./$(VENV)/bin/python3 $(MAIN)
 
 clean:
 	@if [ -d $(VENV) ]; then \
@@ -21,8 +23,8 @@ clean:
 re: clean all
 
 lint: venv
-	@./$(VENV)/bin/pycodestyle app
-	@./$(VENV)/bin/pylint app
-	@./$(VENV)/bin/mypy app
+	@./$(VENV)/bin/pycodestyle $(PACKAGE)
+	@./$(VENV)/bin/pylint $(PACKAGE)
+	@./$(VENV)/bin/mypy $(PACKAGE)
 
 .PHONY: all venv run clean re lint
