@@ -2,6 +2,8 @@ import pygame
 import sys
 
 from ._costants import SCR_W, SCR_H, FPS
+from .game import Level, Camera
+from .entities import Player
 
 
 class Main:
@@ -15,6 +17,7 @@ class Main:
 
     def run(self) -> None:
         self.clock = pygame.time.Clock()
+        self.load_level()
 
         while True:
             self.check_events()
@@ -40,8 +43,32 @@ class Main:
 
     def loop(self) -> None:
         self.display.fill((0, 0, 0))
+
+        self.camera.update(
+            events=self.events,
+            display=self.display,
+            objs=self.objs,
+            top_left=self.top_left,
+            bottom_right=self.bottom_right
+        )
+
         self.screen.blit(
             pygame.transform.scale(self.display, self.screen.get_size()),
             (0, 0)
         )
         pygame.display.update()
+
+    def load_level(self) -> None:
+        self.level = Level('01')
+
+        level_w, level_h = self.level.get_dimensions()
+        self.top_left = self.level.get_top_left()
+        self.bottom_right = self.level.get_bottom_right()
+
+        self.camera = Camera(level_w, level_h)
+        self.player = Player(
+            self.level.get_player_name(),
+            self.level.get_player_pos(),
+            self.camera
+        )
+        self.objs = self.level.load(self.camera, self.player)

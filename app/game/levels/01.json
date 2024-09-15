@@ -1,7 +1,7 @@
 {
 	"player": {
 		"name": "ninja_frog",
-		"start": [
+		"pos": [
 			0,
 			5
 		]

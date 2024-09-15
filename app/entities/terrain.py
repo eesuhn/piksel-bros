@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from .entity import Entity
 
@@ -11,7 +11,7 @@ class Terrain(Entity):
         self,
         name: str,
         var: int,
-        pos: List[int],
+        pos: list[int, int],
         *groups: 'Camera'
     ):
 

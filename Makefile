@@ -23,7 +23,7 @@ clean:
 re: clean all
 
 lint: venv
-	@./$(VENV)/bin/pycodestyle $(PACKAGE)
+	@./$(VENV)/bin/pycodestyle --ignore=E501 $(PACKAGE)
 	@./$(VENV)/bin/pylint $(PACKAGE)
 	@./$(VENV)/bin/mypy $(PACKAGE)
 
