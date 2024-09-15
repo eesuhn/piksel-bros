@@ -2,7 +2,6 @@ import pygame
 import sys
 
 from ._costants import SCR_W, SCR_H, FPS
-from .game import Level
 
 
 class Main:
@@ -13,7 +12,6 @@ class Main:
         screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
         self.screen = pygame.display.set_mode((SCR_W, SCR_H), screen_flags)
         self.display = pygame.Surface((SCR_W, SCR_H)).convert_alpha()
-        Level("01")
 
     def run(self) -> None:
         self.clock = pygame.time.Clock()

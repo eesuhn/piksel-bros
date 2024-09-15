@@ -1,3 +1,60 @@
 {
-	"test": "Hello World"
+	"player": {
+		"name": "ninja_frog",
+		"start": [
+			0,
+			5
+		]
+	},
+	"background": "green",
+	"terrain": {
+		"0;6": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				0,
+				6
+			]
+		},
+		"1;6": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				1,
+				6
+			]
+		},
+		"2;7": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				2,
+				7
+			]
+		},
+		"3;7": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				3,
+				7
+			]
+		},
+		"4;6": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				4,
+				6
+			]
+		},
+		"5;6": {
+			"name": "stone",
+			"var": 1,
+			"pos": [
+				5,
+				6
+			]
+		}
+	}
 }
