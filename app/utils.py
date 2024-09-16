@@ -32,3 +32,42 @@ def load_image(
         image,
         (image.get_width() * scale, image.get_height() * scale)
     )
+
+
+def load_sprites_sheet(
+    relative_path: str | Path,
+    width: int,
+    height: int,
+    scale: int = 1,
+    direction: bool = False
+) -> dict:
+
+    sheet = {}
+    path = get_file_path(relative_path)
+
+    for file in sorted(path.glob('*.png')):
+        file_name = file.stem
+        sheet_surface = pygame.image.load(str(file)).convert_alpha()
+
+        raw_sprites = [
+            pygame.transform.scale(
+                sheet_surface.subsurface(pygame.Rect(
+                    width * i,
+                    0,
+                    width,
+                    height
+                )),
+                (width * scale, height * scale)
+            )
+            for i in range(sheet_surface.get_width() // width)
+        ]
+
+        if direction:
+            sheet[f'{file_name}_left'] = [
+                pygame.transform.flip(sprite, True, False) for sprite in raw_sprites
+            ]
+            sheet[f'{file_name}_right'] = raw_sprites
+        else:
+            sheet[file_name] = raw_sprites
+
+    return sheet

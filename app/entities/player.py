@@ -1,9 +1,12 @@
 import pygame
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+from enum import Enum, auto
 
 from .entity import Entity
 from .._costants import RECT_W, RECT_H
+from ..utils import load_sprites_sheet
+from ._constants import PLAYER_W, PLAYER_H, ANIMATION_DELAY
 
 if TYPE_CHECKING:
     from ..game import Camera
@@ -19,4 +22,58 @@ class Player(Entity):
             RECT_W,
             RECT_H
         )
-        print(name)
+        self.mask = None
+
+        self.sheet = load_sprites_sheet(
+            f'assets/images/characters/{name}',
+            PLAYER_W,
+            PLAYER_H,
+            scale=(RECT_W // PLAYER_W),
+            direction=True
+        )
+        self.image = pygame.Surface((RECT_W, RECT_H)).convert_alpha()
+        self.direction = 'right'
+        self.animation_count = 0
+        self.animation_state = PlayerAnimation.IDLE
+
+        self.vel = pygame.Vector2(0, 0)
+        self.jump_count = 0
+
+    def update(self, **kwargs: Any) -> None:
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+        self.animate()
+
+    def get_animation_state(self) -> 'PlayerAnimation':
+        if self.vel.y < 0:
+            return PlayerAnimation.DOUBLE_JUMP if self.jump_count == 2 else PlayerAnimation.JUMP
+        if self.vel.y > 1:
+            return PlayerAnimation.FALL
+        if self.vel.x != 0:
+            return PlayerAnimation.RUN
+        return PlayerAnimation.IDLE
+
+    def animate(self) -> None:
+        self.animation_state = self.get_animation_state()
+        sheet_name = f"{self.animation_state.name.lower()}_{self.direction}"
+        sprites = self.sheet[sheet_name]
+
+        max_animation_count = int(len(sprites) * ANIMATION_DELAY)
+        sprite_index = int((self.animation_count // ANIMATION_DELAY) % len(sprites))
+
+        self.animation_count = (self.animation_count + 1) % max_animation_count
+        self.image = sprites[sprite_index]
+
+        self.draw()
+
+
+class PlayerAnimation(Enum):
+    """
+    Enum class to represent the player animation states
+    """
+    IDLE = auto()
+    JUMP = auto()
+    DOUBLE_JUMP = auto()
+    RUN = auto()
+    FALL = auto()

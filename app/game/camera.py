@@ -30,5 +30,3 @@ class Camera(pygame.sprite.LayeredUpdates):
 
         self.offset.x += x
         self.offset.y += y
-
-        print(f"offset: {self.offset}")
