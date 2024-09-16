@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, Any
 from enum import Enum, auto
 
 from .entity import Entity
-from .._costants import RECT_W, RECT_H
-from ..utils import load_sprites_sheet
 from ._constants import PLAYER_W, PLAYER_H, ANIMATION_DELAY
 
 if TYPE_CHECKING:
@@ -16,22 +14,15 @@ class Player(Entity):
     def __init__(self, name: str, pos: pygame.Vector2, *groups: 'Camera'):
         super().__init__(*groups)
 
-        self.rect = pygame.Rect(
-            pos.x * RECT_W,
-            pos.y * RECT_H,
-            RECT_W,
-            RECT_H
-        )
-        self.mask = None
-
-        self.sheet = load_sprites_sheet(
+        self.init_moving_graphics(
             f'assets/images/characters/{name}',
+            pos,
             PLAYER_W,
             PLAYER_H,
-            scale=(RECT_W // PLAYER_W),
+            scale=2,
             direction=True
         )
-        self.image = pygame.Surface((RECT_W, RECT_H)).convert_alpha()
+
         self.direction = 'right'
         self.animation_count = 0
         self.animation_state = PlayerAnimation.IDLE

@@ -38,7 +38,7 @@ class Level:
                 Terrain(
                     v['name'],
                     v['var'],
-                    v['pos'],
+                    pygame.Vector2(v['pos']),
                     self.camera
                 )
             )
