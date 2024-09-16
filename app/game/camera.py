@@ -25,10 +25,6 @@ class Camera(pygame.sprite.LayeredUpdates):
         super().update(offset=self.offset, **kwargs)
 
     def calculate_offset(self) -> None:
-        """
-        Args:
-            `self.top_left`
-        """
         x = (-SCR_W // 2) + self.target.rect.centerx - self.offset.x - self.top_left.x
         y = (-SCR_H // 2) + self.target.rect.centery - self.offset.y - self.top_left.y
 

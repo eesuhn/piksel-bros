@@ -42,6 +42,9 @@ class Main:
         sys.exit()
 
     def loop(self) -> None:
+        """
+        Main loop of the game.
+        """
         self.display.fill((0, 0, 0))
 
         self.camera.update(
