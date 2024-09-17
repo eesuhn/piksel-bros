@@ -3,6 +3,6 @@
 <img src="./readme_doc/piksel_bros.gif" alt="piksel-bros" width="240"> <br>
 
 > [!CAUTION]
-> This project is still in development...
+> <i>This project is still in development...</i>
 
-Run `make run` to start the game.
+`make run` to start the game.
