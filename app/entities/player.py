@@ -17,7 +17,7 @@ class Player(Entity):
         super().__init__(*groups)
 
         super().init_moving(
-            f'assets/images/characters/{name}',
+            f'assets/sprites/characters/{name}',
             pos,
             PLAYER_W,
             PLAYER_H,
