@@ -1,41 +1,73 @@
-from ._internal import *
+import pygame
+import json
+
+from pathlib import Path
+from typing import Any
 
 
-class Utils:
-	def get_sprites_sheet(sub_dir: list, width, height, scale=1, direction=False) -> dict:
-		"""
-		Load assets from directory, return dictionary of sprites
-		"""
-		sheet = {}
-		path = os.path.join("assets", *sub_dir)
+def get_package_root() -> Path:
+    return Path(__file__).parent
 
-		for file in sorted(os.listdir(path)):
-			if file.endswith(".png"):
-				file_name = os.path.splitext(file)[0]
-				sheets = pygame.image.load(os.path.join(path, file)).convert_alpha()
 
-				raw_sprites = [
-					pygame.transform.scale(
-						sheets.subsurface(
-							pygame.Rect(width * i, 0, width, height)),
-						(width * scale, height * scale))
-					for i in range(sheets.get_width() // width)]
+def get_file_path(relative_path: str | Path) -> Path:
+    return get_package_root() / relative_path
 
-				if direction:
-					sheet[f"{file_name}_left"] = Utils._flip_sprites(raw_sprites)
-					sheet[f"{file_name}_right"] = raw_sprites
-				else:
-					sheet[file_name] = raw_sprites
 
-		return sheet
+def load_json(relative_path: str | Path) -> dict[str, Any]:
+    with get_file_path(f'{relative_path}.json').open('r') as f:
+        return json.load(f)
 
-	def _flip_sprites(sprites: list) -> list:
-		return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
-	def get_image(sub_dir: list, file_name: str, scale=1) -> pygame.Surface:
-		path = os.path.join("assets", *sub_dir, f"{file_name}.png")
-		image = pygame.image.load(path).convert_alpha()
+def load_image(
+    relative_path: str | Path,
+    file_extension: str = 'png',
+    scale: int = 1
+) -> pygame.Surface:
+    """
+    Load an image from the given path and scale it by the given factor.
+    """
 
-		return pygame.transform.scale(
-			image,
-			(image.get_width() * scale, image.get_height() * scale))
+    image = pygame.image.load(get_file_path(f'{relative_path}.{file_extension}'))
+    return pygame.transform.scale(
+        image,
+        (image.get_width() * scale, image.get_height() * scale)
+    )
+
+
+def load_sprites_sheet(
+    relative_path: str | Path,
+    width: int,
+    height: int,
+    scale: int = 1,
+    direction: bool = False
+) -> dict:
+
+    sheet = {}
+    path = get_file_path(relative_path)
+
+    for file in sorted(path.glob('*.png')):
+        file_name = file.stem
+        sheet_surface = pygame.image.load(str(file)).convert_alpha()
+
+        raw_sprites = [
+            pygame.transform.scale(
+                sheet_surface.subsurface(pygame.Rect(
+                    width * i,
+                    0,
+                    width,
+                    height
+                )),
+                (width * scale, height * scale)
+            )
+            for i in range(sheet_surface.get_width() // width)
+        ]
+
+        if direction:
+            sheet[f'{file_name}_left'] = [
+                pygame.transform.flip(sprite, True, False) for sprite in raw_sprites
+            ]
+            sheet[f'{file_name}_right'] = raw_sprites
+        else:
+            sheet[file_name] = raw_sprites
+
+    return sheet

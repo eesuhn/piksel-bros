@@ -1,6 +1,11 @@
-# cache
-*.sw*
+# Byte-compiled
 __pycache__/
 
-# virtual environment
-venv-*/
+# Environment
+.venv/
+
+# Vim
+*.sw*
+
+# Linting
+.mypy_cache/

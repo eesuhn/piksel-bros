@@ -1,27 +1,37 @@
-from ._internal import *
+import pygame
+
+from typing import TYPE_CHECKING, Any
+
 from .entity import Entity
-from ..utils import Utils
+from ._constants import TERRAIN_W, TERRAIN_H
+
+if TYPE_CHECKING:
+    from ..game import Camera
 
 
 class Terrain(Entity):
-	def __init__(self, type: str, var: int, x, y, *groups) -> None:
-		super().__init__(*groups)
-		self.rect = pygame.Rect(
-			x * RECT_WIDTH,
-			y * RECT_HEIGHT,
-			RECT_WIDTH,
-			RECT_HEIGHT)
-		self.image = Utils.get_image(["terrain", type], f"{var}")
-		self.mask = pygame.mask.from_surface(self.image)
+    def __init__(
+        self,
+        name: str,
+        var: int,
+        pos: pygame.Vector2,
+        *groups: 'Camera'
+    ):
 
-		if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
-			groups[0].change_layer(self, 1)
+        super().__init__(*groups)
 
-	def update(self, **kwargs) -> None:
-		"""
-		Call in game loop
-		"""
-		for k, v in kwargs.items():
-			setattr(self, k, v)
+        super().init_static(
+            f'assets/images/terrains/{name}/{var}',
+            pos,
+            TERRAIN_W,
+            TERRAIN_H
+        )
 
-		self.draw()
+        if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
+            groups[0].change_layer(self, 1)
+
+    def update(self, **kwargs: Any) -> None:
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+        super().draw()

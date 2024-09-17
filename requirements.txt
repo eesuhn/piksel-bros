@@ -1,1 +1,12 @@
 pygame==2.5.2
+
+# Testing
+nose2==0.15.1
+
+# Linters
+pylint==3.2.7
+pycodestyle==2.11.1
+mypy==1.11.2
+
+# Misc.
+pyclean==3.0.0
