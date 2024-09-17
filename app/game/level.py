@@ -2,14 +2,14 @@ import pygame
 
 from ..utils import load_json
 from .camera import Camera
-from ..entities import Player, Terrain
+from ..entities import Entity, Player, Terrain
 from .._costants import RECT_W, RECT_H
 
 
 class Level:
     def __init__(self, level: str):
         self.level = level
-        self.objs: list[Terrain] = []
+        self.objs: list[Entity] = []
 
         data = load_json(f'game/levels/{level}')
         self.player = data['player']
@@ -21,7 +21,7 @@ class Level:
         camera: Camera,
         target: Player,
         edit: bool = False
-    ) -> list[Terrain]:
+    ) -> list[Entity]:
 
         self.camera = camera
         camera.add_target(target)

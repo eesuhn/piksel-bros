@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable
 from pathlib import Path
 
 from ..utils import load_sprites_sheet, load_image
+from ._constants import MAX_GRAVITY, GRAVITY_ACC, GRAVITY_FRAME
 
 if TYPE_CHECKING:
     from ..game import Camera
@@ -13,7 +14,11 @@ class Entity(pygame.sprite.Sprite):
     display: pygame.Surface
     offset: pygame.Vector2
     top_left: pygame.Vector2
+    bottom_right: pygame.Vector2
+
+    objs: list['Entity']
     vel: pygame.Vector2
+    fall_count: int
 
     # Child callable to include `create_v_collision_rects`
     create_v_collision: Callable
@@ -30,7 +35,7 @@ class Entity(pygame.sprite.Sprite):
             )
         )
 
-    def init_moving_graphics(
+    def init_moving(
         self,
         relative_path: str | Path,
         pos: pygame.Vector2,
@@ -40,7 +45,7 @@ class Entity(pygame.sprite.Sprite):
         direction: bool = False
     ) -> None:
         """
-        Initialize moving graphics for the entity.
+        Initialize moving graphics and hitboxes for the entity.
         """
 
         scaled_width = width * scale
@@ -64,7 +69,9 @@ class Entity(pygame.sprite.Sprite):
         ).convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
 
-    def init_static_graphics(
+        self.head_rect, self.feet_rect = self.create_v_collision()
+
+    def init_static(
         self,
         relative_path: str | Path,
         pos: pygame.Vector2,
@@ -73,7 +80,7 @@ class Entity(pygame.sprite.Sprite):
         scale: int = 1
     ) -> None:
         """
-        Initialize static graphics for the entity.
+        Initialize static graphics and hitboxes for the entity.
         """
 
         scaled_width = width * scale
@@ -130,3 +137,78 @@ class Entity(pygame.sprite.Sprite):
     def update_hitboxes(self) -> None:
         self.mask = pygame.mask.from_surface(self.image)
         self.head_rect, self.feet_rect = self.create_v_collision()
+
+    def constrain_to_level(self) -> None:
+        """
+        Constrain the entity to the level bounds.
+        """
+        self.rect.left = max(self.rect.left, int(self.top_left.x))
+        self.rect.right = min(self.rect.right, int(self.bottom_right.x))
+
+    def apply_gravity(self) -> None:
+        factor = min(GRAVITY_ACC, self.fall_count / GRAVITY_FRAME)
+        self.vel.y += factor
+
+        if self.fall_count < GRAVITY_FRAME:
+            self.fall_count += 1
+
+        self.vel.y = min(self.vel.y, MAX_GRAVITY)
+
+    def check_collisions(self, entity_vel: int) -> None:
+        """
+        Check both horizontal and vertical collisions.
+        """
+        self.check_v_collision()
+        dx_check = entity_vel * 1.2
+        self.collide_left = self.check_h_collision(-dx_check)
+        self.collide_right = self.check_h_collision(dx_check)
+        self.apply_gravity()
+
+    def check_v_collision(self) -> None:
+        """
+        Check vertical collision based on entity's head and feet.
+        """
+        for obj in self.objs:
+            if self.head_rect.colliderect(obj.rect):
+                self.rect.top = obj.rect.bottom
+                self.hit_head()
+                break
+            if self.feet_rect.colliderect(obj.rect):
+                self.rect.bottom = obj.rect.top
+                self.land()
+                break
+
+    def hit_head(self) -> None:
+        self.vel.y = 0
+
+    def land(self) -> None:
+        self.fall_count = 0
+        self.jump_count = 0
+        self.vel.y = 0
+
+    def check_h_collision(self, dx: float) -> bool:
+        original_x = self.rect.x
+        self.rect.x += int(dx)
+        collided = any(
+            pygame.sprite.collide_mask(self, obj) for obj in self.objs
+        )
+        self.rect.x = original_x
+        return collided
+
+    def debug_hitboxes(self) -> None:
+        """
+        Draw hitboxes for debugging.
+        """
+        def draw_rect(rect: pygame.Rect, color: tuple[int, int, int]) -> None:
+            pygame.draw.rect(
+                self.display,
+                color,
+                rect.move(
+                    -self.offset.x - self.top_left.x,
+                    -self.offset.y - self.top_left.y
+                )
+            )
+
+        draw_rect(self.rect, (0, 255, 0))
+        draw_rect(self.head_rect, (255, 0, 0))
+        draw_rect(self.feet_rect, (255, 0, 0))

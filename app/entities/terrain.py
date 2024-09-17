@@ -20,7 +20,7 @@ class Terrain(Entity):
 
         super().__init__(*groups)
 
-        self.init_static_graphics(
+        super().init_static(
             f'assets/images/terrains/{name}/{var}',
             pos,
             TERRAIN_W,
@@ -34,4 +34,4 @@ class Terrain(Entity):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self.draw()
+        super().draw()
