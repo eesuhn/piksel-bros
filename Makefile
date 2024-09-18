@@ -13,6 +13,9 @@ $(VENV)/bin/activate: requirements.txt
 run: venv
 	@./$(VENV)/bin/python3 $(MAIN)
 
+edit: venv
+	@./$(VENV)/bin/python3 $(MAIN) --editor
+
 clean:
 	@if [ -d $(VENV) ]; then \
 		./$(VENV)/bin/pyclean . || true; \
