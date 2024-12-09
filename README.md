@@ -1,6 +1,6 @@
 ## Piksel Bros.
 
-<img src="./readme_doc/piksel_bros.gif" alt="piksel-bros" width="240"> <br>
+<img src="./readme/piksel_bros.gif" alt="piksel-bros" width="240"> <br>
 
 > [!CAUTION]
 > <i>This project is still in development...</i>
