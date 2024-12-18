@@ -1,4 +1,4 @@
-pygame==2.5.2
+pygame-ce==2.5.2
 
 # Testing
 nose2==0.15.1
