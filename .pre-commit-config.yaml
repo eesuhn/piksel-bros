@@ -1,0 +1,24 @@
+repos:
+-   repo: local
+    hooks:
+    -   id: pycodestyle
+        name: pycodestyle
+        entry: .venv/bin/pycodestyle
+        language: system
+        args: ['--ignore=E501']
+        types: [python]
+        files: ^app/
+
+    -   id: pylint
+        name: pylint
+        entry: .venv/bin/pylint
+        language: system
+        types: [python]
+        files: ^app/
+
+    -   id: mypy
+        name: mypy
+        entry: .venv/bin/mypy
+        language: system
+        types: [python]
+        files: ^app/
