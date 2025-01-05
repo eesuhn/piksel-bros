@@ -14,5 +14,5 @@ Just a platformer I irregularly update for fun :)
 
 ### Contributing?
 
-Feel free to fork and submit a pull request! <br>
-[Here's a list of "things"](https://github.com/eesuhn/piksel-bros/issues)
+Feel free to fork and submit PR! <br>
+Here's a list of ["things"](https://github.com/eesuhn/piksel-bros/issues) sitting on the shelf.
