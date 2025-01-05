@@ -9,6 +9,7 @@ venv: $(VENV)/bin/activate
 $(VENV)/bin/activate: requirements.txt
 	python3 -m venv $(VENV)
 	./$(VENV)/bin/pip install -r requirements.txt
+	./$(VENV)/bin/pre-commit install
 
 run: venv
 	@./$(VENV)/bin/python3 $(MAIN)
@@ -33,4 +34,4 @@ lint: venv
 	@./$(VENV)/bin/pylint $(PACKAGE)
 	@./$(VENV)/bin/mypy $(PACKAGE)
 
-.PHONY: all venv run clean re lint
+.PHONY: all venv run debug edit clean re lint

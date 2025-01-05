@@ -11,6 +11,8 @@ if TYPE_CHECKING:
 
 
 class Entity(pygame.sprite.Sprite):
+    image: pygame.Surface
+    rect: pygame.Rect
     display: pygame.Surface
     offset: pygame.Vector2
     top_left: pygame.Vector2
@@ -106,8 +108,8 @@ class Entity(pygame.sprite.Sprite):
         """
 
         def create_rect(
-            x_offset: int,
-            y_offset: int
+            x_offset: float | int,
+            y_offset: float | int
         ) -> pygame.Rect:
             width = self.rect.width - (x_offset * 2)
             height = 2
