@@ -16,7 +16,8 @@ class Game:
         self.screen = pygame.display.set_mode((SCR_W, SCR_H), screen_flags)
         self.display = pygame.Surface((SCR_W, SCR_H)).convert_alpha()
 
-    def run(self) -> None:
+    def run(self, debug: bool) -> None:
+        self.debug = debug
         self.clock = pygame.time.Clock()
         self.load_level()
 
@@ -53,7 +54,8 @@ class Game:
             display=self.display,
             objs=self.objs,
             top_left=self.top_left,
-            bottom_right=self.bottom_right
+            bottom_right=self.bottom_right,
+            debug=self.debug
         )
 
         self.screen.blit(

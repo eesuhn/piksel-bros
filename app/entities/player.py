@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 class Player(Entity):
     events: list[pygame.event.Event]
+    debug: bool
 
     def __init__(self, name: str, pos: pygame.Vector2, *groups: 'Camera'):
         super().__init__(*groups)
@@ -42,7 +43,8 @@ class Player(Entity):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        super().debug_hitboxes()
+        if self.debug:
+            super().debug_hitboxes()
         self.animate()
         self.handle_input()
         super().apply_movement()

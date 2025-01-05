@@ -8,5 +8,7 @@ class Main:
     def __init__(self) -> None:
         if '--editor' in sys.argv or '-e' in sys.argv:
             Editor().run()
+        elif '--debug' in sys.argv or '-d' in sys.argv:
+            Game().run(debug=True)
         else:
-            Game().run()
+            Game().run(debug=False)
