@@ -1,6 +1,6 @@
-VENV := .venv
-PACKAGE := app
-MAIN := main.py
+VENV = .venv
+PACKAGE = app
+MAIN = main.py
 
 all: venv
 
@@ -12,6 +12,12 @@ $(VENV)/bin/activate: requirements.txt
 
 run: venv
 	@./$(VENV)/bin/python3 $(MAIN)
+
+debug: venv
+	@./$(VENV)/bin/python3 $(MAIN) --debug
+
+edit: venv
+	@./$(VENV)/bin/python3 $(MAIN) --editor
 
 clean:
 	@if [ -d $(VENV) ]; then \
