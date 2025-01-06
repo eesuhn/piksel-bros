@@ -4,6 +4,7 @@ import sys
 from .._costants import SCR_W, SCR_H, FPS
 from .level import Level
 from .camera import Camera
+from .background import Background
 from ..entities import Player
 from ..entities._constants import PLAYER_H
 
@@ -82,6 +83,8 @@ class Game:
             self.camera
         )
         self.objs = self.level.load(self.camera, self.player)
+        if not self.debug:
+            self.background = Background(self.camera)
 
     def check_state(self) -> None:
         """
