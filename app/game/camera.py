@@ -30,3 +30,7 @@ class Camera(pygame.sprite.LayeredUpdates):
 
         self.offset.x += x
         self.offset.y += y
+
+        # TODO: Add an optional camera clamp.
+        self.offset.x = max(0, min(self.offset.x, self.width - SCR_W))
+        self.offset.y = min(self.offset.y, self.height - SCR_H)

@@ -5,6 +5,7 @@ from .._costants import SCR_W, SCR_H, FPS
 from .level import Level
 from .camera import Camera
 from ..entities import Player
+from ..entities._constants import PLAYER_H
 
 
 class Game:
@@ -18,6 +19,7 @@ class Game:
 
     def run(self, debug: bool) -> None:
         self.debug = debug
+        self.win = False
         self.clock = pygame.time.Clock()
         self.load_level()
 
@@ -58,6 +60,8 @@ class Game:
             debug=self.debug
         )
 
+        self.check_state()
+
         self.screen.blit(
             pygame.transform.scale(self.display, self.screen.get_size()),
             (0, 0)
@@ -78,3 +82,34 @@ class Game:
             self.camera
         )
         self.objs = self.level.load(self.camera, self.player)
+
+    def check_state(self) -> None:
+        """
+        Monitor the state of the game.
+        """
+        self.check_collectables()
+        self.check_win()
+        self.check_fallen()
+
+    def check_collectables(self) -> None:
+        """
+        Update and check if all collectables have been collected.
+        """
+        for obj in [o for o in self.objs if o.collectable]:
+            if obj.check_collected(self.player):
+                obj.kill()
+                self.objs.remove(obj)
+
+    def check_win(self) -> None:
+        """
+        Monitor winning condition(s).
+        """
+        if not any(o.collectable for o in self.objs) and not self.win:
+            print("You won!")
+            self.win = True
+
+    def check_fallen(self) -> None:
+        fall_limit = self.bottom_right.y + (PLAYER_H * 10)
+        if self.player.rect.top > fall_limit:
+            print("You fell out of the map!")
+            self.end()
