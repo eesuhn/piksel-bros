@@ -31,10 +31,18 @@ class Background(pygame.sprite.Sprite):
         self.load_bgs()
 
     def load_bgs(self) -> None:
+        """
+        Load the background images and speeds for each layer
+            - Parallax between 1 to 3, 40% of the base speed
+            - Parallax between 4 to 5, 20% of the base speed
+        """
         for i in range(1, 6):
             bg_image = load_image(f'assets/images/background/plx-{i}')
             self.bg_images.append(bg_image)
-            self.bg_speeds.append(int(i * 0.2 * BG_SPEED))
+            if i <= 3:
+                self.bg_speeds.append(int(i * BG_SPEED * 0.4))
+            else:
+                self.bg_speeds.append(int(i * BG_SPEED * 0.2))
         self.scrolls = [0] * len(self.bg_images)
         self.bg_width = self.bg_images[0].get_width()
 
@@ -78,5 +86,5 @@ class Background(pygame.sprite.Sprite):
 
             # Update and clamp the scroll value
             new_scroll = self.scrolls[i] + scroll_change
-            new_scroll = int(max(0, min(new_scroll, max_layer_scroll)))
+            new_scroll = int(max(0, min(new_scroll, max_layer_scroll)))  # Clamp
             self.scrolls[i] = int(new_scroll % self.bg_width)
