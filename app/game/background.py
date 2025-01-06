@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 from ..utils import load_image
 from ._constants import BG_SPEED
+from .._costants import SCR_W
 
 if TYPE_CHECKING:
     from ..game import Camera
@@ -21,10 +22,13 @@ class Background(pygame.sprite.Sprite):
         self.bg_images = []
         self.bg_speeds = []
         self.full_bgs = []
-        self.load_bgs()
+        self.map_width = 0
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
+            self.map_width = int(groups[0].width)
             groups[0].change_layer(self, 0)
+
+        self.load_bgs()
 
     def load_bgs(self) -> None:
         for i in range(1, 6):
@@ -52,15 +56,27 @@ class Background(pygame.sprite.Sprite):
         display_rect = self.display.get_rect()
 
         for i, full_bg in enumerate(self.full_bgs):
-            # Calculate source and destination rects
+            # Blit source rect to destination for better performance
             scroll = self.scrolls[i]
             source_rect = pygame.Rect(scroll, 0, display_rect.width, display_rect.height)
             self.display.blit(full_bg, (0, 0), source_rect)
 
     def scroll(self) -> None:
+        max_scroll = max(0, self.map_width - SCR_W)
         keys = pygame.key.get_pressed()
+
         for i in range(len(self.scrolls)):
+            scroll_change = 0
             if keys[pygame.K_LEFT]:
-                self.scrolls[i] = int((self.scrolls[i] - self.bg_speeds[i]) % self.bg_width)
+                scroll_change = int(-self.bg_speeds[i])
             if keys[pygame.K_RIGHT]:
-                self.scrolls[i] = int((self.scrolls[i] + self.bg_speeds[i]) % self.bg_width)
+                scroll_change = int(self.bg_speeds[i])
+
+            # Scale the scroll change based on the parallax layer
+            parallax_factor = (i + 1) / len(self.scrolls)
+            max_layer_scroll = max_scroll * parallax_factor
+
+            # Update and clamp the scroll value
+            new_scroll = self.scrolls[i] + scroll_change
+            new_scroll = int(max(0, min(new_scroll, max_layer_scroll)))
+            self.scrolls[i] = int(new_scroll % self.bg_width)
