@@ -14,6 +14,20 @@
         1,
         5
       ]
+    },
+    "5;5": {
+      "name": "pineapple",
+      "pos": [
+        5,
+        5
+      ]
+    },
+    "5;2": {
+      "name": "pineapple",
+      "pos": [
+        5,
+        2
+      ]
     }
   },
 	"terrain": {

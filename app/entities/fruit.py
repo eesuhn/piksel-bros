@@ -7,6 +7,7 @@ from ._constants import FRUIT_W, FRUIT_H, ANIMATION_DELAY
 
 if TYPE_CHECKING:
     from ..game import Camera
+    from .player import Player
 
 
 class Fruit(Entity):
@@ -31,6 +32,8 @@ class Fruit(Entity):
 
         self.name = name
         self.animation_count = 0
+        self.pass_through = True
+        self.collectable = True
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
             groups[0].change_layer(self, 1)
@@ -39,8 +42,6 @@ class Fruit(Entity):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        if self.debug:
-            super().debug_hitboxes()
         self.animate()
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
@@ -57,5 +58,15 @@ class Fruit(Entity):
 
         self.animation_count = (self.animation_count + 1) % max_animation_count
         self.image = sprites[sprite_index]
+        self.mask = pygame.mask.from_surface(self.image)
 
         super().draw()
+
+    def check_collisions(self, entity_vel: int) -> None:
+        """
+        Override to skip rectangular collision checks.
+        """
+        del entity_vel
+
+    def check_collected(self, player: 'Player') -> bool:
+        return pygame.sprite.collide_mask(self, player) is not None

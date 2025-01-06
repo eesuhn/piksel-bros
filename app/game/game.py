@@ -18,6 +18,7 @@ class Game:
 
     def run(self, debug: bool) -> None:
         self.debug = debug
+        self.win = False
         self.clock = pygame.time.Clock()
         self.load_level()
 
@@ -58,6 +59,8 @@ class Game:
             debug=self.debug
         )
 
+        self.check_state()
+
         self.screen.blit(
             pygame.transform.scale(self.display, self.screen.get_size()),
             (0, 0)
@@ -78,3 +81,22 @@ class Game:
             self.camera
         )
         self.objs = self.level.load(self.camera, self.player)
+
+    def check_state(self) -> None:
+        """
+        Monitor the state of the game.
+        """
+        self.check_collectables()
+
+    def check_collectables(self) -> None:
+        """
+        Update and check if all collectables have been collected.
+        """
+        for obj in [o for o in self.objs if o.collectable]:
+            if obj.check_collected(self.player):
+                obj.kill()
+                self.objs.remove(obj)
+
+        if not any(o.collectable for o in self.objs) and not self.win:
+            print("You won!")
+            self.win = True

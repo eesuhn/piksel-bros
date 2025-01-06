@@ -8,6 +8,7 @@ from ._constants import MAX_GRAVITY, GRAVITY_ACC, GRAVITY_FRAME
 
 if TYPE_CHECKING:
     from ..game import Camera
+    from .player import Player
 
 
 class Entity(pygame.sprite.Sprite):
@@ -27,6 +28,8 @@ class Entity(pygame.sprite.Sprite):
 
     def __init__(self, *groups: 'Camera'):
         super().__init__(*groups)
+        self.pass_through = False
+        self.collectable = False
 
     def draw(self) -> None:
         self.display.blit(
@@ -170,7 +173,7 @@ class Entity(pygame.sprite.Sprite):
         """
         Check vertical collision based on entity's head and feet.
         """
-        for obj in self.objs:
+        for obj in [o for o in self.objs if not o.pass_through]:
             if self.head_rect.colliderect(obj.rect):
                 self.rect.top = obj.rect.bottom
                 self.hit_head()
@@ -192,7 +195,8 @@ class Entity(pygame.sprite.Sprite):
         original_x = self.rect.x
         self.rect.x += int(dx)
         collided = any(
-            pygame.sprite.collide_mask(self, obj) for obj in self.objs
+            pygame.sprite.collide_mask(self, obj)
+            for obj in [o for o in self.objs if not o.pass_through]
         )
         self.rect.x = original_x
         return collided
@@ -214,3 +218,7 @@ class Entity(pygame.sprite.Sprite):
         draw_rect(self.rect, (0, 255, 0))
         draw_rect(self.head_rect, (255, 0, 0))
         draw_rect(self.feet_rect, (255, 0, 0))
+
+    def check_collected(self, player: 'Player') -> bool:
+        del player
+        return False
