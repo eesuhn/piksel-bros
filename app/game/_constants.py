@@ -1,1 +1,3 @@
 OFFSET_DELAY = 10
+
+BG_SPEED = 2

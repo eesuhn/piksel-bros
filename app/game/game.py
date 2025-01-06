@@ -4,6 +4,7 @@ import sys
 from .._costants import SCR_W, SCR_H, FPS
 from .level import Level
 from .camera import Camera
+from .background import Background
 from ..entities import Player
 from ..entities._constants import PLAYER_H
 
@@ -76,6 +77,7 @@ class Game:
         self.bottom_right = self.level.get_bottom_right()
 
         self.camera = Camera(level_w, level_h)
+        self.background = Background(self.camera)
         self.player = Player(
             self.level.get_player_name(),
             self.level.get_player_pos(),
