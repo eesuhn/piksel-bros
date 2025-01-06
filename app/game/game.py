@@ -5,6 +5,7 @@ from .._costants import SCR_W, SCR_H, FPS
 from .level import Level
 from .camera import Camera
 from ..entities import Player
+from ..entities._constants import PLAYER_H
 
 
 class Game:
@@ -87,6 +88,8 @@ class Game:
         Monitor the state of the game.
         """
         self.check_collectables()
+        self.check_win()
+        self.check_fallen()
 
     def check_collectables(self) -> None:
         """
@@ -97,6 +100,16 @@ class Game:
                 obj.kill()
                 self.objs.remove(obj)
 
+    def check_win(self) -> None:
+        """
+        Monitor winning condition(s).
+        """
         if not any(o.collectable for o in self.objs) and not self.win:
             print("You won!")
             self.win = True
+
+    def check_fallen(self) -> None:
+        fall_limit = self.bottom_right.y + (PLAYER_H * 10)
+        if self.player.rect.top > fall_limit:
+            print("You fell out of the map!")
+            self.end()
