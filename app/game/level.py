@@ -2,7 +2,7 @@ import pygame
 
 from ..utils import load_json
 from .camera import Camera
-from ..entities import Entity, Player, Terrain
+from ..entities import Entity, Player, Terrain, Fruit
 from .._costants import RECT_W, RECT_H
 
 
@@ -15,6 +15,7 @@ class Level:
         self.player = data['player']
         self.background = data['background']
         self.terrain = data['terrain']
+        self.fruit = data['fruit']
 
     def load(
         self,
@@ -30,6 +31,7 @@ class Level:
             pass
 
         self.load_terrain()
+        self.load_fruit()
         return self.objs
 
     def load_terrain(self) -> None:
@@ -38,6 +40,16 @@ class Level:
                 Terrain(
                     v['name'],
                     v['var'],
+                    pygame.Vector2(v['pos']),
+                    self.camera
+                )
+            )
+
+    def load_fruit(self) -> None:
+        for _, v in self.fruit.items():
+            self.objs.append(
+                Fruit(
+                    v['name'],
                     pygame.Vector2(v['pos']),
                     self.camera
                 )

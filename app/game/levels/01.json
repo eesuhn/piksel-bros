@@ -7,6 +7,15 @@
 		]
 	},
 	"background": "green",
+  "fruit": {
+    "1;5": {
+      "name": "pineapple",
+      "pos": [
+        1,
+        5
+      ]
+    }
+  },
 	"terrain": {
 		"0;6": {
 			"name": "stone",
