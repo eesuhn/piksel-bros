@@ -88,6 +88,7 @@ class Game:
         # No background in debug mode
         if not self.debug:
             self.background = Background(self.camera)
+            self.background.add_target(self.player)
 
     def check_state(self) -> None:
         """
