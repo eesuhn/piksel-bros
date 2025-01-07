@@ -47,7 +47,13 @@ class EditorUtil:
     def handle_mousedown(self, event: pygame.event.Event) -> None:
         if event.button == 1:
             if self.player_following:
-                self.player_following = False  # Second click: Place the player
+                # Only place player if the target tile is not blocked
+                x, y = int(self.wpos.x), int(self.wpos.y)
+                if not self.level.is_blocked(x, y):
+                    self.player_following = False  # Second click: Place the player
+                    self.level.player['pos'] = [x, y]
+                    self.player_pos.x, self.player_pos.y = x, y
+                    self.level.load_objs()
 
             elif self.mpos_is_player():
                 self.player_following = True  # First click: Player starts following
@@ -80,9 +86,11 @@ class EditorUtil:
         x, y = int(self.wpos.x), int(self.wpos.y)
 
         if self.player_following:
-            self.level.player['pos'] = [x, y]
-            self.player_pos.x, self.player_pos.y = x, y
-            self.level.load_objs()
+            # Only show player preview if the target tile is not blocked
+            if not self.level.is_blocked(x, y):
+                self.level.player['pos'] = [x, y]
+                self.player_pos.x, self.player_pos.y = x, y
+                self.level.load_objs()
             return
 
         if self.dragging_player:
