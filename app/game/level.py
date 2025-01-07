@@ -132,20 +132,32 @@ class Level:
     def is_blocked(self, x: int, y: int) -> bool:
         return self.check_obj_dict(x, y) is not None
 
-    def add_block(self, x: int, y: int, block_type: str) -> None:
+    def add_block(
+        self,
+        x: int,
+        y: int,
+        block_type: str,
+        name: str | None = None,
+        variant: int | None = None
+    ) -> None:
+
         if self.is_blocked(x, y):
             return
+
         if block_type == 'terrain':
             self.terrain[f'{x};{y}'] = {
-                'name': 'stone',
+                'name': name or 'stone',
                 'pos': [x, y],
-                'var': 1
+                'var': variant or 1
             }
-        else:
+        elif block_type == 'fruit':
             self.fruit[f'{x};{y}'] = {
-                'name': 'pineapple',
+                'name': name or 'pineapple',
                 'pos': [x, y]
             }
+        else:
+            raise ValueError(f'Invalid block type: {block_type}')
+
         self.load_objs()
 
     def remove_block(self, x: int, y: int) -> None:

@@ -71,3 +71,26 @@ def load_sprites_sheet(
             sheet[file_name] = raw_sprites
 
     return sheet
+
+
+def get_terrain_types() -> dict[str, list[int]]:
+    """
+    Returns a dictionary of terrain names and their available variants
+    """
+    terrain_path = get_file_path('assets/images/terrains')
+    terrains = {}
+
+    for terrain_dir in terrain_path.iterdir():
+        if terrain_dir.is_dir():
+            variants = [int(f.stem) for f in terrain_dir.glob('*.png')]
+            terrains[terrain_dir.name] = sorted(variants)
+
+    return terrains
+
+
+def get_fruit_types() -> list[str]:
+    """
+    Returns a list of available fruit names
+    """
+    fruit_path = get_file_path('assets/sprites/fruits')
+    return [f.stem for f in fruit_path.glob('*.png')]

@@ -4,7 +4,8 @@ from .._constants import SCR_W, SCR_H, CAM_SCALE, RECT_W, RECT_H
 from ..game import Game, Level, Camera
 from .editor_camera import EditorCamera
 from .editor_util import EditorUtil
-from ..utils import load_sprites_sheet, load_image
+from ..utils import load_sprites_sheet, load_image, get_terrain_types, get_fruit_types
+from ..entities._constants import FRUIT_W, FRUIT_H
 
 
 class Editor(Game):
@@ -17,15 +18,28 @@ class Editor(Game):
         )).convert_alpha()
 
         self.o_screen = pygame.Vector2((self.screen.get_size()))
-        self.editor_util = EditorUtil()
+        self.editor_util = EditorUtil(self)
 
-        self.preview_terrain = load_image('assets/images/terrains/stone/1')
+        self.terrain_types = get_terrain_types()
+        self.fruit_types = get_fruit_types()
 
-        fruit_sheet = load_sprites_sheet('assets/sprites/fruits', 32, 32)
-        self.preview_fruit = fruit_sheet['pineapple'][0]
+        self.current_terrain = next(iter(self.terrain_types.keys()))
+        self.current_terrain_var = self.terrain_types[self.current_terrain][0]
+        self.current_fruit = self.fruit_types[0]
 
-        self.preview_terrain = pygame.transform.scale(self.preview_terrain, (64, 64))
-        self.preview_fruit = pygame.transform.scale(self.preview_fruit, (64, 64))
+        self.load_previews()
+
+    def load_previews(self) -> None:
+        self.preview_terrain = load_image(
+            f'assets/images/terrains/{self.current_terrain}/{self.current_terrain_var}'
+        )
+        fruit_sheet = load_sprites_sheet(
+            'assets/sprites/fruits',
+            FRUIT_W,
+            FRUIT_H,
+            scale=2
+        )
+        self.preview_fruit = fruit_sheet[self.current_fruit][0]
 
     def load_level(self) -> None:
         self.level = Level('01')
@@ -91,8 +105,7 @@ class Editor(Game):
                 self.handle_mouseup(event)
 
             if event.type == pygame.MOUSEWHEEL:
-                shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
-                self.editor_util.handle_mousewheel(event, shift_pressed)
+                self.select_block(event)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
@@ -104,3 +117,26 @@ class Editor(Game):
 
     def handle_mouseup(self, event: pygame.event.Event) -> None:
         self.editor_util.handle_mouseup(event)
+
+    def select_block(self, event: pygame.event.Event) -> None:
+        """
+        Scroll through blocks with mouse wheel
+        Hold shift to switch between block types
+        """
+        shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
+
+        if shift_pressed:
+            self.editor_util.handle_mousewheel(event, True)
+
+        else:
+            if self.editor_util.block_type == 'terrain':
+                terrains = list(self.terrain_types.keys())
+                current_idx = terrains.index(self.current_terrain)
+                new_idx = (current_idx + event.y) % len(terrains)
+                self.current_terrain = terrains[new_idx]
+                self.current_terrain_var = self.terrain_types[self.current_terrain][0]
+            else:
+                current_idx = self.fruit_types.index(self.current_fruit)
+                new_idx = (current_idx + event.y) % len(self.fruit_types)
+                self.current_fruit = self.fruit_types[new_idx]
+            self.load_previews()
