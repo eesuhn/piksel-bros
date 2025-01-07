@@ -1,9 +1,15 @@
 import pygame
 
+from typing import TYPE_CHECKING, Union
+
 from ..utils import load_json
 from .camera import Camera
-from ..entities import Entity, Player, Terrain, Fruit
+from ..entities import Entity, Terrain, Fruit
 from .._constants import RECT_W, RECT_H
+
+if TYPE_CHECKING:
+    from ..entities import Player
+    from ..level_editor import EditorCamera
 
 
 class Level:
@@ -20,15 +26,11 @@ class Level:
     def load(
         self,
         camera: Camera,
-        target: Player,
-        edit: bool = False
+        target: Union['Player', 'EditorCamera']
     ) -> list[Entity]:
 
         self.camera = camera
         camera.add_target(target)
-
-        if not edit:
-            pass
 
         self.load_terrain()
         self.load_fruit()

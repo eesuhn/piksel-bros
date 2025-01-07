@@ -25,14 +25,17 @@ class EditorCamera(pygame.sprite.Sprite):
             SCR_W * CAM_SCALE,
             SCR_H * CAM_SCALE
         )).convert_alpha()
-        self.scroll = pygame.Vector2((0, 0))
+        self.scroll = pygame.Vector2((x, y))
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
-            groups[0].change_layer(self, 1)
+            groups[0].change_layer(self, 2)
 
     def update(self, **kwargs: Any) -> None:
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+        self.draw()
+        self.move()
 
     def draw(self) -> None:
         self.image.fill((0, 0, 0, 0))
@@ -48,15 +51,15 @@ class EditorCamera(pygame.sprite.Sprite):
             x_dir = int(x_dir * 0.7071)
             y_dir = int(y_dir * 0.7071)
 
+        self.rect.x += x_dir
+        self.rect.y += y_dir
         self.scroll.x += x_dir
         self.scroll.y += y_dir
-        self.rect.x = x_dir
-        self.rect.y = y_dir
 
-        self.set_border()
+        self.set_editor_border()
 
-    def set_border(self) -> None:
+    def set_editor_border(self) -> None:
         self.rect.x = max(0, self.rect.x)
         self.rect.y = max(0, self.rect.y)
         self.scroll.x = max(0, self.scroll.x)
-        self.rect.x = min(0, self.rect.x)
+        self.scroll.y = max(0, self.scroll.y)

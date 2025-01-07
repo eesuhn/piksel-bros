@@ -58,7 +58,8 @@ class Game:
             objs=self.objs,
             top_left=self.top_left,
             bottom_right=self.bottom_right,
-            debug=self.debug
+            debug=self.debug,
+            set_border=True
         )
 
         self.check_state()
