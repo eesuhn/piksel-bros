@@ -17,7 +17,8 @@ class Fruit(Entity):
         self,
         name: str,
         pos: pygame.Vector2,
-        *groups: 'Camera'
+        *groups: 'Camera',
+        editor_mode: bool = False
     ):
 
         super().__init__(*groups)
@@ -31,6 +32,7 @@ class Fruit(Entity):
         )
 
         self.name = name
+        self.editor_mode = editor_mode
         self.animation_count = 0
         self.pass_through = True
         self.collectable = True
@@ -42,7 +44,10 @@ class Fruit(Entity):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self.animate()
+        if not self.editor_mode:
+            self.animate()
+        else:
+            self.show_first_frame()
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
         return super().create_v_collision_rects(
@@ -60,6 +65,12 @@ class Fruit(Entity):
         self.image = sprites[sprite_index]
         self.mask = pygame.mask.from_surface(self.image)
 
+        super().draw()
+
+    def show_first_frame(self) -> None:
+        sprites = self.sheet[self.name]
+        self.image = sprites[0]
+        self.mask = pygame.mask.from_surface(self.image)
         super().draw()
 
     def check_collisions(self, entity_vel: int) -> None:

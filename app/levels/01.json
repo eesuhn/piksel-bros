@@ -2,147 +2,296 @@
   "player": {
     "name": "ninja_frog",
     "pos": [
-      0,
-      2
+      1,
+      11
     ]
   },
-  "fruit": {
-    "1;5": {
-      "name": "pineapple",
-      "pos": [
-        1,
-        5
-      ]
-    }
-  },
-  "background": "green",
   "terrain": {
-    "1;13": {
-      "name": "stone",
-      "var": 1,
+    "0;0": {
+      "name": "brick",
+      "pos": [
+        0,
+        0
+      ],
+      "var": 1
+    },
+    "0;13": {
+      "name": "brick",
+      "pos": [
+        0,
+        13
+      ],
+      "var": 1
+    },
+    "24;13": {
+      "name": "brick",
+      "pos": [
+        24,
+        13
+      ],
+      "var": 1
+    },
+    "24;0": {
+      "name": "brick",
+      "pos": [
+        24,
+        0
+      ],
+      "var": 1
+    },
+    "1;12": {
+      "name": "copper",
       "pos": [
         1,
-        13
-      ]
+        12
+      ],
+      "var": 1
     },
-    "2;13": {
-      "name": "stone",
-      "var": 1,
+    "2;12": {
+      "name": "copper",
       "pos": [
         2,
-        13
-      ]
+        12
+      ],
+      "var": 1
     },
     "5;11": {
-      "name": "stone",
-      "var": 1,
+      "name": "copper",
       "pos": [
         5,
         11
-      ]
+      ],
+      "var": 1
     },
     "6;11": {
-      "name": "stone",
-      "var": 1,
+      "name": "copper",
       "pos": [
         6,
         11
-      ]
+      ],
+      "var": 1
     },
-    "9;9": {
-      "name": "stone",
-      "var": 1,
+    "9;13": {
+      "name": "copper",
       "pos": [
         9,
-        9
-      ]
+        13
+      ],
+      "var": 1
     },
-    "10;9": {
-      "name": "stone",
-      "var": 1,
+    "10;13": {
+      "name": "copper",
       "pos": [
         10,
-        9
-      ]
+        13
+      ],
+      "var": 1
     },
-    "13;7": {
-      "name": "stone",
-      "var": 1,
+    "12;10": {
+      "name": "copper",
+      "pos": [
+        12,
+        10
+      ],
+      "var": 1
+    },
+    "13;10": {
+      "name": "copper",
       "pos": [
         13,
-        7
-      ]
+        10
+      ],
+      "var": 1
     },
     "14;7": {
-      "name": "stone",
-      "var": 1,
+      "name": "copper",
       "pos": [
         14,
         7
-      ]
+      ],
+      "var": 1
     },
-    "17;5": {
-      "name": "stone",
-      "var": 1,
+    "15;7": {
+      "name": "copper",
       "pos": [
-        17,
-        5
-      ]
+        15,
+        7
+      ],
+      "var": 1
     },
-    "18;5": {
-      "name": "stone",
-      "var": 1,
+    "18;8": {
+      "name": "copper",
       "pos": [
         18,
-        5
-      ]
+        8
+      ],
+      "var": 1
     },
-    "21;3": {
-      "name": "stone",
-      "var": 1,
+    "19;8": {
+      "name": "copper",
       "pos": [
-        21,
-        3
-      ]
+        19,
+        8
+      ],
+      "var": 1
     },
-    "22;3": {
+    "22;10": {
       "name": "stone",
-      "var": 1,
       "pos": [
         22,
+        10
+      ],
+      "var": 1
+    },
+    "22;9": {
+      "name": "stone",
+      "pos": [
+        22,
+        9
+      ],
+      "var": 1
+    },
+    "22;8": {
+      "name": "stone",
+      "pos": [
+        22,
+        8
+      ],
+      "var": 1
+    },
+    "9;6": {
+      "name": "stone",
+      "pos": [
+        9,
+        6
+      ],
+      "var": 1
+    },
+    "9;5": {
+      "name": "stone",
+      "pos": [
+        9,
+        5
+      ],
+      "var": 1
+    },
+    "9;4": {
+      "name": "stone",
+      "pos": [
+        9,
+        4
+      ],
+      "var": 1
+    },
+    "10;8": {
+      "name": "stone",
+      "pos": [
+        10,
+        8
+      ],
+      "var": 1
+    },
+    "4;4": {
+      "name": "stone",
+      "pos": [
+        4,
+        4
+      ],
+      "var": 1
+    },
+    "5;4": {
+      "name": "stone",
+      "pos": [
+        5,
+        4
+      ],
+      "var": 1
+    },
+    "5;3": {
+      "name": "stone",
+      "pos": [
+        5,
+        3
+      ],
+      "var": 1
+    }
+  },
+  "fruit": {
+    "5;2": {
+      "name": "bananas",
+      "pos": [
+        5,
+        2
+      ]
+    },
+    "4;3": {
+      "name": "bananas",
+      "pos": [
+        4,
         3
       ]
     },
-    "0;13": {
-      "name": "stone",
-      "var": 1,
+    "9;3": {
+      "name": "melon",
       "pos": [
-        0,
-        13
-      ]
-    },
-    "23;13": {
-      "name": "stone",
-      "var": 1,
-      "pos": [
-        23,
-        13
-      ]
-    },
-    "23;3": {
-      "name": "stone",
-      "var": 1,
-      "pos": [
-        23,
+        9,
         3
       ]
     },
-    "0;3": {
-      "name": "stone",
-      "var": 1,
+    "14;6": {
+      "name": "melon",
       "pos": [
-        0,
-        3
+        14,
+        6
+      ]
+    },
+    "13;9": {
+      "name": "melon",
+      "pos": [
+        13,
+        9
+      ]
+    },
+    "10;12": {
+      "name": "melon",
+      "pos": [
+        10,
+        12
+      ]
+    },
+    "24;12": {
+      "name": "pineapple",
+      "pos": [
+        24,
+        12
+      ]
+    },
+    "22;7": {
+      "name": "pineapple",
+      "pos": [
+        22,
+        7
+      ]
+    },
+    "19;7": {
+      "name": "pineapple",
+      "pos": [
+        19,
+        7
+      ]
+    },
+    "5;10": {
+      "name": "pineapple",
+      "pos": [
+        5,
+        10
+      ]
+    },
+    "2;11": {
+      "name": "pineapple",
+      "pos": [
+        2,
+        11
       ]
     }
   }
