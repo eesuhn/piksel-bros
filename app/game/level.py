@@ -11,7 +11,7 @@ class Level:
         self.level = level
         self.objs: list[Entity] = []
 
-        data = load_json(f'game/levels/{level}')
+        data = load_json(f'levels/{level}')
         self.player = data['player']
         self.background = data['background']
         self.terrain = data['terrain']
