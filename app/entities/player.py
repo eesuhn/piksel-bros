@@ -14,7 +14,13 @@ class Player(Entity):
     events: list[pygame.event.Event]
     debug: bool
 
-    def __init__(self, name: str, pos: pygame.Vector2, *groups: 'Camera'):
+    def __init__(
+        self,
+        name: str,
+        pos: pygame.Vector2,
+        *groups: 'Camera',
+        editor_mode: bool = False
+    ):
         super().__init__(*groups)
 
         super().init_moving(
@@ -35,6 +41,8 @@ class Player(Entity):
         self.animation_count = 0
         self.jump_count = 0
         self.fall_count = 0
+        self.editor_mode = editor_mode
+        self.debug = False
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
             groups[0].change_layer(self, 1)
@@ -43,8 +51,13 @@ class Player(Entity):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+        if self.editor_mode:
+            self.show_static()
+            return
+
         if self.debug:
             super().debug_hitboxes()
+
         self.animate()
         self.handle_input()
         super().apply_movement()
@@ -93,6 +106,13 @@ class Player(Entity):
         self.animation_count = (self.animation_count + 1) % max_animation_count
         self.image = sprites[sprite_index]
 
+        super().draw()
+
+    def show_static(self) -> None:
+        sheet_name = f"idle_{self.direction}"
+        sprite = self.sheet[sheet_name][0]
+        self.image = sprite
+        self.mask = pygame.mask.from_surface(self.image)
         super().draw()
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
