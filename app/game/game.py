@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from .._costants import SCR_W, SCR_H, FPS
+from .._constants import SCR_W, SCR_H, FPS
 from .level import Level
 from .camera import Camera
 from .background import Background
@@ -18,7 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCR_W, SCR_H), screen_flags)
         self.display = pygame.Surface((SCR_W, SCR_H)).convert_alpha()
 
-    def run(self, debug: bool) -> None:
+    def run(self, debug: bool = False) -> None:
         self.debug = debug
         self.win = False
         self.clock = pygame.time.Clock()
@@ -58,7 +58,8 @@ class Game:
             objs=self.objs,
             top_left=self.top_left,
             bottom_right=self.bottom_right,
-            debug=self.debug
+            debug=self.debug,
+            set_border=True
         )
 
         self.check_state()
@@ -83,8 +84,11 @@ class Game:
             self.camera
         )
         self.objs = self.level.load(self.camera, self.player)
+
+        # No background in debug mode
         if not self.debug:
             self.background = Background(self.camera)
+            self.background.add_target(self.player)
 
     def check_state(self) -> None:
         """

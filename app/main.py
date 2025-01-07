@@ -11,4 +11,4 @@ class Main:
         elif '--debug' in sys.argv or '-d' in sys.argv:
             Game().run(debug=True)
         else:
-            Game().run(debug=False)
+            Game().run()
