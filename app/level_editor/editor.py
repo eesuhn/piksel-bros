@@ -30,14 +30,19 @@ class Editor(Game):
         self.load_previews()
 
     def load_previews(self) -> None:
+        # Calculate preview scale based on window height
+        self.preview_scale = self.screen.get_height() / SCR_H * 0.8
+
         self.preview_terrain = load_image(
-            f'assets/images/terrains/{self.current_terrain}/{self.current_terrain_var}'
+            f'assets/images/terrains/{self.current_terrain}/{self.current_terrain_var}',
+            scale=self.preview_scale
         )
+
         fruit_sheet = load_sprites_sheet(
             'assets/sprites/fruits',
             FRUIT_W,
             FRUIT_H,
-            scale=2
+            scale=(2 * self.preview_scale)
         )
         self.preview_fruit = fruit_sheet[self.current_fruit][0]
 
@@ -84,9 +89,9 @@ class Editor(Game):
         preview_copy = preview.copy()
         preview_copy.set_alpha(128)
 
-        # Position in bottom-left corner with padding
-        preview_x = 10
-        preview_y = self.screen.get_height() - 74
+        # Position the preview at the bottom left corner
+        preview_x = int(10 * self.preview_scale)
+        preview_y = self.screen.get_height() - int(74 * self.preview_scale)
         self.screen.blit(preview_copy, (preview_x, preview_y))
 
         pygame.display.update()
@@ -96,7 +101,12 @@ class Editor(Game):
 
         for event in self.events:
             if event.type == pygame.VIDEORESIZE:
+                self.screen = pygame.display.set_mode(
+                    (event.w, event.h),
+                    pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE
+                )
                 self.o_screen = pygame.Vector2((event.w, event.h))
+                self.load_previews()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.handle_mousedown(event)
