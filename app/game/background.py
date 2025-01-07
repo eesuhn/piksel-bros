@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 from ..utils import load_image
 from ._constants import BG_SPEED
-from .._costants import SCR_W
+from .._constants import SCR_W
 
 if TYPE_CHECKING:
     from ..game import Camera

@@ -2,7 +2,7 @@ import pygame
 
 from typing import Any
 
-from .._costants import SCR_W, SCR_H
+from .._constants import SCR_W, SCR_H
 
 
 class Camera(pygame.sprite.LayeredUpdates):

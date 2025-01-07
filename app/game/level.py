@@ -3,7 +3,7 @@ import pygame
 from ..utils import load_json
 from .camera import Camera
 from ..entities import Entity, Player, Terrain, Fruit
-from .._costants import RECT_W, RECT_H
+from .._constants import RECT_W, RECT_H
 
 
 class Level:
