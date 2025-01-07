@@ -2,7 +2,7 @@ import pygame
 
 from typing import TYPE_CHECKING, Any
 
-from .._constants import SCR_W, SCR_H, CAM_SCALE
+from .._constants import SCR_W, SCR_H, CAM_SCALE, RECT_W, RECT_H
 from ._constants import CAM_VEL
 
 if TYPE_CHECKING:
@@ -63,3 +63,20 @@ class EditorCamera(pygame.sprite.Sprite):
         self.rect.y = max(0, self.rect.y)
         self.scroll.x = max(0, self.scroll.x)
         self.scroll.y = max(0, self.scroll.y)
+
+    def mpos_to_wpos(self, o_screen: pygame.Vector2) -> pygame.Vector2:
+        """
+        Return mouse position based on screen size and scale factor.
+        """
+        mpos = pygame.Vector2(pygame.mouse.get_pos())
+        ratio_x = SCR_W * CAM_SCALE / o_screen.x
+        ratio_y = SCR_H * CAM_SCALE / o_screen.y
+        adjust = pygame.Vector2((
+            mpos.x * ratio_x,
+            mpos.y * ratio_y
+        ))
+
+        return pygame.Vector2((
+            (adjust.x + self.scroll.x) // RECT_W,
+            (adjust.y + self.scroll.y) // RECT_H
+        ))
