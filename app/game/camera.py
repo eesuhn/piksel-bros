@@ -26,14 +26,12 @@ class Camera(pygame.sprite.LayeredUpdates):
         super().update(offset=self.offset, **kwargs)
 
     def calculate_offset(self) -> None:
-        x = (-SCR_W // 2) + self.target.rect.centerx - self.offset.x - self.top_left.x
-        y = (-SCR_H // 2) + self.target.rect.centery - self.offset.y - self.top_left.y
-
-        # TODO: Delay camera movement
-        self.offset.x += x
-        self.offset.y += y
+        x = (self.target.rect.centerx - (SCR_W // 2)) - self.top_left.x
+        y = (self.target.rect.centery - (SCR_H // 2)) - self.top_left.y
 
         if self.set_border:
-            # Clamp the offset to the map size
-            self.offset.x = max(0, min(self.offset.x, self.width - SCR_W))
-            self.offset.y = min(self.offset.y, self.height - SCR_H)
+            x = max(0, min(x, self.width - SCR_W))
+            y = min(y, self.height - SCR_H)
+
+        self.offset.x = x
+        self.offset.y = y

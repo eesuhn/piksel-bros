@@ -78,21 +78,11 @@ class Editor(Game):
             player_pos=self.player_pos
         )
         self.editor_util.check_mouse()
-
         self.screen.blit(
             pygame.transform.scale(self.display, self.screen.get_size()),
             (0, 0)
         )
-
-        # Show preview of current block type
-        preview = self.preview_terrain if self.editor_util.block_type == 'terrain' else self.preview_fruit
-        preview_copy = preview.copy()
-        preview_copy.set_alpha(128)
-
-        # Position the preview at the bottom left corner
-        preview_x = int(10 * self.preview_scale)
-        preview_y = self.screen.get_height() - int(74 * self.preview_scale)
-        self.screen.blit(preview_copy, (preview_x, preview_y))
+        self.show_preview()
 
         pygame.display.update()
 
@@ -145,8 +135,27 @@ class Editor(Game):
                 new_idx = (current_idx + event.y) % len(terrains)
                 self.current_terrain = terrains[new_idx]
                 self.current_terrain_var = self.terrain_types[self.current_terrain][0]
-            else:
+            elif self.editor_util.block_type == 'fruit':
                 current_idx = self.fruit_types.index(self.current_fruit)
                 new_idx = (current_idx + event.y) % len(self.fruit_types)
                 self.current_fruit = self.fruit_types[new_idx]
+            else:
+                raise ValueError(f'Invalid block type: {self.editor_util.block_type}')
             self.load_previews()
+
+    def show_preview(self) -> None:
+        """
+        Show preview of currently selected block in the bottom right corner
+        """
+        if self.editor_util.block_type == 'terrain':
+            preview = self.preview_terrain
+        elif self.editor_util.block_type == 'fruit':
+            preview = self.preview_fruit
+        else:
+            raise ValueError(f'Invalid block type: {self.editor_util.block_type}')
+        preview_copy = preview.copy()
+        preview_copy.set_alpha(128)
+
+        preview_x = self.screen.get_width() - int(74 * self.preview_scale)
+        preview_y = self.screen.get_height() - int(74 * self.preview_scale)
+        self.screen.blit(preview_copy, (preview_x, preview_y))

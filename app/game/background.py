@@ -16,6 +16,7 @@ class Background(pygame.sprite.Sprite):
     bg_speeds: list[float]
     full_bgs: list[pygame.Surface]
     target: pygame.sprite.Sprite | None
+    offset: pygame.Vector2
 
     def __init__(self, *groups: 'Camera'):
         super().__init__(*groups)
@@ -75,26 +76,12 @@ class Background(pygame.sprite.Sprite):
             return
 
         max_scroll = max(0, self.map_width - SCR_W)
-        keys = pygame.key.get_pressed()
-
-        # Calculate if target is in scroll zone (center of screen)
-        target_x = self.target.rect.centerx
-        scroll_threshold = SCR_W // 2
 
         for i in range(len(self.scrolls)):
-            scroll_change = 0
-
-            # Only scroll if target is in the center zone
-            if (target_x > scroll_threshold) and (target_x < self.map_width - scroll_threshold):
-                if keys[pygame.K_LEFT]:
-                    scroll_change = int(-self.bg_speeds[i])
-                if keys[pygame.K_RIGHT]:
-                    scroll_change = int(self.bg_speeds[i])
-
-            # Scale the scroll change based on the parallax layer
             parallax_factor = (i + 1) / len(self.scrolls)
             max_layer_scroll = max_scroll * parallax_factor
+            new_scroll = self.offset.x * parallax_factor
 
-            new_scroll = self.scrolls[i] + scroll_change
-            new_scroll = int(max(0, min(new_scroll, max_layer_scroll)))  # Clamp
-            self.scrolls[i] = int(new_scroll % self.bg_width)
+            # Clamp and wrap
+            new_scroll = max(0, min(new_scroll, max_layer_scroll))
+            self.scrolls[i] = int(new_scroll) % self.bg_width
