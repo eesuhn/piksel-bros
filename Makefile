@@ -34,4 +34,7 @@ lint: venv
 	@./$(VENV)/bin/pylint $(PACKAGE)
 	@./$(VENV)/bin/mypy $(PACKAGE)
 
-.PHONY: all venv run debug edit clean re lint
+build: venv
+	@./$(VENV)/bin/pyinstaller build.spec --clean
+
+.PHONY: all venv run debug edit clean re lint build

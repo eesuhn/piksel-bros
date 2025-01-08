@@ -9,3 +9,7 @@ __pycache__/
 
 # Linting
 .mypy_cache/
+
+# Build
+build/
+dist/
