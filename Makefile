@@ -18,7 +18,7 @@ debug: venv
 	@./$(VENV)/bin/python3 $(MAIN) --debug
 
 edit: venv
-	@./$(VENV)/bin/python3 $(MAIN) --editor
+	@./$(VENV)/bin/python3 $(MAIN) --edit
 
 clean:
 	@if [ -d $(VENV) ]; then \
