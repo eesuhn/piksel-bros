@@ -1,3 +1,8 @@
+"""
+Piksel Bros.
+  by @eesuhn
+"""
+
 import app
 import sys
 

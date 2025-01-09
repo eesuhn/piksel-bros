@@ -6,11 +6,13 @@ from .level_editor import Editor
 
 class Main:
     def __init__(self, *argv: Any) -> None:
-        if '--edit' in argv[1:] or '-e' in argv[1:]:
+        self.args = set(argv[1:])
+        self.run()
+
+    def run(self) -> None:
+        if {'--edit', '-e'} & self.args:
             Editor().run()
-
-        elif '--debug' in argv[1:] or '-d' in argv[1:]:
+        elif {'--debug', '-d'} & self.args:
             Game().run(debug=True)
-
         else:
             Game().run()
