@@ -31,12 +31,12 @@ class Background(pygame.sprite.Sprite):
             self.map_width = int(groups[0].width)
             groups[0].change_layer(self, 0)
 
-        self.load_bgs()
+        self._load_bgs()
 
     def add_target(self, target: pygame.sprite.Sprite) -> None:
         self.target = target
 
-    def load_bgs(self) -> None:
+    def _load_bgs(self) -> None:
         """
         Load the background images and speeds for each layer
         """
@@ -59,10 +59,10 @@ class Background(pygame.sprite.Sprite):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self.draw_bgs()
-        self.scroll()
+        self._draw_bgs()
+        self._scroll()
 
-    def draw_bgs(self) -> None:
+    def _draw_bgs(self) -> None:
         display_rect = self.display.get_rect()
 
         for i, full_bg in enumerate(self.full_bgs):
@@ -71,7 +71,7 @@ class Background(pygame.sprite.Sprite):
             source_rect = pygame.Rect(scroll, 0, display_rect.width, display_rect.height)
             self.display.blit(full_bg, (0, 0), source_rect)
 
-    def scroll(self) -> None:
+    def _scroll(self) -> None:
         if not self.target:
             return
 

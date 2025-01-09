@@ -26,8 +26,9 @@ class EditorUtil:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def add_block(self, x: int, y: int) -> None:
-        if not self.mpos_is_player():
+    def _add_block(self, x: int, y: int) -> None:
+        if not self._mpos_is_player():
+            # TODO: Refactor block type to enum
             if self.block_type == 'terrain':
                 self.level.add_block(
                     x,
@@ -55,7 +56,7 @@ class EditorUtil:
                     self.player_pos.x, self.player_pos.y = x, y
                     self.level.load_objs()
 
-            elif self.mpos_is_player():
+            elif self._mpos_is_player():
                 self.player_following = True  # First click: Player starts following
 
             elif not self.right_click:
@@ -74,12 +75,11 @@ class EditorUtil:
         if event.button == 3:
             self.right_click = False
 
-    def handle_mousewheel(self, event: pygame.event.Event, shift_pressed: bool) -> None:
-        del event
-        if shift_pressed:
-            self.block_type = 'fruit' if self.block_type == 'terrain' else 'terrain'
+    def handle_mousewheel(self) -> None:
+        # TODO: Refactor block type to enum
+        self.block_type = 'fruit' if self.block_type == 'terrain' else 'terrain'
 
-    def mpos_is_player(self) -> bool:
+    def _mpos_is_player(self) -> bool:
         return self.wpos.x == self.player_pos.x and self.wpos.y == self.player_pos.y
 
     def check_mouse(self) -> None:
@@ -99,22 +99,7 @@ class EditorUtil:
             return
 
         if self.left_click:
-            if not self.mpos_is_player():
-                if self.block_type == 'terrain':
-                    self.level.add_block(
-                        x,
-                        y,
-                        'terrain',
-                        self.editor.current_terrain,
-                        self.editor.current_terrain_var)
-                elif self.block_type == 'fruit':
-                    self.level.add_block(
-                        x,
-                        y,
-                        'fruit',
-                        self.editor.current_fruit)
-                else:
-                    raise ValueError(f'Invalid block type: {self.block_type}')
+            self._add_block(x, y)
 
         if self.right_click:
             self.level.remove_block(x, y)

@@ -23,6 +23,7 @@ class Entity(pygame.sprite.Sprite):
     vel: pygame.Vector2
     fall_count: int
 
+    # TODO: I don't think this is a good practice, but whatever it works
     # Child callable to include `create_v_collision_rects`
     create_v_collision: Callable
 
@@ -137,9 +138,9 @@ class Entity(pygame.sprite.Sprite):
 
     def apply_movement(self) -> None:
         self.rect.move_ip(self.vel.x, self.vel.y)
-        self.update_hitboxes()
+        self._update_hitboxes()
 
-    def update_hitboxes(self) -> None:
+    def _update_hitboxes(self) -> None:
         self.mask = pygame.mask.from_surface(self.image)
         self.head_rect, self.feet_rect = self.create_v_collision()
 
@@ -150,7 +151,7 @@ class Entity(pygame.sprite.Sprite):
         self.rect.left = max(self.rect.left, int(self.top_left.x))
         self.rect.right = min(self.rect.right, int(self.bottom_right.x))
 
-    def apply_gravity(self) -> None:
+    def _apply_gravity(self) -> None:
         factor = min(GRAVITY_ACC, self.fall_count / GRAVITY_FRAME)
         self.vel.y += factor
 
@@ -163,35 +164,35 @@ class Entity(pygame.sprite.Sprite):
         """
         Check both horizontal and vertical collisions.
         """
-        self.check_v_collision()
+        self._check_v_collision()
         dx_check = entity_vel * 1.2
-        self.collide_left = self.check_h_collision(-dx_check)
-        self.collide_right = self.check_h_collision(dx_check)
-        self.apply_gravity()
+        self.collide_left = self._check_h_collision(-dx_check)
+        self.collide_right = self._check_h_collision(dx_check)
+        self._apply_gravity()
 
-    def check_v_collision(self) -> None:
+    def _check_v_collision(self) -> None:
         """
         Check vertical collision based on entity's head and feet.
         """
         for obj in [o for o in self.objs if not o.pass_through]:
             if self.head_rect.colliderect(obj.rect):
                 self.rect.top = obj.rect.bottom
-                self.hit_head()
+                self._hit_head()
                 break
             if self.feet_rect.colliderect(obj.rect):
                 self.rect.bottom = obj.rect.top
-                self.land()
+                self._land()
                 break
 
-    def hit_head(self) -> None:
+    def _hit_head(self) -> None:
         self.vel.y = 0
 
-    def land(self) -> None:
+    def _land(self) -> None:
         self.fall_count = 0
         self.jump_count = 0
         self.vel.y = 0
 
-    def check_h_collision(self, dx: float) -> bool:
+    def _check_h_collision(self, dx: float) -> bool:
         original_x = self.rect.x
         self.rect.x += int(dx)
         collided = any(
@@ -220,5 +221,8 @@ class Entity(pygame.sprite.Sprite):
         draw_rect(self.feet_rect, (255, 0, 0))
 
     def check_collected(self, player: 'Player') -> bool:
+        """
+        To be implemented by collectable child classes.
+        """
         del player
         return False

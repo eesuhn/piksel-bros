@@ -52,19 +52,19 @@ class Player(Entity):
             setattr(self, k, v)
 
         if self.editor_mode:
-            self.show_static()
+            self._show_static()
             return
 
         if self.debug:
             super().debug_hitboxes()
 
-        self.animate()
-        self.handle_input()
+        self._animate()
+        self._handle_input()
         super().apply_movement()
         super().check_collisions(PLAYER_VEL)
         super().constrain_to_level()
 
-    def handle_input(self) -> None:
+    def _handle_input(self) -> None:
         keys = pygame.key.get_pressed()
         self.vel.x = 0
 
@@ -75,9 +75,9 @@ class Player(Entity):
 
         for e in self.events:
             if e.type == pygame.KEYDOWN and e.key == pygame.K_SPACE:
-                self.jump()
+                self._jump()
 
-    def jump(self) -> None:
+    def _jump(self) -> None:
         if self.jump_count >= len(PLAYER_JUMP_VEL):
             return
 
@@ -86,7 +86,7 @@ class Player(Entity):
         self.jump_count += 1
         self.animation_count = 0
 
-    def get_animation_state(self) -> 'PlayerAnimation':
+    def _get_animation_state(self) -> 'PlayerAnimation':
         if self.vel.y < 0:
             return PlayerAnimation.DOUBLE_JUMP if self.jump_count == 2 else PlayerAnimation.JUMP
         if self.vel.y > 2:
@@ -95,8 +95,8 @@ class Player(Entity):
             return PlayerAnimation.RUN
         return PlayerAnimation.IDLE
 
-    def animate(self) -> None:
-        self.animation_state = self.get_animation_state()
+    def _animate(self) -> None:
+        self.animation_state = self._get_animation_state()
         sheet_name = f"{self.animation_state.name.lower()}_{self.direction}"
         sprites = self.sheet[sheet_name]
 
@@ -108,7 +108,7 @@ class Player(Entity):
 
         super().draw()
 
-    def show_static(self) -> None:
+    def _show_static(self) -> None:
         sheet_name = f"idle_{self.direction}"
         sprite = self.sheet[sheet_name][0]
         self.image = sprite
