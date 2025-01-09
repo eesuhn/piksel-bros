@@ -22,6 +22,7 @@ class Level:
         self.terrain = data['terrain']
         self.fruit = data['fruit']
 
+        # TODO: Not sure if this could be refactor to enum
         self.obj_dict = {
             'terrain': self.terrain,
             'fruit': self.fruit

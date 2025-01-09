@@ -23,11 +23,11 @@ class Camera(pygame.sprite.LayeredUpdates):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self.calculate_offset()
+        self._calculate_offset()
 
         super().update(offset=self.offset, **kwargs)
 
-    def calculate_offset(self) -> None:
+    def _calculate_offset(self) -> None:
         """
         Calculate the offset of the camera based on the target position and screen center.
         """

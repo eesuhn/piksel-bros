@@ -27,9 +27,9 @@ class Editor(Game):
         self.current_terrain_var = self.terrain_types[self.current_terrain][0]
         self.current_fruit = self.fruit_types[0]
 
-        self.load_previews()
+        self._load_previews()
 
-    def load_previews(self) -> None:
+    def _load_previews(self) -> None:
         # Calculate preview scale based on window height
         self.preview_scale = self.screen.get_height() / SCR_H * 0.8
 
@@ -82,7 +82,7 @@ class Editor(Game):
             pygame.transform.scale(self.display, self.screen.get_size()),
             (0, 0)
         )
-        self.show_preview()
+        self._show_preview()
 
         pygame.display.update()
 
@@ -96,29 +96,24 @@ class Editor(Game):
                     pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE
                 )
                 self.o_screen = pygame.Vector2((event.w, event.h))
-                self.load_previews()
+                self._load_previews()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.handle_mousedown(event)
+                self.editor_util.handle_mousedown(event)
 
             if event.type == pygame.MOUSEBUTTONUP:
-                self.handle_mouseup(event)
+                self.editor_util.handle_mouseup(event)
 
             if event.type == pygame.MOUSEWHEEL:
-                self.select_block(event)
+                self._select_block(event)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.level.save_level()
+                    # TODO: Handle message
                     print("Level saved!")
 
-    def handle_mousedown(self, event: pygame.event.Event) -> None:
-        self.editor_util.handle_mousedown(event)
-
-    def handle_mouseup(self, event: pygame.event.Event) -> None:
-        self.editor_util.handle_mouseup(event)
-
-    def select_block(self, event: pygame.event.Event) -> None:
+    def _select_block(self, event: pygame.event.Event) -> None:
         """
         Scroll through blocks with mouse wheel
         Hold shift to switch between block types
@@ -126,9 +121,10 @@ class Editor(Game):
         shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
 
         if shift_pressed:
-            self.editor_util.handle_mousewheel(event, True)
+            self.editor_util.handle_mousewheel()
 
         else:
+            # TODO: Refactor block type to enum
             if self.editor_util.block_type == 'terrain':
                 terrains = list(self.terrain_types.keys())
                 current_idx = terrains.index(self.current_terrain)
@@ -141,12 +137,13 @@ class Editor(Game):
                 self.current_fruit = self.fruit_types[new_idx]
             else:
                 raise ValueError(f'Invalid block type: {self.editor_util.block_type}')
-            self.load_previews()
+            self._load_previews()
 
-    def show_preview(self) -> None:
+    def _show_preview(self) -> None:
         """
         Show preview of currently selected block in the bottom right corner
         """
+        # TODO: Refactor block type to enum
         if self.editor_util.block_type == 'terrain':
             preview = self.preview_terrain
         elif self.editor_util.block_type == 'fruit':

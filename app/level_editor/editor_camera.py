@@ -35,13 +35,13 @@ class EditorCamera(pygame.sprite.Sprite):
             setattr(self, k, v)
 
         self.draw()
-        self.move()
+        self._move()
 
     def draw(self) -> None:
         self.image.fill((0, 0, 0, 0))
         self.display.blit(self.image, (0, 0))
 
-    def move(self) -> None:
+    def _move(self) -> None:
         keys = pygame.key.get_pressed()
         x_dir = (keys[pygame.K_d] - keys[pygame.K_a]) * CAM_VEL
         y_dir = (keys[pygame.K_s] - keys[pygame.K_w]) * CAM_VEL
@@ -56,9 +56,9 @@ class EditorCamera(pygame.sprite.Sprite):
         self.scroll.x += x_dir
         self.scroll.y += y_dir
 
-        self.set_editor_border()
+        self._set_editor_border()
 
-    def set_editor_border(self) -> None:
+    def _set_editor_border(self) -> None:
         self.rect.x = max(0, self.rect.x)
         self.rect.y = max(0, self.rect.y)
         self.scroll.x = max(0, self.scroll.x)

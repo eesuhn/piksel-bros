@@ -45,9 +45,9 @@ class Fruit(Entity):
             setattr(self, k, v)
 
         if not self.editor_mode:
-            self.animate()
+            self._animate()
         else:
-            self.show_first_frame()
+            self._show_first_frame()
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
         return super().create_v_collision_rects(
@@ -56,7 +56,7 @@ class Fruit(Entity):
             x_offset=14
         )
 
-    def animate(self) -> None:
+    def _animate(self) -> None:
         sprites = self.sheet[self.name]
         max_animation_count = int(len(sprites) * ANIMATION_DELAY)
         sprite_index = int((self.animation_count // ANIMATION_DELAY) % len(sprites))
@@ -67,7 +67,7 @@ class Fruit(Entity):
 
         super().draw()
 
-    def show_first_frame(self) -> None:
+    def _show_first_frame(self) -> None:
         sprites = self.sheet[self.name]
         self.image = sprites[0]
         self.mask = pygame.mask.from_surface(self.image)

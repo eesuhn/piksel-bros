@@ -34,15 +34,15 @@ class Game:
 
         for event in self.events:
             if event.type == pygame.QUIT:
-                self.end()
+                self._end()
             if event.type == pygame.KEYDOWN:
                 self.handle_keydown(event.key)
 
     def handle_keydown(self, key: int) -> None:
         if key == pygame.K_ESCAPE:
-            self.end()
+            self._end()
 
-    def end(self) -> None:
+    def _end(self) -> None:
         pygame.quit()
         sys.exit()
 
@@ -63,7 +63,7 @@ class Game:
             camera_delay=True
         )
 
-        self.check_state()
+        self._check_state()
 
         self.screen.blit(
             pygame.transform.scale(self.display, self.screen.get_size()),
@@ -91,15 +91,15 @@ class Game:
             self.background = Background(self.camera)
             self.background.add_target(self.player)
 
-    def check_state(self) -> None:
+    def _check_state(self) -> None:
         """
         Monitor the state of the game.
         """
-        self.check_collectables()
-        self.check_win()
-        self.check_fallen()
+        self._check_collectables()
+        self._check_win()
+        self._check_fallen()
 
-    def check_collectables(self) -> None:
+    def _check_collectables(self) -> None:
         """
         Update and check if all collectables have been collected.
         """
@@ -108,16 +108,21 @@ class Game:
                 obj.kill()
                 self.objs.remove(obj)
 
-    def check_win(self) -> None:
+    def _check_win(self) -> None:
         """
         Monitor winning condition(s).
         """
         if not any(o.collectable for o in self.objs) and not self.win:
+            # TODO: Handle message
             print("You won!")
             self.win = True
 
-    def check_fallen(self) -> None:
+    def _check_fallen(self) -> None:
+        """
+        Check if the player has fallen out of the map.
+        """
         fall_limit = self.bottom_right.y + (PLAYER_H * 10)
         if self.player.rect.top > fall_limit:
+            # TODO: Handle message
             print("You fell out of the map!")
-            self.end()
+            self._end()
