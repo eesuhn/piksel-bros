@@ -7,6 +7,7 @@ from .camera import Camera
 from .background import Background
 from ..entities import Player
 from ..entities._constants import PLAYER_H
+from ._constants import SCR_FLAGS
 
 
 class Game:
@@ -14,8 +15,7 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Piksel Bros.")
 
-        screen_flags = pygame.DOUBLEBUF | pygame.HWSURFACE
-        self.screen = pygame.display.set_mode((SCR_W, SCR_H), screen_flags)
+        self.screen = pygame.display.set_mode((SCR_W, SCR_H), SCR_FLAGS)
         self.display = pygame.Surface((SCR_W, SCR_H)).convert_alpha()
 
     def run(self, debug: bool = False) -> None:

@@ -6,6 +6,7 @@ from .editor_camera import EditorCamera
 from .editor_util import EditorUtil
 from ..utils import load_sprites_sheet, load_image, get_terrain_types, get_fruit_types
 from ..entities._constants import FRUIT_W, FRUIT_H
+from ..game._constants import SCR_FLAGS
 
 
 class Editor(Game):
@@ -93,7 +94,7 @@ class Editor(Game):
             if event.type == pygame.VIDEORESIZE:
                 self.screen = pygame.display.set_mode(
                     (event.w, event.h),
-                    pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE
+                    SCR_FLAGS
                 )
                 self.o_screen = pygame.Vector2((event.w, event.h))
                 self._load_previews()
