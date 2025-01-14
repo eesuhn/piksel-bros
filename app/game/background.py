@@ -1,6 +1,6 @@
 import pygame
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Union
 
 from ..utils import load_image
 from ._constants import BG_SPEED
@@ -15,7 +15,7 @@ class Background(pygame.sprite.Sprite):
     bg_images: list[pygame.Surface]
     bg_speeds: list[float]
     full_bgs: list[pygame.Surface]
-    target: pygame.sprite.Sprite | None
+    target: Union[pygame.sprite.Sprite, None]
     offset: pygame.Vector2
 
     def __init__(self, *groups: 'Camera'):

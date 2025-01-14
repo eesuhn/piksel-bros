@@ -122,7 +122,7 @@ class Level:
         self,
         x: int,
         y: int
-    ) -> str | None:
+    ) -> Union[str, None]:
 
         key = f'{x};{y}'
         for k, v in self.obj_dict.items():
@@ -138,8 +138,8 @@ class Level:
         x: int,
         y: int,
         block_type: str,
-        name: str | None = None,
-        variant: int | None = None
+        name: Union[str, None] = None,
+        variant: Union[int, None] = None
     ) -> None:
 
         if self.is_blocked(x, y):

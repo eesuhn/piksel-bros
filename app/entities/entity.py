@@ -1,6 +1,6 @@
 import pygame
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Union
 from pathlib import Path
 
 from ..utils import load_sprites_sheet, load_image
@@ -43,7 +43,7 @@ class Entity(pygame.sprite.Sprite):
 
     def init_moving(
         self,
-        relative_path: str | Path,
+        relative_path: Union[str, Path],
         pos: pygame.Vector2,
         width: int,
         height: int,
@@ -79,7 +79,7 @@ class Entity(pygame.sprite.Sprite):
 
     def init_static(
         self,
-        relative_path: str | Path,
+        relative_path: Union[str, Path],
         pos: pygame.Vector2,
         width: int,
         height: int,
@@ -112,8 +112,8 @@ class Entity(pygame.sprite.Sprite):
         """
 
         def create_rect(
-            x_offset: float | int,
-            y_offset: float | int
+            x_offset: Union[float, int],
+            y_offset: Union[float, int]
         ) -> pygame.Rect:
             width = self.rect.width - (x_offset * 2)
             height = 2

@@ -2,26 +2,26 @@ import pygame
 import json
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 
 def get_package_root() -> Path:
     return Path(__file__).parent
 
 
-def get_file_path(relative_path: str | Path) -> Path:
+def get_file_path(relative_path: Union[str, Path]) -> Path:
     return get_package_root() / relative_path
 
 
-def load_json(relative_path: str | Path) -> dict[str, Any]:
+def load_json(relative_path: Union[str, Path]) -> dict[str, Any]:
     with get_file_path(f'{relative_path}.json').open('r') as f:
         return json.load(f)
 
 
 def load_image(
-    relative_path: str | Path,
+    relative_path: Union[str, Path],
     file_extension: str = 'png',
-    scale: int | float = 1
+    scale: Union[int, float] = 1
 ) -> pygame.Surface:
     """
     Load an image from the given path and scale it by the given factor.
@@ -35,10 +35,10 @@ def load_image(
 
 
 def load_sprites_sheet(
-    relative_path: str | Path,
+    relative_path: Union[str, Path],
     width: int,
     height: int,
-    scale: int | float = 1,
+    scale: Union[int, float] = 1,
     direction: bool = False
 ) -> dict:
 
