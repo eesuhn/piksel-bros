@@ -7,7 +7,7 @@ from .entity import Entity
 from ._constants import (
     PLAYER_W, PLAYER_H, ANIMATION_DELAY, PLAYER_VEL,
     PLAYER_JUMP_VEL, PLAYER_DASH_VEL, PLAYER_DASH_DURATION,
-    PLAYER_DASH_COOLDOWN, PLAYER_DASH_JUMP_MULT
+    PLAYER_DASH_COOLDOWN, PLAYER_DASH_JUMP_MULT, PLAYER_DASH_COYOTE_TIME
 )
 
 if TYPE_CHECKING:
@@ -50,6 +50,7 @@ class Player(Entity):
         self.is_dashing = False
         self.dash_count = 0
         self.dash_cooldown = 0
+        self.dash_coyote_count = 0
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
             groups[0].change_layer(self, 1)
@@ -76,8 +77,8 @@ class Player(Entity):
         keys = pygame.key.get_pressed()
         self.vel.x = 0
 
-        # Handle player dashing
-        current_vel = PLAYER_DASH_VEL if self.is_dashing else PLAYER_VEL
+        can_dash_move = self.is_dashing or self.dash_coyote_count > 0
+        current_vel = PLAYER_DASH_VEL if can_dash_move else PLAYER_VEL
 
         if keys[pygame.K_a] and not self.collide_left:
             super().move_horizontal(-current_vel)
@@ -87,17 +88,19 @@ class Player(Entity):
         for e in self.events:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_SPACE:
-                    self._jump()
+                    self._jump(boost_enabled=can_dash_move)
                 elif e.key == pygame.K_j and self.dash_cooldown <= 0:
                     self._start_dash()
 
-    def _jump(self) -> None:
+    def _jump(
+        self,
+        boost_enabled: bool = False
+    ) -> None:
         if self.jump_count >= len(PLAYER_JUMP_VEL):
             return
         base_jump_vel = PLAYER_JUMP_VEL[self.jump_count]
 
-        # Handle player dashing
-        jump_vel = base_jump_vel * PLAYER_DASH_JUMP_MULT if self.is_dashing else base_jump_vel
+        jump_vel = base_jump_vel * PLAYER_DASH_JUMP_MULT if boost_enabled else base_jump_vel
 
         self.vel.y = jump_vel
         self.fall_count = 0
@@ -110,12 +113,16 @@ class Player(Entity):
             if self.dash_count >= PLAYER_DASH_DURATION:
                 self._end_dash()
 
+        if self.dash_coyote_count > 0:
+            self.dash_coyote_count -= 1
+
         if self.dash_cooldown > 0:
             self.dash_cooldown -= 1
 
     def _start_dash(self) -> None:
         self.is_dashing = True
         self.dash_count = 0
+        self.dash_coyote_count = 0
         self.animation_count = 0
         self.dash_cooldown = PLAYER_DASH_COOLDOWN
 
@@ -126,6 +133,7 @@ class Player(Entity):
     def _end_dash(self) -> None:
         self.is_dashing = False
         self.dash_count = 0
+        self.dash_coyote_count = PLAYER_DASH_COYOTE_TIME
 
     def _get_animation_state(self) -> 'PlayerAnimation':
         if self.is_dashing:
