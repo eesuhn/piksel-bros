@@ -13,3 +13,6 @@ __pycache__/
 # Build
 build/
 dist/
+
+# Mac
+.DS_Store

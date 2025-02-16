@@ -7,7 +7,8 @@ from .entity import Entity
 from ._constants import (
     PLAYER_W, PLAYER_H, ANIMATION_DELAY, PLAYER_VEL,
     PLAYER_JUMP_VEL, PLAYER_DASH_VEL, PLAYER_DASH_DURATION,
-    PLAYER_DASH_COOLDOWN, PLAYER_DASH_JUMP_MULT, PLAYER_DASH_COYOTE_TIME
+    PLAYER_DASH_COOLDOWN, PLAYER_DASH_JUMP_MULT, PLAYER_DASH_COYOTE_TIME,
+    DASH_TRAIL_LENGTH, DASH_TRAIL_ALPHA, DASH_TRAIL_DELAY
 )
 
 if TYPE_CHECKING:
@@ -51,6 +52,10 @@ class Player(Entity):
         self.dash_count = 0
         self.dash_cooldown = 0
         self.dash_coyote_count = 0
+
+        self.trail_positions: list[tuple[pygame.Rect, pygame.Surface]] = []
+        self.trail_images: list[pygame.Surface] = []
+        self.trail_counter = 0
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
             groups[0].change_layer(self, 1)
@@ -136,10 +141,6 @@ class Player(Entity):
         self.dash_coyote_count = PLAYER_DASH_COYOTE_TIME
 
     def _get_animation_state(self) -> 'PlayerAnimation':
-        if self.is_dashing:
-            # TODO: Implement dash animation
-            # return PlayerAnimation.DASH
-            pass
         if self.vel.y < 0:
             return PlayerAnimation.DOUBLE_JUMP if self.jump_count == 2 else PlayerAnimation.JUMP
         if self.vel.y > 2:
@@ -159,7 +160,9 @@ class Player(Entity):
         self.animation_count = (self.animation_count + 1) % max_animation_count
         self.image = sprites[sprite_index]
 
+        self._draw_trail()
         super().draw()
+        self._update_trail()
 
     def _show_static(self) -> None:
         sheet_name = f"idle_{self.direction}"
@@ -175,14 +178,39 @@ class Player(Entity):
             x_offset=14
         )
 
+    def _update_trail(self) -> None:
+        """
+        Updates the player's dash trail
+        """
+        self.trail_counter = (self.trail_counter + 1) % DASH_TRAIL_DELAY
+
+        if self.trail_counter == 0:
+            if self.is_dashing:
+                self.trail_positions.append((self.rect.copy(), self.image.copy()))
+                if len(self.trail_positions) > DASH_TRAIL_LENGTH:
+                    self.trail_positions.pop(0)
+            else:
+                self.trail_positions.clear()
+
+    def _draw_trail(self) -> None:
+        """
+        Draws the player's dash trail
+        """
+        for rect, image in self.trail_positions:
+            ghost = image.copy()
+            ghost.set_alpha(DASH_TRAIL_ALPHA)
+            self.display.blit(
+                ghost,
+                (
+                    rect.x - self.offset.x - self.top_left.x,
+                    rect.y - self.offset.y - self.top_left.y
+                )
+            )
+
 
 class PlayerAnimation(Enum):
-    """
-    Enum class to represent the player animation states
-    """
     IDLE = auto()
     JUMP = auto()
     DOUBLE_JUMP = auto()
     RUN = auto()
     FALL = auto()
-    DASH = auto()
