@@ -131,9 +131,8 @@ class Player(Entity):
         self.animation_count = 0
         self.dash_cooldown = PLAYER_DASH_COOLDOWN
 
-        # Preserve vertical velocity when dashing
-        if abs(self.vel.y) > 0:
-            self.vel.y *= PLAYER_DASH_JUMP_MULT
+        # if abs(self.vel.y) > 0:  # Only apply dash for upward movement
+        self.vel.y *= PLAYER_DASH_JUMP_MULT
 
     def _end_dash(self) -> None:
         self.is_dashing = False
