@@ -8,9 +8,9 @@ Just a platformer I irregularly update for fun :)
 
 1. `make run` to install dependencies and run the game.
 
-2. `make debug` to run with hitboxes and debug info.
+2. `make run debug` to run with hitboxes and debug info.
 
-3. `make edit` to initialize the map editor.
+3. `make run edit` to initialize the map editor.
 
 ### Contributing?
 
