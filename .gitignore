@@ -1,18 +1,13 @@
 # Byte-compiled
 __pycache__/
 
-# Environment
-.venv/
-
-# Vim
-*.sw*
-
-# Linting
+# Cache
 .mypy_cache/
 
-# Build
-build/
-dist/
+# Environment
+.venv/
+.env*
+!.env.example
 
 # Mac
 .DS_Store
