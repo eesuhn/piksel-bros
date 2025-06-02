@@ -93,7 +93,7 @@ prefer-stubs=no
 
 # Minimum Python version to use for version dependent checks. Will default to
 # the version used to run pylint.
-py-version=3.10
+py-version=3.13
 
 # Discover python modules and packages in the file system subtree.
 recursive=no
@@ -290,22 +290,25 @@ exclude-too-few-public-methods=
 ignored-parents=
 
 # Maximum number of arguments for function / method.
-max-args=10
+max-args=15
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=20
+max-attributes=7
 
 # Maximum number of boolean expressions in an if statement (see R0916).
-max-bool-expr=6
+max-bool-expr=15
 
 # Maximum number of branch for function / method body.
-max-branches=16
+max-branches=12
 
 # Maximum number of locals for function / method body.
-max-locals=16
+max-locals=15
 
 # Maximum number of parents for a class (see R0901).
-max-parents=8
+max-parents=7
+
+# Maximum number of positional arguments for function / method.
+max-positional-arguments=15
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
@@ -442,7 +445,9 @@ disable=raw-checker-failed,
 		attribute-defined-outside-init,
 		useless-parent-delegation,
 		duplicate-code,
-		chained-comparison
+		chained-comparison,
+		unnecessary-pass,
+		broad-exception-caught
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
