@@ -60,19 +60,18 @@ class Game:
             bottom_right=self.bottom_right,
             debug=self.debug,
             set_border=True,
-            camera_delay=True
+            camera_delay=True,
         )
 
         self._check_state()
 
         self.screen.blit(
-            pygame.transform.scale(self.display, self.screen.get_size()),
-            (0, 0)
+            pygame.transform.scale(self.display, self.screen.get_size()), (0, 0)
         )
         pygame.display.update()
 
     def load_level(self) -> None:
-        self.level = Level('01')
+        self.level = Level("01")
 
         level_w, level_h = self.level.get_dimensions()
         self.top_left = self.level.get_top_left()
@@ -80,9 +79,7 @@ class Game:
 
         self.camera = Camera(level_w, level_h)
         self.player = Player(
-            self.level.get_player_name(),
-            self.level.get_player_pos(),
-            self.camera
+            self.level.get_player_name(), self.level.get_player_pos(), self.camera
         )
         self.objs = self.level.load(self.camera, self.player)
 

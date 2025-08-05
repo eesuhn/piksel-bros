@@ -13,18 +13,12 @@ class EditorCamera(pygame.sprite.Sprite):
     image: pygame.Surface
     display: pygame.Surface
 
-    def __init__(
-        self,
-        x: int,
-        y: int,
-        *groups: 'Camera'
-    ):
+    def __init__(self, x: int, y: int, *groups: "Camera"):
         super().__init__(*groups)
         self.rect = pygame.Rect(x, y, SCR_W, SCR_H)
-        self.image = pygame.Surface((
-            SCR_W * CAM_SCALE,
-            SCR_H * CAM_SCALE
-        )).convert_alpha()
+        self.image = pygame.Surface(
+            (SCR_W * CAM_SCALE, SCR_H * CAM_SCALE)
+        ).convert_alpha()
         self.scroll = pygame.Vector2((x, y))
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):
@@ -71,12 +65,8 @@ class EditorCamera(pygame.sprite.Sprite):
         mpos = pygame.Vector2(pygame.mouse.get_pos())
         ratio_x = SCR_W * CAM_SCALE / o_screen.x
         ratio_y = SCR_H * CAM_SCALE / o_screen.y
-        adjust = pygame.Vector2((
-            mpos.x * ratio_x,
-            mpos.y * ratio_y
-        ))
+        adjust = pygame.Vector2((mpos.x * ratio_x, mpos.y * ratio_y))
 
-        return pygame.Vector2((
-            (adjust.x + self.scroll.x) // RECT_W,
-            (adjust.y + self.scroll.y) // RECT_H
-        ))
+        return pygame.Vector2(
+            ((adjust.x + self.scroll.x) // RECT_W, (adjust.y + self.scroll.y) // RECT_H)
+        )

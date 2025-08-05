@@ -18,7 +18,7 @@ class Background(pygame.sprite.Sprite):
     target: Union[pygame.sprite.Sprite, None]
     offset: pygame.Vector2
 
-    def __init__(self, *groups: 'Camera'):
+    def __init__(self, *groups: "Camera"):
         super().__init__(*groups)
         self.target = None
 
@@ -41,7 +41,7 @@ class Background(pygame.sprite.Sprite):
         Load the background images and speeds for each layer
         """
         for i in range(1, 6):
-            bg_image = load_image(f'assets/images/background/plx-{i}')
+            bg_image = load_image(f"assets/images/background/plx-{i}")
             self.bg_images.append(bg_image)
             speed_factor = 0.6 if i == 1 else (0.4 if i <= 3 else 0.2)
             self.bg_speeds.append(int(i * BG_SPEED * speed_factor))
@@ -50,7 +50,9 @@ class Background(pygame.sprite.Sprite):
 
         # Pre-render the full background for each layer
         for image in self.bg_images:
-            full_bg = pygame.Surface((self.bg_width * 2, image.get_height()), pygame.SRCALPHA)
+            full_bg = pygame.Surface(
+                (self.bg_width * 2, image.get_height()), pygame.SRCALPHA
+            )
             for x in range(2):
                 full_bg.blit(image, (x * self.bg_width, 0))
             self.full_bgs.append(full_bg)
@@ -68,7 +70,9 @@ class Background(pygame.sprite.Sprite):
         for i, full_bg in enumerate(self.full_bgs):
             # Blit source rect to destination for better performance
             scroll = self.scrolls[i]
-            source_rect = pygame.Rect(scroll, 0, display_rect.width, display_rect.height)
+            source_rect = pygame.Rect(
+                scroll, 0, display_rect.width, display_rect.height
+            )
             self.display.blit(full_bg, (0, 0), source_rect)
 
     def _scroll(self) -> None:

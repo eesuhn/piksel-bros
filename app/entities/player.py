@@ -5,10 +5,19 @@ from enum import Enum, auto
 
 from .entity import Entity
 from ._constants import (
-    PLAYER_W, PLAYER_H, ANIMATION_DELAY, PLAYER_VEL,
-    PLAYER_JUMP_VEL, PLAYER_DASH_VEL, PLAYER_DASH_DURATION,
-    PLAYER_DASH_COOLDOWN, PLAYER_DASH_JUMP_MULT, PLAYER_DASH_COYOTE_TIME,
-    DASH_TRAIL_LENGTH, DASH_TRAIL_ALPHA, DASH_TRAIL_DELAY
+    PLAYER_W,
+    PLAYER_H,
+    ANIMATION_DELAY,
+    PLAYER_VEL,
+    PLAYER_JUMP_VEL,
+    PLAYER_DASH_VEL,
+    PLAYER_DASH_DURATION,
+    PLAYER_DASH_COOLDOWN,
+    PLAYER_DASH_JUMP_MULT,
+    PLAYER_DASH_COYOTE_TIME,
+    DASH_TRAIL_LENGTH,
+    DASH_TRAIL_ALPHA,
+    DASH_TRAIL_DELAY,
 )
 
 if TYPE_CHECKING:
@@ -23,25 +32,25 @@ class Player(Entity):
         self,
         name: str,
         pos: pygame.Vector2,
-        *groups: 'Camera',
-        editor_mode: bool = False
+        *groups: "Camera",
+        editor_mode: bool = False,
     ):
         super().__init__(*groups)
 
         super().init_moving(
-            f'assets/sprites/characters/{name}',
+            f"assets/sprites/characters/{name}",
             pos,
             PLAYER_W,
             PLAYER_H,
             scale=2,
-            direction=True
+            direction=True,
         )
 
         self.vel = pygame.Vector2(0, 0)
         self.collide_left = False
         self.collide_right = False
 
-        self.direction = 'right'
+        self.direction = "right"
         self.animation_state = PlayerAnimation.IDLE
         self.animation_count = 0
         self.jump_count = 0
@@ -97,15 +106,14 @@ class Player(Entity):
                 elif e.key == pygame.K_j and self.dash_cooldown <= 0:
                     self._start_dash()
 
-    def _jump(
-        self,
-        boost_enabled: bool = False
-    ) -> None:
+    def _jump(self, boost_enabled: bool = False) -> None:
         if self.jump_count >= len(PLAYER_JUMP_VEL):
             return
         base_jump_vel = PLAYER_JUMP_VEL[self.jump_count]
 
-        jump_vel = base_jump_vel * PLAYER_DASH_JUMP_MULT if boost_enabled else base_jump_vel
+        jump_vel = (
+            base_jump_vel * PLAYER_DASH_JUMP_MULT if boost_enabled else base_jump_vel
+        )
 
         self.vel.y = jump_vel
         self.fall_count = 0
@@ -139,9 +147,13 @@ class Player(Entity):
         self.dash_count = 0
         self.dash_coyote_count = PLAYER_DASH_COYOTE_TIME
 
-    def _get_animation_state(self) -> 'PlayerAnimation':
+    def _get_animation_state(self) -> "PlayerAnimation":
         if self.vel.y < 0:
-            return PlayerAnimation.DOUBLE_JUMP if self.jump_count == 2 else PlayerAnimation.JUMP
+            return (
+                PlayerAnimation.DOUBLE_JUMP
+                if self.jump_count == 2
+                else PlayerAnimation.JUMP
+            )
         if self.vel.y > 2:
             return PlayerAnimation.FALL
         if self.vel.x != 0:
@@ -172,9 +184,7 @@ class Player(Entity):
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
         return super().create_v_collision_rects(
-            top_offset=8,
-            bottom_offset=2,
-            x_offset=14
+            top_offset=8, bottom_offset=2, x_offset=14
         )
 
     def _update_trail(self) -> None:
@@ -202,8 +212,8 @@ class Player(Entity):
                 ghost,
                 (
                     rect.x - self.offset.x - self.top_left.x,
-                    rect.y - self.offset.y - self.top_left.y
-                )
+                    rect.y - self.offset.y - self.top_left.y,
+                ),
             )
 
 

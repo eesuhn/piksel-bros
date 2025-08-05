@@ -11,18 +11,14 @@ class Main:
         self.parse_options()
 
     def parse_args(self) -> None:
-        args_parser = argparse.ArgumentParser(
-            description="Piksel Bros."
-        )
+        args_parser = argparse.ArgumentParser(description="Piksel Bros.")
         args_parser.add_argument(
             dest="options",
             type=str,
-            nargs="*",
-            choices=[
-                "edit",
-                "debug"
-            ],
-            help="Option(s) to run"
+            nargs="?",
+            choices=["edit", "debug"],
+            help="Option to run",
+            default=None,
         )
         self.args = args_parser.parse_args()
 
@@ -32,12 +28,10 @@ class Main:
 
         option_handlers: dict[str, Callable[[], None]] = {
             "edit": lambda: editor.run(),
-            "debug": lambda: game.run(debug=True)
+            "debug": lambda: game.run(debug=True),
         }
 
-        if self.args.options:
-            for option in self.args.options:
-                if option in option_handlers:
-                    option_handlers[option]()
+        if self.args.options and self.args.options in option_handlers:
+            option_handlers[self.args.options]()
         else:
             game.run()

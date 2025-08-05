@@ -10,21 +10,11 @@ if TYPE_CHECKING:
 
 
 class Terrain(Entity):
-    def __init__(
-        self,
-        name: str,
-        var: int,
-        pos: pygame.Vector2,
-        *groups: 'Camera'
-    ):
-
+    def __init__(self, name: str, var: int, pos: pygame.Vector2, *groups: "Camera"):
         super().__init__(*groups)
 
         super().init_static(
-            f'assets/images/terrains/{name}/{var}',
-            pos,
-            TERRAIN_W,
-            TERRAIN_H
+            f"assets/images/terrains/{name}/{var}", pos, TERRAIN_W, TERRAIN_H
         )
 
         if len(groups) > 0 and isinstance(groups[0], pygame.sprite.LayeredUpdates):

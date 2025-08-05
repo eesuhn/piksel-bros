@@ -11,13 +11,13 @@ class EditorUtil:
     event: pygame.event.Event
     wpos: pygame.Vector2
     player_pos: pygame.Vector2
-    level: 'Level'
-    editor: 'Editor'
+    level: "Level"
+    editor: "Editor"
 
-    def __init__(self, editor: 'Editor') -> None:
+    def __init__(self, editor: "Editor") -> None:
         self.left_click = False
         self.right_click = False
-        self.block_type = 'terrain'
+        self.block_type = "terrain"
         self.dragging_player = False
         self.player_following = False
         self.editor = editor
@@ -29,21 +29,18 @@ class EditorUtil:
     def _add_block(self, x: int, y: int) -> None:
         if not self._mpos_is_player():
             # TODO: Refactor block type to enum
-            if self.block_type == 'terrain':
+            if self.block_type == "terrain":
                 self.level.add_block(
                     x,
                     y,
-                    'terrain',
+                    "terrain",
                     self.editor.current_terrain,
-                    self.editor.current_terrain_var)
-            elif self.block_type == 'fruit':
-                self.level.add_block(
-                    x,
-                    y,
-                    'fruit',
-                    self.editor.current_fruit)
+                    self.editor.current_terrain_var,
+                )
+            elif self.block_type == "fruit":
+                self.level.add_block(x, y, "fruit", self.editor.current_fruit)
             else:
-                raise ValueError(f'Invalid block type: {self.block_type}')
+                raise ValueError(f"Invalid block type: {self.block_type}")
 
     def handle_mousedown(self, event: pygame.event.Event) -> None:
         if event.button == 1:
@@ -52,7 +49,7 @@ class EditorUtil:
                 x, y = int(self.wpos.x), int(self.wpos.y)
                 if not self.level.is_blocked(x, y):
                     self.player_following = False  # Second click: Place the player
-                    self.level.player['pos'] = [x, y]
+                    self.level.player["pos"] = [x, y]
                     self.player_pos.x, self.player_pos.y = x, y
                     self.level.load_objs()
 
@@ -77,7 +74,7 @@ class EditorUtil:
 
     def handle_mousewheel(self) -> None:
         # TODO: Refactor block type to enum
-        self.block_type = 'fruit' if self.block_type == 'terrain' else 'terrain'
+        self.block_type = "fruit" if self.block_type == "terrain" else "terrain"
 
     def _mpos_is_player(self) -> bool:
         return self.wpos.x == self.player_pos.x and self.wpos.y == self.player_pos.y
@@ -88,13 +85,13 @@ class EditorUtil:
         if self.player_following:
             # Only show player preview if the target tile is not blocked
             if not self.level.is_blocked(x, y):
-                self.level.player['pos'] = [x, y]
+                self.level.player["pos"] = [x, y]
                 self.player_pos.x, self.player_pos.y = x, y
                 self.level.load_objs()
             return
 
         if self.dragging_player:
-            self.level.player['pos'] = [x, y]
+            self.level.player["pos"] = [x, y]
             self.player_pos.x, self.player_pos.y = x, y
             return
 

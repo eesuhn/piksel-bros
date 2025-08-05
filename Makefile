@@ -1,47 +1,40 @@
 VENV = .venv
-MAIN = main.py
-PACKAGE = app
 CONFIG = .config
-
-# Colors
-GREEN = \033[92m
-RED = \033[91m
-MAGENTA = \033[95m
-NC = \033[0m
+OS := $(shell uname -s)
 
 all: venv
 
 venv: $(VENV)/bin/activate
 
-$(VENV)/bin/activate: ./$(CONFIG)/requirements.txt
-	@python3 -m venv $(VENV)
-	@./$(VENV)/bin/pip install -r ./$(CONFIG)/requirements.txt
-	@./$(VENV)/bin/pre-commit install --config=./$(CONFIG)/.pre-commit-config.yaml
-	@echo "[$(GREEN)success$(NC)] Virtual environment created and activated."
+$(VENV)/bin/activate: pyproject.toml
+	@uv sync
+	@uv run pre-commit install --config=$(CONFIG)/pre-commit.yaml
 
 %:
 	@:
 
-command: venv
-	@./$(VENV)/bin/$(filter-out $@,$(MAKECMDGOALS))
+upgrade:
+	@uv sync --upgrade
+	@git add uv.lock
 
-run: venv
-	@./$(VENV)/bin/python3 $(MAIN) $(filter-out $@,$(MAKECMDGOALS))
+format:
+	@uv run ruff format
 
-lint: venv
-	@./$(VENV)/bin/pycodestyle --ignore=E501 $(PACKAGE) $(MAIN)
-	@./$(VENV)/bin/pylint --rcfile=./$(CONFIG)/.pylintrc $(PACKAGE) $(MAIN)
-	@./$(VENV)/bin/mypy --config-file=./$(CONFIG)/.mypy.ini $(PACKAGE) $(MAIN)
-	@echo "[$(GREEN)success$(NC)] Linting completed."
+check:
+	@uv run ruff check
+
+check-fix:
+	@uv run ruff check --fix
 
 clean:
-	@if [ -d $(VENV) ]; then \
-		./$(VENV)/bin/pyclean . || true; \
-	fi
+	rm -rf .pytest_cache/ .ruff_cache/
+	@uvx pyclean .
 
-fclean: clean
-	@rm -rf $(VENV) .mypy_cache/
+test:
+	@uv run pytest $(filter-out $@,$(MAKECMDGOALS))
 
-re: fclean all
+run:
+	@uv run -m main
 
-.PHONY: all venv command run lint clean fclean re
+.PHONY: all venv upgrade format check check-fix clean test \
+		run

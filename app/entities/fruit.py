@@ -17,19 +17,12 @@ class Fruit(Entity):
         self,
         name: str,
         pos: pygame.Vector2,
-        *groups: 'Camera',
-        editor_mode: bool = False
+        *groups: "Camera",
+        editor_mode: bool = False,
     ):
-
         super().__init__(*groups)
 
-        super().init_moving(
-            'assets/sprites/fruits',
-            pos,
-            FRUIT_W,
-            FRUIT_H,
-            scale=2
-        )
+        super().init_moving("assets/sprites/fruits", pos, FRUIT_W, FRUIT_H, scale=2)
 
         self.name = name
         self.editor_mode = editor_mode
@@ -51,9 +44,7 @@ class Fruit(Entity):
 
     def create_v_collision(self) -> tuple[pygame.Rect, pygame.Rect]:
         return super().create_v_collision_rects(
-            top_offset=8,
-            bottom_offset=2,
-            x_offset=14
+            top_offset=8, bottom_offset=2, x_offset=14
         )
 
     def _animate(self) -> None:
@@ -79,5 +70,5 @@ class Fruit(Entity):
         """
         del entity_vel
 
-    def check_collected(self, player: 'Player') -> bool:
+    def check_collected(self, player: "Player") -> bool:
         return pygame.sprite.collide_mask(self, player) is not None

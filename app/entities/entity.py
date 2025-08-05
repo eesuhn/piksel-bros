@@ -19,7 +19,7 @@ class Entity(pygame.sprite.Sprite):
     top_left: pygame.Vector2
     bottom_right: pygame.Vector2
 
-    objs: list['Entity']
+    objs: list["Entity"]
     vel: pygame.Vector2
     fall_count: int
 
@@ -27,7 +27,7 @@ class Entity(pygame.sprite.Sprite):
     # Child callable to include `create_v_collision_rects`
     create_v_collision: Callable
 
-    def __init__(self, *groups: 'Camera'):
+    def __init__(self, *groups: "Camera"):
         super().__init__(*groups)
         self.pass_through = False
         self.collectable = False
@@ -37,8 +37,8 @@ class Entity(pygame.sprite.Sprite):
             self.image,
             (
                 self.rect.x - self.offset.x - self.top_left.x,
-                self.rect.y - self.offset.y - self.top_left.y
-            )
+                self.rect.y - self.offset.y - self.top_left.y,
+            ),
         )
 
     def init_moving(
@@ -48,7 +48,7 @@ class Entity(pygame.sprite.Sprite):
         width: int,
         height: int,
         scale: int = 1,
-        direction: bool = False
+        direction: bool = False,
     ) -> None:
         """
         Initialize moving graphics and hitboxes for the entity.
@@ -58,21 +58,12 @@ class Entity(pygame.sprite.Sprite):
         scaled_height = height * scale
 
         self.rect = pygame.Rect(
-            pos.x * scaled_width,
-            pos.y * scaled_height,
-            scaled_width,
-            scaled_height
+            pos.x * scaled_width, pos.y * scaled_height, scaled_width, scaled_height
         )
         self.sheet = load_sprites_sheet(
-            relative_path,
-            width,
-            height,
-            scale=scale,
-            direction=direction
+            relative_path, width, height, scale=scale, direction=direction
         )
-        self.image = pygame.Surface(
-            (scaled_width, scaled_height)
-        ).convert_alpha()
+        self.image = pygame.Surface((scaled_width, scaled_height)).convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
 
         self.head_rect, self.feet_rect = self.create_v_collision()
@@ -83,7 +74,7 @@ class Entity(pygame.sprite.Sprite):
         pos: pygame.Vector2,
         width: int,
         height: int,
-        scale: int = 1
+        scale: int = 1,
     ) -> None:
         """
         Initialize static graphics and hitboxes for the entity.
@@ -93,48 +84,35 @@ class Entity(pygame.sprite.Sprite):
         scaled_height = height * scale
 
         self.rect = pygame.Rect(
-            pos.x * scaled_width,
-            pos.y * scaled_height,
-            scaled_width,
-            scaled_height
+            pos.x * scaled_width, pos.y * scaled_height, scaled_width, scaled_height
         )
         self.image = load_image(relative_path)
         self.mask = pygame.mask.from_surface(self.image)
 
     def create_v_collision_rects(
-        self,
-        top_offset: int,
-        bottom_offset: int,
-        x_offset: int = 0
+        self, top_offset: int, bottom_offset: int, x_offset: int = 0
     ) -> tuple[pygame.Rect, pygame.Rect]:
         """
         Create vertical collision rects.
         """
 
         def create_rect(
-            x_offset: Union[float, int],
-            y_offset: Union[float, int]
+            x_offset: Union[float, int], y_offset: Union[float, int]
         ) -> pygame.Rect:
             width = self.rect.width - (x_offset * 2)
             height = 2
             return pygame.Rect(
-                self.rect.x + x_offset,
-                self.rect.y + y_offset,
-                width,
-                height
+                self.rect.x + x_offset, self.rect.y + y_offset, width, height
             )
 
         top_rect = create_rect(x_offset, top_offset)
-        bottom_rect = create_rect(
-            x_offset,
-            self.rect.height - bottom_offset
-        )
+        bottom_rect = create_rect(x_offset, self.rect.height - bottom_offset)
 
         return top_rect, bottom_rect
 
     def move_horizontal(self, speed: int = 1) -> None:
         self.vel.x = speed
-        self.direction = 'right' if speed > 0 else 'left'
+        self.direction = "right" if speed > 0 else "left"
 
     def apply_movement(self) -> None:
         self.rect.move_ip(self.vel.x, self.vel.y)
@@ -206,21 +184,21 @@ class Entity(pygame.sprite.Sprite):
         """
         Draw hitboxes for debugging.
         """
+
         def draw_rect(rect: pygame.Rect, color: tuple[int, int, int]) -> None:
             pygame.draw.rect(
                 self.display,
                 color,
                 rect.move(
-                    -self.offset.x - self.top_left.x,
-                    -self.offset.y - self.top_left.y
-                )
+                    -self.offset.x - self.top_left.x, -self.offset.y - self.top_left.y
+                ),
             )
 
         draw_rect(self.rect, (0, 255, 0))
         draw_rect(self.head_rect, (255, 0, 0))
         draw_rect(self.feet_rect, (255, 0, 0))
 
-    def check_collected(self, player: 'Player') -> bool:
+    def check_collected(self, player: "Player") -> bool:
         """
         To be implemented by collectable child classes.
         """
