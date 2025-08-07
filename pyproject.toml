@@ -1,7 +1,7 @@
 [project]
-name = "python-starter"
+name = "piksel-bros"
 version = "0.1.0"
-description = "Python Playground Kit"
+description = "Just a platformer"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

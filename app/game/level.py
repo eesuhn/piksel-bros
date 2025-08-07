@@ -1,12 +1,11 @@
 import pygame
-import json
+import justsdk
 
 from typing import TYPE_CHECKING, Union
 
-from ..utils import load_json
 from .camera import Camera
 from ..entities import Entity, Terrain, Fruit, Player
-from .._constants import RECT_W, RECT_H
+from .._constants import RECT_W, RECT_H, LEVELS_PATH, APP_PATH
 
 if TYPE_CHECKING:
     from ..level_editor import EditorCamera
@@ -17,7 +16,7 @@ class Level:
         self.level = level
         self.objs: list[Entity] = []
 
-        data = load_json(f"levels/{level}")
+        data = justsdk.read_file(LEVELS_PATH / f"{level}.json", use_orjson=True)
         self.player = data["player"]
         self.terrain = data["terrain"]
         self.fruit = data["fruit"]
@@ -149,5 +148,6 @@ class Level:
 
     def save_level(self) -> None:
         data = {"player": self.player, "terrain": self.terrain, "fruit": self.fruit}
-        with open(f"app/levels/{self.level}.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+        justsdk.write_file(
+            data, APP_PATH / f"levels/{self.level}.json", use_orjson=True, atomic=True
+        )

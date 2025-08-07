@@ -3,6 +3,7 @@ import json
 
 from pathlib import Path
 from typing import Any, Union
+from ._constants import APP_PATH, ASSETS_PATH
 
 
 def get_package_root() -> Path:
@@ -27,7 +28,7 @@ def load_image(
     Load an image from the given path and scale it by the given factor.
     """
 
-    image = pygame.image.load(get_file_path(f"{relative_path}.{file_extension}"))
+    image = pygame.image.load(APP_PATH / f"{relative_path}.{file_extension}")
     return pygame.transform.scale(
         image, (image.get_width() * scale, image.get_height() * scale)
     )
@@ -41,7 +42,7 @@ def load_sprites_sheet(
     direction: bool = False,
 ) -> dict:
     sheet = {}
-    path = get_file_path(relative_path)
+    path = APP_PATH / relative_path
 
     for file in sorted(path.glob("*.png")):
         file_name = file.stem
@@ -70,7 +71,8 @@ def get_terrain_types() -> dict[str, list[int]]:
     """
     Returns a dictionary of terrain names and their available variants
     """
-    terrain_path = get_file_path("assets/images/terrains")
+    terrain_path = ASSETS_PATH / "images" / "terrains"
+
     terrains = {}
 
     for terrain_dir in terrain_path.iterdir():
@@ -85,5 +87,5 @@ def get_fruit_types() -> list[str]:
     """
     Returns a list of available fruit names
     """
-    fruit_path = get_file_path("assets/sprites/fruits")
+    fruit_path = ASSETS_PATH / "sprites" / "fruits"
     return [f.stem for f in fruit_path.glob("*.png")]
