@@ -1,4 +1,5 @@
 import pygame
+import justsdk
 
 from .._constants import SCR_W, SCR_H, CAM_SCALE, RECT_W, RECT_H
 from ..game import Game, Level, Camera
@@ -101,7 +102,7 @@ class Editor(Game):
                 if event.key == pygame.K_RETURN:
                     self.level.save_level()
                     # TODO: Handle message
-                    print("Level saved!")
+                    justsdk.print_info("Level saved!")
 
     def _select_block(self, event: pygame.event.Event) -> None:
         """

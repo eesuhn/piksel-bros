@@ -1,5 +1,6 @@
 import pygame
 import sys
+import justsdk
 
 from .._constants import SCR_W, SCR_H, FPS
 from .level import Level
@@ -111,7 +112,7 @@ class Game:
         """
         if not any(o.collectable for o in self.objs) and not self.win:
             # TODO: Handle message
-            print("You won!")
+            justsdk.print_info("You won!")
             self.win = True
 
     def _check_fallen(self) -> None:
@@ -121,5 +122,5 @@ class Game:
         fall_limit = self.bottom_right.y + (PLAYER_H * 10)
         if self.player.rect.top > fall_limit:
             # TODO: Handle message
-            print("You fell out of the map!")
+            justsdk.print_info("You fell out of the map!")
             self._end()
