@@ -16,9 +16,21 @@ class Main:
             dest="options",
             type=str,
             nargs="?",
-            choices=["edit", "debug"],
+            choices=["edit", "debug", "multiplayer"],
             help="Option to run",
             default=None,
+        )
+        args_parser.add_argument(
+            "--name",
+            type=str,
+            default="Player",
+            help="Player name for multiplayer mode",
+        )
+        args_parser.add_argument(
+            "--server",
+            type=str,
+            default="ws://localhost:8765",
+            help="Server URL for multiplayer mode",
         )
         self.args = args_parser.parse_args()
 
@@ -29,6 +41,9 @@ class Main:
         option_handlers: dict[str, Callable[[], None]] = {
             "edit": lambda: editor.run(),
             "debug": lambda: game.run(debug=True),
+            "multiplayer": lambda: Game(
+                multiplayer=True, player_name=self.args.name
+            ).run(),
         }
 
         if self.args.options and self.args.options in option_handlers:
